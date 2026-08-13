@@ -1,6 +1,20 @@
 import { vi } from 'vitest'
 import { config as vueTestConfig } from '@vue/test-utils'
 
+// jsdom does not implement matchMedia; PrimeVue Select calls it on mount.
+if (typeof window !== 'undefined' && !window.matchMedia) {
+  window.matchMedia = (query) => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: () => {},
+    removeListener: () => {},
+    addEventListener: () => {},
+    removeEventListener: () => {},
+    dispatchEvent: () => false,
+  })
+}
+
 // Stub Inertia's usePage so composables can run in isolation.
 vi.mock('@inertiajs/vue3', () => ({
   usePage: () => ({ props: { auth: { user: null }, settings: {}, flash: {} } }),
