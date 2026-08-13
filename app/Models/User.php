@@ -24,6 +24,7 @@ class User extends Authenticatable implements HasMedia
         'phone',
         'avatar_path',
         'is_active',
+        'last_login_at',
     ];
 
     protected $hidden = [
