@@ -9,6 +9,15 @@ class DashboardController extends Controller
 {
     public function index(): Response
     {
-        return Inertia::render('Dashboard');
+        return Inertia::render('Dashboard', [
+            'stats' => [
+                'todays_appointments' => ['value' => 0, 'label' => "Today's appointments", 'hint' => 'Resets daily'],
+                'pending_payments'   => ['value' => 0, 'label' => 'Pending payments', 'hint' => 'Awaiting settlement'],
+                'low_stock_items'    => ['value' => 0, 'label' => 'Low stock items', 'hint' => 'Below reorder threshold'],
+                'patients_today'     => ['value' => 0, 'label' => 'New patients', 'hint' => 'This month'],
+                'month_revenue'      => ['value' => 0, 'label' => 'Revenue (this month)', 'hint' => 'Net of refunds'],
+                'outstanding_balance'=> ['value' => 0, 'label' => 'Outstanding balance', 'hint' => 'Across all patients'],
+            ],
+        ]);
     }
 }
