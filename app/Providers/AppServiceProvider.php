@@ -40,6 +40,7 @@ use App\Services\ExpenseService;
 use App\Services\InvoiceService;
 use App\Services\LedgerService;
 use App\Services\PaymentService;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
 use Inertia\Inertia;
 
@@ -143,6 +144,17 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Relation::morphMap([
+            'invoice' => \App\Models\Invoice::class,
+            'payment' => \App\Models\Payment::class,
+            'expense' => \App\Models\Expense::class,
+            'user' => \App\Models\User::class,
+            'patient' => \App\Models\Patient::class,
+            'doctor' => \App\Models\Doctor::class,
+            'product' => \App\Models\Product::class,
+            'supplier' => \App\Models\Supplier::class,
+        ]);
+
         Inertia::share([
             'auth' => fn () => [
                 'user' => auth()->user() ? [
