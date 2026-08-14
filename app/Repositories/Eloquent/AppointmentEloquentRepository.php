@@ -5,12 +5,15 @@ declare(strict_types=1);
 namespace App\Repositories\Eloquent;
 
 use App\Enums\AppointmentStatus;
+use App\Events\AppointmentCancelled;
+use App\Events\AppointmentCreated;
 use App\Models\Appointment;
 use App\Models\Doctor;
 use App\Repositories\Contracts\AppointmentRepository;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Event;
 
 class AppointmentEloquentRepository implements AppointmentRepository
 {
@@ -66,7 +69,11 @@ class AppointmentEloquentRepository implements AppointmentRepository
 
     public function create(array $data): Appointment
     {
-        return Appointment::create($data);
+        $appointment = Appointment::create($data);
+
+        Event::dispatch(new AppointmentCreated($appointment));
+
+        return $appointment;
     }
 
     public function update(Appointment $appointment, array $data): Appointment
@@ -95,6 +102,10 @@ class AppointmentEloquentRepository implements AppointmentRepository
             ->performedOn($appointment)
             ->withProperties(['from' => $appointment->getOriginal('status'), 'to' => $new->value])
             ->log("Appointment status changed to {$new->label()}");
+
+        if ($new === AppointmentStatus::Cancelled) {
+            Event::dispatch(new AppointmentCancelled($appointment));
+        }
 
         return $appointment;
     }

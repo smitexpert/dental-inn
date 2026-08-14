@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace App\Repositories\Eloquent;
 
 use App\Enums\InvoiceStatus;
+use App\Events\InvoiceIssued;
 use App\Models\Invoice;
 use App\Repositories\Contracts\InvoiceRepository;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Event;
 
 class InvoiceEloquentRepository implements InvoiceRepository
 {
@@ -60,6 +62,8 @@ class InvoiceEloquentRepository implements InvoiceRepository
         $invoice = new Invoice;
         $invoice->fill($data);
         $invoice->save();
+
+        Event::dispatch(new InvoiceIssued($invoice));
 
         return $invoice;
     }

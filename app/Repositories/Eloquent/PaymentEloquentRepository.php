@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Repositories\Eloquent;
 
+use App\Events\PaymentReceived;
 use App\Models\Payment;
 use App\Repositories\Contracts\PaymentRepository;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Event;
 
 class PaymentEloquentRepository implements PaymentRepository
 {
@@ -59,6 +61,8 @@ class PaymentEloquentRepository implements PaymentRepository
         $payment = new Payment;
         $payment->fill($data);
         $payment->save();
+
+        Event::dispatch(new PaymentReceived($payment));
 
         return $payment;
     }
