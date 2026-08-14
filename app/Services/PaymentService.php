@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Enums\InvoiceStatus;
+use App\Enums\PaymentMethod;
+use App\Models\CashDrawer;
 use App\Models\Invoice;
 use App\Models\Payment;
+use App\Services\CashDrawerService;
 use Illuminate\Support\Facades\DB;
 use RuntimeException;
 
@@ -19,7 +22,10 @@ use RuntimeException;
  */
 class PaymentService
 {
-    public function __construct(private readonly LedgerService $ledger) {}
+    public function __construct(
+        private readonly LedgerService $ledger,
+        private readonly CashDrawerService $drawerService,
+    ) {}
 
     /**
      * @param  array<string, mixed>  $data
@@ -59,6 +65,25 @@ class PaymentService
             $invoice->save();
 
             $this->ledger->recordPaymentReceived($payment->fresh(), '1000', '1010', $userId);
+
+            // Mirror physical cash into the per-currency drawer. The drawer
+            // exists for every active currency; if the payment currency is
+            // somehow missing, create it on the fly.
+            if ($payment->method === PaymentMethod::Cash) {
+                $drawer = CashDrawer::query()->firstOrCreate(
+                    ['currency_code' => $payment->currency_code],
+                    ['balance' => '0.0000'],
+                );
+
+                $this->drawerService->cashIn(
+                    $payment->currency_code,
+                    (string) $payment->amount,
+                    sprintf('Cash payment for invoice %s', $invoice->invoice_number),
+                    $payment,
+                    $userId,
+                    'payment',
+                );
+            }
 
             return $payment->fresh();
         });
