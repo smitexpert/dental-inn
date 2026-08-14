@@ -43,4 +43,30 @@ describe('useNav', () => {
     expect(patients).toBeTruthy()
     expect(patients.comingSoon).toBeFalsy()
   })
+
+  it('exposes Exchange group when user has view-exchange-rates', () => {
+    window.__testPerms = ['view-exchange-rates', 'view-cash-movements', 'reconcile-cash-drawer']
+    const items = useNav().value
+    const exchange = items.find((i) => i.label === 'Exchange')
+    expect(exchange).toBeTruthy()
+    expect(exchange.href).toBe('/exchange')
+    const labels = exchange.children.map((c) => c.label)
+    expect(labels).toContain('Dashboard')
+    expect(labels).toContain('Rates')
+    expect(labels).toContain('Movements')
+    expect(labels).toContain('Reconcile')
+  })
+
+  it('hides Exchange group without view-exchange-rates', () => {
+    window.__testPerms = ['view-dashboard']
+    const items = useNav().value
+    expect(items.find((i) => i.label === 'Exchange')).toBeFalsy()
+  })
+
+  it('hides Reconcile child without reconcile permission', () => {
+    window.__testPerms = ['view-exchange-rates', 'view-cash-movements']
+    const items = useNav().value
+    const exchange = items.find((i) => i.label === 'Exchange')
+    expect(exchange.children.find((c) => c.label === 'Reconcile')).toBeFalsy()
+  })
 })
