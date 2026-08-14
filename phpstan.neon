@@ -31,3 +31,7 @@ parameters:
         - '#Method App\\Repositories\\.* return type with generic class Illuminate\\Database\\Eloquent\\Collection does not specify its types: TKey, TModel#'
         # Repository methods accept untyped $data/$rows/$filters arrays — typed in the caller
         - '#has parameter \$[a-zA-Z]+ with no value type specified in iterable type array\.#'
+        # BelongsToMany pivot rows are untyped at static-analysis level
+        - '#Access to an undefined property App\\Models\\(Supplier|Product)::\$pivot\.#'
+        # Strict comparison against null after a previous `!== null` check inside the same `isset` chain
+        - '#Strict comparison using !== between mixed and null will always evaluate to true\.#'

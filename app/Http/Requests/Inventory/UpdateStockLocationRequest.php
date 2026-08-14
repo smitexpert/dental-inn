@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Requests\Inventory;
 
 use App\Enums\StockLocationType;
+use App\Models\StockLocation;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -20,7 +21,7 @@ class UpdateStockLocationRequest extends FormRequest
      */
     public function rules(): array
     {
-        /** @var \App\Models\StockLocation|null $location */
+        /** @var StockLocation|null $location */
         $location = $this->route('location');
         $locationId = $location?->id;
 

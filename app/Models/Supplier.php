@@ -6,9 +6,11 @@ namespace App\Models;
 
 use Database\Factories\SupplierFactory;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Carbon;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
 
@@ -21,9 +23,9 @@ use Spatie\Activitylog\Support\LogOptions;
  * @property ?string $address
  * @property ?string $notes
  * @property bool $is_active
- * @property ?\Illuminate\Support\Carbon $created_at
- * @property ?\Illuminate\Support\Carbon $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection<int, Product> $products
+ * @property ?Carbon $created_at
+ * @property ?Carbon $updated_at
+ * @property-read Collection<int, Product> $products
  */
 class Supplier extends Model
 {

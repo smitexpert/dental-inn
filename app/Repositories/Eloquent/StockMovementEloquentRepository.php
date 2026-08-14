@@ -11,6 +11,10 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class StockMovementEloquentRepository implements StockMovementRepository
 {
+    /**
+     * @param  array<string, mixed>  $filters
+     * @return LengthAwarePaginator<int, StockMovement>
+     */
     public function paginate(int $perPage = 25, array $filters = []): LengthAwarePaginator
     {
         $q = StockMovement::query()->with(['product', 'location', 'performer']);
@@ -30,6 +34,9 @@ class StockMovementEloquentRepository implements StockMovementRepository
         return $q->orderByDesc('created_at')->paginate($perPage)->withQueryString();
     }
 
+    /**
+     * @return LengthAwarePaginator<int, StockMovement>
+     */
     public function paginateForProduct(Product $product, int $perPage = 25): LengthAwarePaginator
     {
         return StockMovement::query()

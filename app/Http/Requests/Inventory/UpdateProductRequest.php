@@ -6,6 +6,7 @@ namespace App\Http\Requests\Inventory;
 
 use App\Enums\ProductCategory;
 use App\Enums\ProductUnit;
+use App\Models\Product;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -21,7 +22,7 @@ class UpdateProductRequest extends FormRequest
      */
     public function rules(): array
     {
-        /** @var \App\Models\Product|null $product */
+        /** @var Product|null $product */
         $product = $this->route('product');
         $productId = $product?->id;
 

@@ -61,16 +61,19 @@ class StockMovement extends Model
         ];
     }
 
+    /** @return BelongsTo<Product, $this> */
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
     }
 
+    /** @return BelongsTo<StockLocation, $this> */
     public function location(): BelongsTo
     {
         return $this->belongsTo(StockLocation::class, 'location_id');
     }
 
+    /** @return BelongsTo<User, $this> */
     public function performer(): BelongsTo
     {
         return $this->belongsTo(User::class, 'performed_by');

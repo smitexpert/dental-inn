@@ -8,11 +8,13 @@ use App\Enums\ProductCategory;
 use App\Enums\ProductUnit;
 use Database\Factories\ProductFactory;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
 
@@ -30,12 +32,12 @@ use Spatie\Activitylog\Support\LogOptions;
  * @property ?string $description
  * @property bool $is_active
  * @property bool $track_stock
- * @property ?\Illuminate\Support\Carbon $created_at
- * @property ?\Illuminate\Support\Carbon $updated_at
- * @property ?\Illuminate\Support\Carbon $deleted_at
- * @property-read \Illuminate\Database\Eloquent\Collection<int, StockLevel> $stockLevels
- * @property-read \Illuminate\Database\Eloquent\Collection<int, StockMovement> $movements
- * @property-read \Illuminate\Database\Eloquent\Collection<int, Supplier> $suppliers
+ * @property ?Carbon $created_at
+ * @property ?Carbon $updated_at
+ * @property ?Carbon $deleted_at
+ * @property-read Collection<int, StockLevel> $stockLevels
+ * @property-read Collection<int, StockMovement> $movements
+ * @property-read Collection<int, Supplier> $suppliers
  * @property-read int $total_quantity
  */
 class Product extends Model
@@ -72,11 +74,13 @@ class Product extends Model
         ];
     }
 
+    /** @return HasMany<StockLevel, $this> */
     public function stockLevels(): HasMany
     {
         return $this->hasMany(StockLevel::class);
     }
 
+    /** @return HasMany<StockMovement, $this> */
     public function movements(): HasMany
     {
         return $this->hasMany(StockMovement::class)->orderByDesc('created_at');

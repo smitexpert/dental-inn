@@ -7,19 +7,21 @@ namespace App\Models;
 use App\Enums\StockLocationType;
 use Database\Factories\StockLocationFactory;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
  * @property string $name
  * @property StockLocationType $location_type
  * @property bool $is_active
- * @property ?\Illuminate\Support\Carbon $created_at
- * @property ?\Illuminate\Support\Carbon $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection<int, StockLevel> $stockLevels
- * @property-read \Illuminate\Database\Eloquent\Collection<int, StockMovement> $movements
+ * @property ?Carbon $created_at
+ * @property ?Carbon $updated_at
+ * @property-read Collection<int, StockLevel> $stockLevels
+ * @property-read Collection<int, StockMovement> $movements
  */
 class StockLocation extends Model
 {

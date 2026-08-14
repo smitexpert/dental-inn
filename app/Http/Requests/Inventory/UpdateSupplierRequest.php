@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Inventory;
 
+use App\Models\Supplier;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -19,7 +20,7 @@ class UpdateSupplierRequest extends FormRequest
      */
     public function rules(): array
     {
-        /** @var \App\Models\Supplier|null $supplier */
+        /** @var Supplier|null $supplier */
         $supplier = $this->route('supplier');
         $supplierId = $supplier?->id;
 
