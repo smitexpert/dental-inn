@@ -9,6 +9,10 @@ use App\Repositories\Contracts\DoctorRepository;
 use App\Repositories\Contracts\DoctorScheduleRepository;
 use App\Repositories\Contracts\DoctorTimeOffRepository;
 use App\Repositories\Contracts\PatientRepository;
+use App\Repositories\Contracts\ProductRepository;
+use App\Repositories\Contracts\StockLocationRepository;
+use App\Repositories\Contracts\StockMovementRepository;
+use App\Repositories\Contracts\SupplierRepository;
 use App\Repositories\Contracts\TreatmentRecordRepository;
 use App\Repositories\Contracts\UserRepository;
 use App\Repositories\Eloquent\AppointmentEloquentRepository;
@@ -16,6 +20,10 @@ use App\Repositories\Eloquent\DoctorEloquentRepository;
 use App\Repositories\Eloquent\DoctorScheduleEloquentRepository;
 use App\Repositories\Eloquent\DoctorTimeOffEloquentRepository;
 use App\Repositories\Eloquent\PatientEloquentRepository;
+use App\Repositories\Eloquent\ProductEloquentRepository;
+use App\Repositories\Eloquent\StockLocationEloquentRepository;
+use App\Repositories\Eloquent\StockMovementEloquentRepository;
+use App\Repositories\Eloquent\SupplierEloquentRepository;
 use App\Repositories\Eloquent\TreatmentRecordEloquentRepository;
 use App\Repositories\Eloquent\UserEloquentRepository;
 use Illuminate\Support\ServiceProvider;
@@ -61,6 +69,26 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             TreatmentRecordRepository::class,
             TreatmentRecordEloquentRepository::class,
+        );
+
+        $this->app->bind(
+            ProductRepository::class,
+            ProductEloquentRepository::class,
+        );
+
+        $this->app->bind(
+            SupplierRepository::class,
+            SupplierEloquentRepository::class,
+        );
+
+        $this->app->bind(
+            StockLocationRepository::class,
+            StockLocationEloquentRepository::class,
+        );
+
+        $this->app->bind(
+            StockMovementRepository::class,
+            StockMovementEloquentRepository::class,
         );
     }
 
