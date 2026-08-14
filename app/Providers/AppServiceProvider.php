@@ -6,9 +6,11 @@ namespace App\Providers;
 
 use App\Repositories\Contracts\DoctorRepository;
 use App\Repositories\Contracts\DoctorScheduleRepository;
+use App\Repositories\Contracts\DoctorTimeOffRepository;
 use App\Repositories\Contracts\UserRepository;
 use App\Repositories\Eloquent\DoctorEloquentRepository;
 use App\Repositories\Eloquent\DoctorScheduleEloquentRepository;
+use App\Repositories\Eloquent\DoctorTimeOffEloquentRepository;
 use App\Repositories\Eloquent\UserEloquentRepository;
 use Illuminate\Support\ServiceProvider;
 use Inertia\Inertia;
@@ -33,6 +35,11 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             DoctorScheduleRepository::class,
             DoctorScheduleEloquentRepository::class,
+        );
+
+        $this->app->bind(
+            DoctorTimeOffRepository::class,
+            DoctorTimeOffEloquentRepository::class,
         );
     }
 
