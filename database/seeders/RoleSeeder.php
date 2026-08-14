@@ -42,6 +42,11 @@ class RoleSeeder extends Seeder
             'approve-expenses',
             'view-reports',
             'manage-chart-of-accounts',
+            'manage-exchange-rates',
+            'view-exchange-rates',
+            'record-cash-movements',
+            'view-cash-movements',
+            'reconcile-cash-drawer',
         ];
 
         foreach ($permissions as $p) {
@@ -67,6 +72,8 @@ class RoleSeeder extends Seeder
             'view-payments',
             'view-expenses',
             'view-reports',
+            'view-exchange-rates',
+            'view-cash-movements',
         ]);
 
         $receptionist = Role::firstOrCreate(['name' => 'receptionist', 'guard_name' => 'web']);
@@ -90,6 +97,9 @@ class RoleSeeder extends Seeder
             'view-payments',
             'manage-expenses',
             'view-expenses',
+            'view-exchange-rates',
+            'record-cash-movements',
+            'view-cash-movements',
         ]);
     }
 }

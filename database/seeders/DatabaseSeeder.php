@@ -17,6 +17,9 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             ChartOfAccountsSeeder::class,
             ExpenseCategorySeeder::class,
+            CurrencySeeder::class,
+            ExchangeRateSeeder::class,
+            CashDrawerSeeder::class,
         ]);
     }
 }
