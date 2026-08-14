@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Repositories\Contracts\AppointmentRepository;
 use App\Repositories\Contracts\DoctorRepository;
 use App\Repositories\Contracts\DoctorScheduleRepository;
 use App\Repositories\Contracts\DoctorTimeOffRepository;
 use App\Repositories\Contracts\UserRepository;
+use App\Repositories\Eloquent\AppointmentEloquentRepository;
 use App\Repositories\Eloquent\DoctorEloquentRepository;
 use App\Repositories\Eloquent\DoctorScheduleEloquentRepository;
 use App\Repositories\Eloquent\DoctorTimeOffEloquentRepository;
@@ -40,6 +42,11 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             DoctorTimeOffRepository::class,
             DoctorTimeOffEloquentRepository::class,
+        );
+
+        $this->app->bind(
+            AppointmentRepository::class,
+            AppointmentEloquentRepository::class,
         );
     }
 
