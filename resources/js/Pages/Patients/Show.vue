@@ -154,7 +154,7 @@ function fmtDateTime(s) {
       </UiCard>
 
       <div v-if="can('manage-patients')" class="text-right">
-        <button @click="archive" class="text-sm text-error-600 hover:text-error-700">Archive patient</button>
+        <button @click="archive" class="text-sm text-error hover:text-error/80">Archive patient</button>
       </div>
     </div>
   </AuthenticatedLayout>
