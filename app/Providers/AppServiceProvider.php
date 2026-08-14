@@ -52,6 +52,9 @@ use App\Repositories\Eloquent\StockMovementEloquentRepository;
 use App\Repositories\Eloquent\SupplierEloquentRepository;
 use App\Repositories\Eloquent\TreatmentRecordEloquentRepository;
 use App\Repositories\Eloquent\UserEloquentRepository;
+use App\Services\CashDrawerReconciliationService;
+use App\Services\CashDrawerService;
+use App\Services\ExchangeRateService;
 use App\Services\ExpenseService;
 use App\Services\InvoiceService;
 use App\Services\LedgerService;
@@ -173,6 +176,9 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(InvoiceService::class);
         $this->app->singleton(PaymentService::class);
         $this->app->singleton(ExpenseService::class);
+        $this->app->singleton(ExchangeRateService::class);
+        $this->app->singleton(CashDrawerService::class);
+        $this->app->singleton(CashDrawerReconciliationService::class);
     }
 
     /**
