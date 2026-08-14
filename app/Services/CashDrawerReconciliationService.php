@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Enums\CashMovementType;
-use App\Models\CashDrawer;
 use App\Models\CashMovement;
 use App\Repositories\Contracts\CashDrawerRepository;
 use App\Repositories\Contracts\CashMovementRepository;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use RuntimeException;
 
 /**
@@ -56,7 +56,7 @@ class CashDrawerReconciliationService
             throw new RuntimeException('Counted balance cannot be negative.');
         }
 
-        return \Illuminate\Support\Facades\DB::transaction(function () use ($currencyCode, $countedBalance, $userId): CashMovement {
+        return DB::transaction(function () use ($currencyCode, $countedBalance, $userId): CashMovement {
             $drawer = $this->drawers->lockByCode($currencyCode);
             $expected = (float) $drawer->balance;
             $counted = (float) $countedBalance;

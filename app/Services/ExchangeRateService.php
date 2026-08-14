@@ -90,6 +90,7 @@ class ExchangeRateService
      */
     public function latestRates(): array
     {
+        /** @var array<int, object{from_currency_code: string, to_currency_code: string, max_at: string}> $pairs */
         $pairs = ExchangeRate::query()
             ->selectRaw('from_currency_code, to_currency_code, max(effective_at) as max_at')
             ->groupBy('from_currency_code', 'to_currency_code')

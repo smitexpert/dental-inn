@@ -61,7 +61,7 @@ class CashMovementEloquentRepository implements CashMovementRepository
     }
 
     /**
-     * @return array<string, string>  ISO date => signed total
+     * @return array<string, string> ISO date => signed total
      */
     public function dailyNetForCurrency(string $code, int $days = 7): array
     {

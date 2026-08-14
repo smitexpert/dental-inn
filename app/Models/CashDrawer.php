@@ -6,6 +6,7 @@ namespace App\Models;
 
 use Database\Factories\CashDrawerFactory;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -21,7 +22,7 @@ use Illuminate\Support\Carbon;
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  * @property-read Currency $currency
- * @property-read \Illuminate\Database\Eloquent\Collection<int, CashMovement> $movements
+ * @property-read Collection<int, CashMovement> $movements
  */
 class CashDrawer extends Model
 {

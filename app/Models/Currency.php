@@ -6,9 +6,11 @@ namespace App\Models;
 
 use Database\Factories\CurrencyFactory;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Carbon;
 
 /**
@@ -19,8 +21,8 @@ use Illuminate\Support\Carbon;
  * @property bool $is_active
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection<int, ExchangeRate> $outgoingRates
- * @property-read \Illuminate\Database\Eloquent\Collection<int, ExchangeRate> $incomingRates
+ * @property-read Collection<int, ExchangeRate> $outgoingRates
+ * @property-read Collection<int, ExchangeRate> $incomingRates
  * @property-read ?CashDrawer $drawer
  */
 class Currency extends Model
@@ -62,8 +64,8 @@ class Currency extends Model
         return $this->hasMany(ExchangeRate::class, 'to_currency_code');
     }
 
-    /** @return \Illuminate\Database\Eloquent\Relations\HasOne<CashDrawer, $this> */
-    public function drawer(): \Illuminate\Database\Eloquent\Relations\HasOne
+    /** @return HasOne<CashDrawer, $this> */
+    public function drawer(): HasOne
     {
         return $this->hasOne(CashDrawer::class, 'currency_code');
     }
