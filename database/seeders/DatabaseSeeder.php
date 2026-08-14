@@ -15,6 +15,8 @@ class DatabaseSeeder extends Seeder
             SettingsSeeder::class,
             StockLocationSeeder::class,
             UserSeeder::class,
+            ChartOfAccountsSeeder::class,
+            ExpenseCategorySeeder::class,
         ]);
     }
 }

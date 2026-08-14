@@ -33,6 +33,15 @@ class RoleSeeder extends Seeder
             'manage-suppliers',
             'view-stock-movements',
             'record-stock-movements',
+            'manage-invoices',
+            'view-invoices',
+            'manage-payments',
+            'view-payments',
+            'manage-expenses',
+            'view-expenses',
+            'approve-expenses',
+            'view-reports',
+            'manage-chart-of-accounts',
         ];
 
         foreach ($permissions as $p) {
@@ -54,6 +63,10 @@ class RoleSeeder extends Seeder
             'view-products',
             'view-suppliers',
             'view-stock-movements',
+            'view-invoices',
+            'view-payments',
+            'view-expenses',
+            'view-reports',
         ]);
 
         $receptionist = Role::firstOrCreate(['name' => 'receptionist', 'guard_name' => 'web']);
@@ -71,6 +84,12 @@ class RoleSeeder extends Seeder
             'view-suppliers',
             'view-stock-movements',
             'record-stock-movements',
+            'manage-invoices',
+            'view-invoices',
+            'manage-payments',
+            'view-payments',
+            'manage-expenses',
+            'view-expenses',
         ]);
     }
 }
