@@ -7,8 +7,8 @@ namespace App\Repositories\Contracts;
 use App\Enums\AppointmentStatus;
 use App\Models\Appointment;
 use App\Models\Doctor;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
 
 interface AppointmentRepository

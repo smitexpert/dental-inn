@@ -8,8 +8,8 @@ use App\Enums\AppointmentStatus;
 use App\Models\Appointment;
 use App\Models\Doctor;
 use App\Repositories\Contracts\AppointmentRepository;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
 
 class AppointmentEloquentRepository implements AppointmentRepository

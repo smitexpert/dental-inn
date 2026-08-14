@@ -20,17 +20,17 @@ use Spatie\Activitylog\Support\LogOptions;
  * @property ?string $patient_phone
  * @property ?int $patient_id
  * @property int $doctor_id
- * @property Carbon $scheduled_at
+ * @property ?Carbon $scheduled_at
  * @property int $duration_minutes
- * @property AppointmentStatus $status
+ * @property ?AppointmentStatus $status
  * @property ?string $notes
  * @property int $created_by
  * @property ?Carbon $cancelled_at
  * @property ?string $cancelled_reason
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
- * @property-read Doctor $doctor
- * @property-read User $creator
+ * @property-read ?Doctor $doctor
+ * @property-read ?User $creator
  */
 class Appointment extends Model
 {
