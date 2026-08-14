@@ -9,6 +9,7 @@ use App\Enums\InvoiceStatus;
 use App\Models\Account;
 use App\Models\Invoice;
 use App\Models\LedgerEntry;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -143,7 +144,7 @@ class ReportsController extends Controller
         $rows = [];
         foreach ($open as $inv) {
             $balance = (float) $inv->total - (float) $inv->paid_amount;
-            $days = (int) \Carbon\Carbon::parse($inv->due_date)->diffInDays($asOf, false) * -1;
+            $days = (int) Carbon::parse($inv->due_date)->diffInDays($asOf, false) * -1;
             $days = max(0, $days);
             if ($days <= 30) {
                 $buckets['0-30'] += $balance;

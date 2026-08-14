@@ -15,10 +15,9 @@ use App\Models\LedgerEntry;
 use App\Models\Payment;
 use App\Models\User;
 use App\Services\ExpenseService;
-use App\Services\InvoiceService;
 use App\Services\LedgerService;
-use App\Services\PaymentService;
-use Illuminate\Database\Eloquent\Relations\Relation;
+use Database\Seeders\ChartOfAccountsSeeder;
+use Database\Seeders\ExpenseCategorySeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
 use RuntimeException;
@@ -31,8 +30,8 @@ class LedgerServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->seed(\Database\Seeders\ChartOfAccountsSeeder::class);
-        $this->seed(\Database\Seeders\ExpenseCategorySeeder::class);
+        $this->seed(ChartOfAccountsSeeder::class);
+        $this->seed(ExpenseCategorySeeder::class);
     }
 
     public function test_record_entry_creates_balanced_ledger_row(): void

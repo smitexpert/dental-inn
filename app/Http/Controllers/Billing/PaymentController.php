@@ -12,7 +12,6 @@ use App\Repositories\Contracts\InvoiceRepository;
 use App\Repositories\Contracts\PaymentRepository;
 use App\Services\PaymentService;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 use RuntimeException;

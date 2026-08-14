@@ -14,7 +14,7 @@ use App\Repositories\Contracts\ExpenseCategoryRepository;
 use App\Repositories\Contracts\ExpenseRepository;
 use App\Services\ExpenseService;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 use RuntimeException;
@@ -127,7 +127,7 @@ class ExpenseController extends Controller
         return redirect()->route('billing.expenses.show', $expense)->with('success', 'Expense updated.');
     }
 
-    public function approve(\Illuminate\Http\Request $request, Expense $expense): RedirectResponse
+    public function approve(Request $request, Expense $expense): RedirectResponse
     {
         try {
             $this->service->approve($expense, $request->user()->id);
@@ -138,7 +138,7 @@ class ExpenseController extends Controller
         return redirect()->route('billing.expenses.show', $expense)->with('success', 'Expense approved.');
     }
 
-    public function reject(\Illuminate\Http\Request $request, Expense $expense): RedirectResponse
+    public function reject(Request $request, Expense $expense): RedirectResponse
     {
         try {
             $this->service->reject($expense, $request->user()->id);

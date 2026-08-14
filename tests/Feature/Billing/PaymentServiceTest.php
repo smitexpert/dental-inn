@@ -10,6 +10,7 @@ use App\Models\Invoice;
 use App\Models\LedgerEntry;
 use App\Models\User;
 use App\Services\PaymentService;
+use Database\Seeders\ChartOfAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use RuntimeException;
 use Tests\TestCase;
@@ -21,7 +22,7 @@ class PaymentServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->seed(\Database\Seeders\ChartOfAccountsSeeder::class);
+        $this->seed(ChartOfAccountsSeeder::class);
     }
 
     public function test_record_updates_invoice_and_status(): void

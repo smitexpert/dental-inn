@@ -11,6 +11,7 @@ use App\Models\LedgerEntry;
 use App\Models\User;
 use App\Services\InvoiceService;
 use App\Settings\ClinicSettings;
+use Database\Seeders\ChartOfAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -21,7 +22,7 @@ class InvoiceServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->seed(\Database\Seeders\ChartOfAccountsSeeder::class);
+        $this->seed(ChartOfAccountsSeeder::class);
     }
 
     public function test_next_invoice_number_increments_counter(): void

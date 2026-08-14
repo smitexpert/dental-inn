@@ -4,6 +4,14 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Models\Doctor;
+use App\Models\Expense;
+use App\Models\Invoice;
+use App\Models\Patient;
+use App\Models\Payment;
+use App\Models\Product;
+use App\Models\Supplier;
+use App\Models\User;
 use App\Repositories\Contracts\AccountRepository;
 use App\Repositories\Contracts\AppointmentRepository;
 use App\Repositories\Contracts\DoctorRepository;
@@ -145,14 +153,14 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Relation::morphMap([
-            'invoice' => \App\Models\Invoice::class,
-            'payment' => \App\Models\Payment::class,
-            'expense' => \App\Models\Expense::class,
-            'user' => \App\Models\User::class,
-            'patient' => \App\Models\Patient::class,
-            'doctor' => \App\Models\Doctor::class,
-            'product' => \App\Models\Product::class,
-            'supplier' => \App\Models\Supplier::class,
+            'invoice' => Invoice::class,
+            'payment' => Payment::class,
+            'expense' => Expense::class,
+            'user' => User::class,
+            'patient' => Patient::class,
+            'doctor' => Doctor::class,
+            'product' => Product::class,
+            'supplier' => Supplier::class,
         ]);
 
         Inertia::share([

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Enums\InvoiceStatus;
+use App\Models\Invoice;
 use App\Models\Payment;
 use Illuminate\Support\Facades\DB;
 use RuntimeException;
@@ -25,7 +26,7 @@ class PaymentService
      */
     public function record(array $data, int $userId): Payment
     {
-        $invoice = \App\Models\Invoice::query()->findOrFail((int) $data['invoice_id']);
+        $invoice = Invoice::query()->findOrFail((int) $data['invoice_id']);
 
         if (in_array($invoice->status, [InvoiceStatus::Cancelled->value, InvoiceStatus::Refunded->value, InvoiceStatus::Draft->value], true)) {
             throw new RuntimeException('Payments can only be recorded on issued or partially-paid invoices.');

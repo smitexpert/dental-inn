@@ -11,6 +11,8 @@ use App\Models\ExpenseCategory;
 use App\Models\LedgerEntry;
 use App\Models\User;
 use App\Services\ExpenseService;
+use Database\Seeders\ChartOfAccountsSeeder;
+use Database\Seeders\ExpenseCategorySeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use RuntimeException;
 use Tests\TestCase;
@@ -22,8 +24,8 @@ class ExpenseServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->seed(\Database\Seeders\ChartOfAccountsSeeder::class);
-        $this->seed(\Database\Seeders\ExpenseCategorySeeder::class);
+        $this->seed(ChartOfAccountsSeeder::class);
+        $this->seed(ExpenseCategorySeeder::class);
     }
 
     public function test_approve_marks_approved_and_posts_ledger(): void
