@@ -33,9 +33,8 @@ class ExchangeRateServiceTest extends TestCase
     {
         Carbon::setTestNow('2026-08-14 12:00:00');
         app(ExchangeRateService::class)->setRate('USD', 'BDT', '110', now(), null);
-        Carbon::setTestNow(null);
-
         $rate = app(ExchangeRateService::class)->getRate('USD', 'BDT');
+        Carbon::setTestNow(null);
 
         $this->assertSame('110.00000000', (string) $rate->rate);
     }
@@ -44,9 +43,8 @@ class ExchangeRateServiceTest extends TestCase
     {
         Carbon::setTestNow('2026-08-14 12:00:00');
         app(ExchangeRateService::class)->setRate('BDT', 'USD', '0.00909091', now(), null);
-        Carbon::setTestNow(null);
-
         $rate = app(ExchangeRateService::class)->getRate('USD', 'BDT');
+        Carbon::setTestNow(null);
 
         // 1 / 0.00909091 ≈ 110
         $this->assertEqualsWithDelta(110.0, (float) $rate->rate, 0.5);
