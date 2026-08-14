@@ -1,8 +1,5 @@
 <script setup>
-import { computed } from 'vue'
-import PrimeInputText from 'primevue/inputtext'
-
-const props = defineProps({
+defineProps({
   modelValue: { type: [String, Number], default: '' },
   type: { type: String, default: 'text' },
   placeholder: { type: String, default: '' },
@@ -14,28 +11,20 @@ const props = defineProps({
 })
 
 defineEmits(['update:modelValue', 'blur', 'focus'])
-
-const classes = computed(() =>
-  [
-    'w-full h-10 px-3 rounded-md bg-surface text-foreground placeholder:text-muted-foreground',
-    'focus:outline-none focus:ring-2 focus:ring-primary-500',
-    'disabled:opacity-50 disabled:cursor-not-allowed',
-    props.invalid ? 'border border-danger' : 'border border-border',
-  ].join(' '),
-)
 </script>
 
 <template>
-  <PrimeInputText
+  <input
     :type="type"
-    :model-value="modelValue"
+    :value="modelValue"
     :placeholder="placeholder"
     :disabled="disabled"
     :readonly="readonly"
     :autofocus="autofocus"
-    :autocomplete="autocomplete"
-    :pt="{ root: { class: classes } }"
-    @update:model-value="$emit('update:modelValue', $event)"
+    :autocomplete="autocomplete ?? undefined"
+    class="input input-bordered w-full"
+    :class="invalid ? 'input-error' : ''"
+    @input="$emit('update:modelValue', $event.target.value)"
     @blur="$emit('blur', $event)"
     @focus="$emit('focus', $event)"
   />

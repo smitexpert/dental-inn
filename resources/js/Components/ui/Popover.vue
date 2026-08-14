@@ -1,17 +1,15 @@
 <script setup>
-import Popover from 'primevue/popover'
-
 defineProps({})
 defineEmits([])
-
-const pt = {
-  root: { class: 'absolute z-40' },
-  content: { class: 'bg-surface border border-border rounded-md shadow-md p-3' },
-}
 </script>
 
 <template>
-  <Popover :pt="pt">
-    <slot />
-  </Popover>
+  <div class="dropdown">
+    <div tabindex="0" role="button">
+      <slot name="trigger" />
+    </div>
+    <div tabindex="0" class="dropdown-content z-40 mt-2 bg-base-100 border border-base-300 rounded-md shadow-md p-3">
+      <slot />
+    </div>
+  </div>
 </template>

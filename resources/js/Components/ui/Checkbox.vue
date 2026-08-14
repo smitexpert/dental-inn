@@ -1,27 +1,22 @@
 <script setup>
-import PrimeCheckbox from 'primevue/checkbox'
-
 defineProps({
   modelValue: { type: Boolean, default: false },
   disabled: { type: Boolean, default: false },
   label: { type: String, default: null },
 })
+
 defineEmits(['update:modelValue'])
 </script>
 
 <template>
-  <label class="inline-flex items-center gap-2 cursor-pointer">
-    <PrimeCheckbox
-      :model-value="modelValue"
+  <label class="label cursor-pointer gap-2 justify-start">
+    <input
+      type="checkbox"
+      class="checkbox checkbox-primary"
       :disabled="disabled"
-      :pt="{
-        root: {
-          class: 'w-4 h-4 rounded border border-border text-primary-600 focus:ring-2 focus:ring-primary-500',
-        },
-        box: { class: 'rounded' },
-      }"
-      @update:model-value="$emit('update:modelValue', $event)"
+      :checked="modelValue"
+      @change="$emit('update:modelValue', $event.target.checked)"
     />
-    <span v-if="label" class="text-sm text-foreground">{{ label }}</span>
+    <span v-if="label" class="label-text">{{ label }}</span>
   </label>
 </template>

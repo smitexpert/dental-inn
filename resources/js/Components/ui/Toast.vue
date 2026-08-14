@@ -1,22 +1,30 @@
 <script setup>
-// PrimeVue's toast service is wired to the useToast() composable globally
-// by the PrimeVue plugin (resources/js/plugins/primevue.js). This component
-// just renders the global Toast container.
-import Toast from 'primevue/toast'
+// DaisyUI toast container. Toasts are pushed via the useToast() composable
+// (resources/js/Composables/useToast.js) into a shared reactive list; this
+// component reads that list and renders DaisyUI alert rows.
+import { useToasts } from '@/Composables/useToast.js'
+
+const toasts = useToasts()
 </script>
 
 <template>
-  <Toast
-    position="top-right"
-    :pt="{
-      root: { class: 'fixed top-4 right-4 z-[100] flex flex-col gap-2' },
-      message: {
-        class:
-          'bg-surface border border-border rounded-md shadow-md px-4 py-3 text-sm text-foreground flex items-start gap-2',
-      },
-      messageContent: { class: 'flex flex-col gap-0.5' },
-      summary: { class: 'font-semibold' },
-      detail: { class: 'text-muted-foreground' },
-    }"
-  />
+  <div class="toast toast-top toast-end z-[100]">
+    <div
+      v-for="t in toasts"
+      :key="t.id"
+      role="status"
+      class="alert"
+      :class="{
+        'alert-success': t.severity === 'success',
+        'alert-error': t.severity === 'error',
+        'alert-warning': t.severity === 'warning',
+        'alert-info': t.severity === 'info',
+      }"
+    >
+      <div>
+        <h4 class="font-semibold">{{ t.summary }}</h4>
+        <p class="text-sm">{{ t.detail }}</p>
+      </div>
+    </div>
+  </div>
 </template>

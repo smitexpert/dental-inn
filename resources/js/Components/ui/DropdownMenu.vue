@@ -1,26 +1,26 @@
 <script setup>
-import Menu from 'primevue/menu'
-
 defineProps({
   modelValue: { type: Array, required: true },
   trigger: { type: Object, default: null },
 })
-const emit = defineEmits(['select'])
 
-const pt = {
-  root: { class: 'min-w-[12rem] bg-surface border border-border rounded-md shadow-md py-1' },
-  menu: { class: 'flex flex-col gap-0 list-none m-0 p-0' },
-  item: {
-    class: 'px-3 py-2 text-sm text-foreground hover:bg-surface-muted cursor-pointer flex items-center gap-2',
-  },
-  separator: { class: 'my-1 border-t border-border' },
-}
+const emit = defineEmits(['select'])
 </script>
 
 <template>
-  <Menu :model="modelValue" :popup="true" :pt="pt" @item-select="(e) => emit('select', e.item)">
-    <template #itemicon="{ item }">
-      <span v-if="item.icon" :class="item.icon" />
-    </template>
-  </Menu>
+  <div class="dropdown dropdown-end">
+    <div tabindex="0" role="button">
+      <slot name="trigger">
+        <button type="button" class="btn btn-ghost btn-sm">⋯</button>
+      </slot>
+    </div>
+    <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-10 w-52 p-2 shadow border border-base-300">
+      <li v-for="item in modelValue" :key="item.label">
+        <button type="button" class="flex items-center gap-2" @click="emit('select', item)">
+          <span v-if="item.icon" :class="item.icon" />
+          {{ item.label }}
+        </button>
+      </li>
+    </ul>
+  </div>
 </template>

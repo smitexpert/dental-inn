@@ -1,18 +1,36 @@
-import { useToast as usePrimeToast } from 'primevue/usetoast'
+/**
+ * Toast composable.
+ *
+ * DaisyUI-based toast notifications. Replaces the previous PrimeVue toast
+ * service. Pages call useToast().success(msg) / .error(msg) / etc. and the
+ * returned functions dispatch a DaisyUI-styled toast into a global container.
+ *
+ * The global container is mounted once by the Authenticated layout via
+ * <ToastContainer /> — see resources/js/Components/ui/ToastContainer.vue.
+ */
 
-let _toast = null
+import { ref } from 'vue'
 
-export function provideToastInstance(instance) {
-  _toast = instance
+const toasts = ref([])
+let nextId = 1
+
+function push(severity, summary, detail, life) {
+  const id = nextId++
+  toasts.value.push({ id, severity, summary, detail, life })
+  setTimeout(() => {
+    toasts.value = toasts.value.filter((t) => t.id !== id)
+  }, life)
+}
+
+export function useToasts() {
+  return toasts
 }
 
 export function useToast() {
-  const toast = _toast ?? usePrimeToast()
-
   return {
-    success: (msg) => toast.add({ severity: 'success', summary: 'Success', detail: msg, life: 4000 }),
-    error: (msg) => toast.add({ severity: 'error', summary: 'Error', detail: msg, life: 5000 }),
-    warn: (msg) => toast.add({ severity: 'warn', summary: 'Warning', detail: msg, life: 4000 }),
-    info: (msg) => toast.add({ severity: 'info', summary: 'Info', detail: msg, life: 4000 }),
+    success: (msg) => push('success', 'Success', msg, 4000),
+    error: (msg) => push('error', 'Error', msg, 5000),
+    warn: (msg) => push('warning', 'Warning', msg, 4000),
+    info: (msg) => push('info', 'Info', msg, 4000),
   }
 }

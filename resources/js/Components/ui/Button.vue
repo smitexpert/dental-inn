@@ -1,8 +1,5 @@
 <script setup>
-import { computed } from 'vue'
-import PrimeButton from 'primevue/button'
-
-const props = defineProps({
+defineProps({
   variant: {
     type: String,
     default: 'primary',
@@ -14,27 +11,23 @@ const props = defineProps({
   disabled: { type: Boolean, default: false },
 })
 
-const classes = computed(() => {
-  const base =
-    'inline-flex items-center justify-center gap-2 font-medium rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed'
-  const sizes = { sm: 'h-8 px-3 text-sm', md: 'h-10 px-4 text-sm', lg: 'h-12 px-6 text-base' }
-  const variants = {
-    primary: 'bg-primary-600 text-white hover:bg-primary-700 active:bg-primary-700',
-    secondary: 'bg-surface-muted text-foreground border border-border hover:bg-surface-muted/70',
-    ghost: 'text-foreground hover:bg-surface-muted',
-    danger: 'bg-danger text-white hover:bg-danger/90',
-  }
-  return [base, sizes[props.size], variants[props.variant]].join(' ')
-})
+const sizeClass = { sm: 'btn-sm', md: '', lg: 'btn-lg' }
+const variantClass = {
+  primary: 'btn-primary',
+  secondary: 'btn-neutral',
+  ghost: 'btn-ghost',
+  danger: 'btn-error',
+}
 </script>
 
 <template>
-  <PrimeButton
+  <button
     :type="type"
     :disabled="disabled || loading"
-    :pt="{ root: { class: classes } }"
-    :loading="loading"
+    class="btn"
+    :class="[variantClass[variant], sizeClass[size]]"
   >
+    <span v-if="loading" class="loading loading-spinner loading-sm" />
     <slot />
-  </PrimeButton>
+  </button>
 </template>

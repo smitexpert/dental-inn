@@ -1,30 +1,23 @@
 <script setup>
-import Accordion from 'primevue/accordion'
-import AccordionPanel from 'primevue/accordionpanel'
-import AccordionHeader from 'primevue/accordionheader'
-import AccordionContent from 'primevue/accordioncontent'
+import { ref } from 'vue'
 
 defineProps({
   modelValue: { type: [String, Array], default: null },
   multiple: { type: Boolean, default: false },
 })
-defineEmits(['update:modelValue'])
 
-const pt = {
-  root: { class: 'border border-border rounded-md overflow-hidden divide-y divide-border' },
-  header: { class: 'bg-surface hover:bg-surface-muted' },
-  headerContent: { class: 'px-4 py-3 font-medium text-foreground' },
-  content: { class: 'px-4 py-3 text-foreground bg-surface' },
+const emit = defineEmits(['update:modelValue'])
+const openPanels = ref(new Set())
+
+function toggle(key) {
+  if (openPanels.value.has(key)) openPanels.value.delete(key)
+  else openPanels.value.add(key)
+  emit('update:modelValue', Array.from(openPanels.value))
 }
 </script>
 
 <template>
-  <Accordion
-    :value="modelValue"
-    :multiple="multiple"
-    :pt="pt"
-    @update:value="$emit('update:modelValue', $event)"
-  >
-    <slot />
-  </Accordion>
+  <div class="border border-base-300 rounded-md overflow-hidden divide-y divide-base-300">
+    <slot :open-panels="openPanels" :toggle="toggle" />
+  </div>
 </template>

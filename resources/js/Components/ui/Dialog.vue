@@ -1,45 +1,54 @@
 <script setup>
-import Dialog from 'primevue/dialog'
+import { ref, watch, onUnmounted } from 'vue'
 
-defineProps({
+const props = defineProps({
   modelValue: { type: Boolean, default: false },
   title: { type: String, default: null },
   modal: { type: Boolean, default: true },
   closable: { type: Boolean, default: true },
   size: { type: String, default: 'md', validator: (v) => ['sm', 'md', 'lg', 'xl'].includes(v) },
 })
-defineEmits(['update:modelValue', 'close'])
+
+const emit = defineEmits(['update:modelValue', 'close'])
 
 const sizeClass = { sm: 'max-w-sm', md: 'max-w-md', lg: 'max-w-lg', xl: 'max-w-2xl' }
+const dialogRef = ref(null)
+
+watch(() => props.modelValue, (val) => {
+  const el = dialogRef.value
+  if (!el) return
+  if (val && !el.open) el.showModal()
+  if (!val && el.open) el.close()
+}, { immediate: true })
+
+function close() {
+  emit('update:modelValue', false)
+  emit('close')
+}
+
+onUnmounted(() => {
+  if (dialogRef.value?.open) dialogRef.value.close()
+})
 </script>
 
 <template>
-  <Dialog
-    :visible="modelValue"
-    :modal="modal"
-    :closable="closable"
-    :pt="{
-      root: { class: 'fixed inset-0 z-50 flex items-center justify-center p-4' },
-      mask: { class: 'fixed inset-0 bg-black/50' },
-      container: {
-        class: 'relative bg-surface border border-border rounded-lg shadow-xl w-full ' + sizeClass[size],
-      },
-      header: { class: 'flex items-center justify-between px-4 py-3 border-b border-border' },
-      title: { class: 'text-lg font-semibold text-foreground' },
-      content: { class: 'p-4 text-foreground' },
-      footer: { class: 'px-4 py-3 border-t border-border flex justify-end gap-2' },
-    }"
-    @update:visible="$emit('update:modelValue', $event)"
-    @close="$emit('close')"
-  >
-    <template #header>
-      <slot name="header">
-        <h3 class="text-lg font-semibold text-foreground">{{ title }}</h3>
-      </slot>
-    </template>
-    <slot />
-    <template #footer>
-      <slot name="footer" />
-    </template>
-  </Dialog>
+  <dialog ref="dialogRef" class="modal" @close="close">
+    <div class="modal-box" :class="sizeClass[size]">
+      <div class="flex items-center justify-between mb-4">
+        <slot name="header">
+          <h3 class="font-semibold text-lg">{{ title }}</h3>
+        </slot>
+        <button v-if="closable" type="button" aria-label="Close" class="btn btn-ghost btn-sm btn-circle" @click="close">�</button>
+      </div>
+      <div>
+        <slot />
+      </div>
+      <div v-if="$slots.footer" class="modal-action">
+        <slot name="footer" />
+      </div>
+    </div>
+    <form v-if="modal" method="dialog" class="modal-backdrop">
+      <button>close</button>
+    </form>
+  </dialog>
 </template>

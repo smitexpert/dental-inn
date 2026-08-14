@@ -1,6 +1,4 @@
 <script setup>
-import PrimeSelect from 'primevue/select'
-
 defineProps({
   modelValue: { type: [String, Number, null], default: null },
   options: { type: Array, required: true },
@@ -10,26 +8,30 @@ defineProps({
   disabled: { type: Boolean, default: false },
   invalid: { type: Boolean, default: false },
 })
-defineEmits(['update:modelValue', 'change'])
+
+const emit = defineEmits(['update:modelValue', 'change'])
+
+function get(opt, key) {
+  if (typeof key === 'function') return key(opt)
+  return opt[key]
+}
 </script>
 
 <template>
-  <PrimeSelect
-    :model-value="modelValue"
-    :options="options"
-    :option-label="optionLabel"
-    :option-value="optionValue"
-    :placeholder="placeholder"
+  <select
+    class="select select-bordered w-full"
+    :class="invalid ? 'select-error' : ''"
     :disabled="disabled"
-    :pt="{
-      root: {
-        class: 'h-10 w-full rounded-md border bg-surface' + (invalid ? ' border-danger' : ' border-border'),
-      },
-      label: { class: 'px-3 text-foreground' },
-      panel: { class: 'rounded-md border border-border bg-surface' },
-      option: { class: 'px-3 py-2 hover:bg-surface-muted cursor-pointer' },
+    :value="modelValue ?? ''"
+    @change="(e) => {
+      const v = e.target.value
+      emit('update:modelValue', v === '' ? null : v)
+      emit('change', v)
     }"
-    @update:model-value="$emit('update:modelValue', $event)"
-    @change="$emit('change', $event)"
-  />
+  >
+    <option v-if="placeholder" value="" disabled>{{ placeholder }}</option>
+    <option v-for="opt in options" :key="String(get(opt, optionValue))" :value="get(opt, optionValue)">
+      {{ get(opt, optionLabel) }}
+    </option>
+  </select>
 </template>
