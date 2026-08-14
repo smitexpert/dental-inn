@@ -12,7 +12,6 @@ use App\Models\User;
 use Database\Seeders\ChartOfAccountsSeeder;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
@@ -67,9 +66,8 @@ class InvoiceControllerTest extends TestCase
         $this->assertSame(1, LedgerEntry::query()->where('reference_type', 'invoice')->count());
     }
 
-    public function test_receptionist_can_create_but_not_view_reports(): void
+    public function test_receptionist_can_create_invoice(): void
     {
-        $role = Role::query()->where('name', 'receptionist')->first();
         $user = User::factory()->create(['is_active' => true]);
         $user->assignRole('receptionist');
 
@@ -83,8 +81,14 @@ class InvoiceControllerTest extends TestCase
                 'items' => [['description' => 'Cleaning', 'quantity' => 1, 'unit_price' => 100]],
             ])
             ->assertRedirect();
+    }
 
-        $this->actingAs($user)->get('/reports/ledger')->assertOk();
+    public function test_receptionist_cannot_view_reports(): void
+    {
+        $user = User::factory()->create(['is_active' => true]);
+        $user->assignRole('receptionist');
+
+        $this->actingAs($user)->get('/reports/ledger')->assertForbidden();
     }
 
     public function test_view_invoices_route_works(): void

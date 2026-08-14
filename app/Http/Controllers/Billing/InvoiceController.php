@@ -54,6 +54,7 @@ class InvoiceController extends Controller
         $data = $request->validated();
         $data['status'] = InvoiceStatus::Draft->value;
         $data['created_by'] = $request->user()->id;
+        $data['invoice_number'] = $this->service->nextInvoiceNumber();
 
         $invoice = new Invoice;
         $invoice->fill(array_diff_key($data, array_flip(['items'])));

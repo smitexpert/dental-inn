@@ -65,6 +65,10 @@ Route::middleware(['auth', 'active', 'permission:manage-expenses'])
         Route::post('/', [ExpenseController::class, 'store'])->name('store');
         Route::get('/{expense}/edit', [ExpenseController::class, 'edit'])->name('edit');
         Route::patch('/{expense}', [ExpenseController::class, 'update'])->name('update');
+    });
+
+Route::middleware(['auth', 'active', 'permission:approve-expenses'])
+    ->prefix('billing/expenses')->name('billing.expenses.')->group(function (): void {
         Route::post('/{expense}/approve', [ExpenseController::class, 'approve'])->name('approve');
         Route::post('/{expense}/reject', [ExpenseController::class, 'reject'])->name('reject');
     });
