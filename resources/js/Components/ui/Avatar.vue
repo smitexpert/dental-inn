@@ -29,7 +29,7 @@ const initials = computed(() => {
 <template>
   <div
     :class="[
-      'inline-flex items-center justify-center rounded-full bg-primary-100 text-primary font-medium overflow-hidden',
+      'inline-flex items-center justify-center rounded-full bg-primary/15 text-primary font-medium overflow-hidden',
       sizes[size],
     ]"
     :title="name"
