@@ -16,9 +16,7 @@ use Spatie\Activitylog\Support\LogOptions;
 
 /**
  * @property int $id
- * @property string $patient_name
- * @property ?string $patient_phone
- * @property ?int $patient_id
+ * @property int $patient_id
  * @property int $doctor_id
  * @property ?Carbon $scheduled_at
  * @property int $duration_minutes
@@ -29,6 +27,7 @@ use Spatie\Activitylog\Support\LogOptions;
  * @property ?string $cancelled_reason
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
+ * @property-read Patient $patient
  * @property-read ?Doctor $doctor
  * @property-read ?User $creator
  */
@@ -38,8 +37,6 @@ class Appointment extends Model
     use HasFactory, LogsActivity;
 
     protected $fillable = [
-        'patient_name',
-        'patient_phone',
         'patient_id',
         'doctor_id',
         'scheduled_at',
@@ -66,6 +63,11 @@ class Appointment extends Model
         return $this->belongsTo(Doctor::class);
     }
 
+    public function patient(): BelongsTo
+    {
+        return $this->belongsTo(Patient::class);
+    }
+
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
@@ -89,7 +91,7 @@ class Appointment extends Model
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-            ->logOnly(['status', 'scheduled_at', 'doctor_id', 'patient_name'])
+            ->logOnly(['status', 'scheduled_at', 'doctor_id', 'patient_id'])
             ->logOnlyDirty()
             ->dontLogEmptyChanges();
     }

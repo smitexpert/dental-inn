@@ -20,15 +20,21 @@ class AppointmentResource extends JsonResource
     {
         $doctor = $this->doctor;
         $user = $doctor?->user;
+        $patient = $this->patient;
 
         return [
             'id' => $this->id,
             'doctor_id' => $this->doctor_id,
             'doctor_name' => $user?->name,
             'doctor_color' => $doctor?->color,
-            'patient_name' => $this->patient_name,
-            'patient_phone' => $this->patient_phone,
             'patient_id' => $this->patient_id,
+            'patient' => $patient ? [
+                'id' => $patient->id,
+                'patient_code' => $patient->patient_code,
+                'name' => $patient->name,
+                'phone' => $patient->phone,
+                'email' => $patient->email,
+            ] : null,
             'scheduled_at' => $this->scheduled_at?->toIso8601String(),
             'end_at' => $this->scheduled_at ? $this->endAt()->toIso8601String() : null,
             'duration_minutes' => $this->duration_minutes,

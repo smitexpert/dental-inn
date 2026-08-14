@@ -17,7 +17,7 @@ class AppointmentEloquentRepository implements AppointmentRepository
     public function between(Carbon $start, Carbon $end, ?Doctor $doctor = null): Collection
     {
         $q = Appointment::query()
-            ->with('doctor.user')
+            ->with(['doctor.user', 'patient'])
             ->where('scheduled_at', '<', $end)
             ->whereRaw(
                 'datetime(scheduled_at, \'+\' || duration_minutes || \' minutes\') > ?',
@@ -33,7 +33,7 @@ class AppointmentEloquentRepository implements AppointmentRepository
 
     public function paginate(int $perPage = 15, array $filters = []): LengthAwarePaginator
     {
-        $q = Appointment::query()->with('doctor.user');
+        $q = Appointment::query()->with(['doctor.user', 'patient']);
 
         if (! empty($filters['doctor_id'])) {
             $q->where('doctor_id', (int) $filters['doctor_id']);
@@ -47,11 +47,17 @@ class AppointmentEloquentRepository implements AppointmentRepository
         if (! empty($filters['to'])) {
             $q->where('scheduled_at', '<', $filters['to']);
         }
+        if (! empty($filters['patient_id'])) {
+            $q->where('patient_id', (int) $filters['patient_id']);
+        }
         if (! empty($filters['q'])) {
             $term = $filters['q'];
             $q->where(function ($w) use ($term): void {
-                $w->where('patient_name', 'like', "%{$term}%")
-                    ->orWhere('patient_phone', 'like', "%{$term}%");
+                $w->whereHas('patient', function ($p) use ($term): void {
+                    $p->where('name', 'like', "%{$term}%")
+                        ->orWhere('phone', 'like', "%{$term}%")
+                        ->orWhere('patient_code', 'like', "%{$term}%");
+                });
             });
         }
 

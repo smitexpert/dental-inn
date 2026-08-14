@@ -7,6 +7,7 @@ namespace Database\Factories;
 use App\Enums\AppointmentStatus;
 use App\Models\Appointment;
 use App\Models\Doctor;
+use App\Models\Patient;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -20,8 +21,7 @@ class AppointmentFactory extends Factory
         $start = fake()->dateTimeBetween('+1 day', '+2 weeks');
 
         return [
-            'patient_name' => fake()->name(),
-            'patient_phone' => '+8801'.fake()->numerify('#########'),
+            'patient_id' => Patient::factory(),
             'doctor_id' => Doctor::factory(),
             'scheduled_at' => $start,
             'duration_minutes' => 30,
