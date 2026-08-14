@@ -54,7 +54,10 @@ class AvailableSlotsController extends Controller
                 AppointmentStatus::NoShow->value,
             ])
             ->where('scheduled_at', '<', $workEnd)
-            ->whereRaw('DATE_ADD(scheduled_at, INTERVAL duration_minutes MINUTE) > ?', [$workStart])
+            ->whereRaw(
+                'datetime(scheduled_at, \'+\' || duration_minutes || \' minutes\') > ?',
+                [$workStart->format('Y-m-d H:i:s')],
+            )
             ->get(['scheduled_at', 'duration_minutes']);
 
         $slots = [];
