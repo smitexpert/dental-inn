@@ -52,6 +52,7 @@ use App\Repositories\Eloquent\StockMovementEloquentRepository;
 use App\Repositories\Eloquent\SupplierEloquentRepository;
 use App\Repositories\Eloquent\TreatmentRecordEloquentRepository;
 use App\Repositories\Eloquent\UserEloquentRepository;
+use App\Contracts\NotificationDriver;
 use App\Services\CashDrawerReconciliationService;
 use App\Services\CashDrawerService;
 use App\Services\ExchangeRateService;
@@ -179,6 +180,25 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(ExchangeRateService::class);
         $this->app->singleton(CashDrawerService::class);
         $this->app->singleton(CashDrawerReconciliationService::class);
+
+        // Bind the default notification driver as a singleton based on
+        // config('notifications.default_driver'). The driver class and
+        // its config come from config('notifications.drivers.<name>').
+        $this->app->singleton(NotificationDriver::class, function ($app): NotificationDriver {
+            $default = config('notifications.default_driver', 'log');
+            $entry = config("notifications.drivers.{$default}");
+
+            if (! is_array($entry) || ! isset($entry['class'])) {
+                throw new \RuntimeException(
+                    "Notification driver '{$default}' is not configured."
+                );
+            }
+
+            $class = $entry['class'];
+            $config = is_array($entry['config'] ?? null) ? $entry['config'] : [];
+
+            return $app->make($class, ['config' => $config]);
+        });
     }
 
     /**
