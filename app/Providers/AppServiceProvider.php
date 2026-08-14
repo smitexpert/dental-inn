@@ -59,6 +59,7 @@ use App\Services\ExchangeRateService;
 use App\Services\ExpenseService;
 use App\Services\InvoiceService;
 use App\Services\LedgerService;
+use App\Services\NotificationService;
 use App\Services\PaymentService;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
@@ -180,6 +181,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(ExchangeRateService::class);
         $this->app->singleton(CashDrawerService::class);
         $this->app->singleton(CashDrawerReconciliationService::class);
+        $this->app->singleton(NotificationService::class);
 
         // Bind the default notification driver as a singleton based on
         // config('notifications.default_driver'). The driver class and
