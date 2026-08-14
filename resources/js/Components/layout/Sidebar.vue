@@ -22,6 +22,8 @@ const isActive = (href) => page.url === href || (href !== '/dashboard' && page.u
         :icon="item.icon ? `i-lucide-${item.icon}` : null"
         :active="isActive(item.href)"
         :coming-soon="!!item.comingSoon"
+        :badge="item.badge || null"
+        :children="item.children || []"
       />
     </nav>
   </aside>
