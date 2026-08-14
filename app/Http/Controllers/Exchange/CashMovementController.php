@@ -12,9 +12,9 @@ use App\Repositories\Contracts\CashDrawerRepository;
 use App\Repositories\Contracts\CashMovementRepository;
 use App\Repositories\Contracts\CurrencyRepository;
 use App\Services\CashDrawerService;
+use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
-use Redirect;
 use RuntimeException;
 
 class CashMovementController extends Controller
@@ -64,7 +64,7 @@ class CashMovementController extends Controller
         ]);
     }
 
-    public function store(StoreCashMovementRequest $request)
+    public function store(StoreCashMovementRequest $request): RedirectResponse
     {
         $data = $request->validated();
         $type = CashMovementType::from((string) $data['type']);
@@ -130,7 +130,7 @@ class CashMovementController extends Controller
                 'counter_amount' => $movement->counter_amount !== null ? (string) $movement->counter_amount : null,
                 'exchange_group_id' => $movement->exchange_group_id,
                 'reason' => $movement->reason,
-                'performer' => $movement->performer?->name,
+                'performer' => $movement->performer ? $movement->performer->name : null,
                 'created_at' => $movement->created_at?->toIso8601String(),
             ],
         ]);

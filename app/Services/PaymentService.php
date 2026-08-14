@@ -9,7 +9,6 @@ use App\Enums\PaymentMethod;
 use App\Models\CashDrawer;
 use App\Models\Invoice;
 use App\Models\Payment;
-use App\Services\CashDrawerService;
 use Illuminate\Support\Facades\DB;
 use RuntimeException;
 

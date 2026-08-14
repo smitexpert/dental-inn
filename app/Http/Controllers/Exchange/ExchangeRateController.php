@@ -12,6 +12,7 @@ use App\Repositories\Contracts\CurrencyRepository;
 use App\Repositories\Contracts\ExchangeRateRepository;
 use App\Services\ExchangeRateService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Carbon;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -48,7 +49,7 @@ class ExchangeRateController extends Controller
             (string) $data['from_currency_code'],
             (string) $data['to_currency_code'],
             (string) $data['rate'],
-            \Illuminate\Support\Carbon::parse((string) $data['effective_at']),
+            Carbon::parse((string) $data['effective_at']),
             $request->user()->id,
         );
 

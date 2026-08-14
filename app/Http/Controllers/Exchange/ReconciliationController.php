@@ -9,9 +9,9 @@ use App\Http\Requests\Exchange\ReconcileDrawerRequest;
 use App\Repositories\Contracts\CashDrawerRepository;
 use App\Repositories\Contracts\CurrencyRepository;
 use App\Services\CashDrawerReconciliationService;
+use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
-use Redirect;
 use RuntimeException;
 
 class ReconciliationController extends Controller
@@ -50,7 +50,7 @@ class ReconciliationController extends Controller
         ]);
     }
 
-    public function run(ReconcileDrawerRequest $request)
+    public function run(ReconcileDrawerRequest $request): RedirectResponse
     {
         try {
             $this->service->run(
