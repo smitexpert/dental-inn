@@ -25,12 +25,12 @@ const STATUS_OPTIONS = [
 const CYCLE = [null, 'caries', 'filled', 'crown', 'missing', 'extraction_needed', 'healthy']
 
 const STATUS_COLOR = {
-  healthy: 'bg-success/20 border-success text-success-700',
-  caries: 'bg-error/20 border-error text-error-700',
+  healthy: 'bg-success/20 border-success text-success',
+  caries: 'bg-error/20 border-error text-error',
   filled: 'bg-primary/20 border-primary text-primary',
-  crown: 'bg-warning/20 border-warning text-warning-700',
+  crown: 'bg-warning/20 border-warning text-warning',
   missing: 'bg-base-200 border-base-300 text-base-content/70 line-through',
-  extraction_needed: 'bg-error/30 border-error text-error-700',
+  extraction_needed: 'bg-error/30 border-error text-error',
 }
 
 function getStatus(num) {

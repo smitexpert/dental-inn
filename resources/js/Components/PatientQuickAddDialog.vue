@@ -116,7 +116,7 @@ function submitNew() {
         <div v-else-if="!search" class="p-3 text-sm text-base-content/70">
           Type at least 2 characters to search.
         </div>
-        <ul v-else class="divide-y divide-border">
+        <ul v-else class="divide-y divide-base-300">
           <li
             v-for="p in results"
             :key="p.id"
@@ -138,18 +138,18 @@ function submitNew() {
         <div>
           <label class="text-sm font-medium">Name *</label>
           <UiInput v-model="form.name" required class="mt-1" />
-          <p v-if="form.errors.name" class="text-xs text-error-600 mt-1">{{ form.errors.name }}</p>
+          <p v-if="form.errors.name" class="text-xs text-error mt-1">{{ form.errors.name }}</p>
         </div>
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label class="text-sm font-medium">Phone</label>
             <UiInput v-model="form.phone" type="tel" class="mt-1" />
-            <p v-if="form.errors.phone" class="text-xs text-error-600 mt-1">{{ form.errors.phone }}</p>
+            <p v-if="form.errors.phone" class="text-xs text-error mt-1">{{ form.errors.phone }}</p>
           </div>
           <div>
             <label class="text-sm font-medium">Email</label>
             <UiInput v-model="form.email" type="email" class="mt-1" />
-            <p v-if="form.errors.email" class="text-xs text-error-600 mt-1">{{ form.errors.email }}</p>
+            <p v-if="form.errors.email" class="text-xs text-error mt-1">{{ form.errors.email }}</p>
           </div>
           <div>
             <label class="text-sm font-medium">Date of birth</label>

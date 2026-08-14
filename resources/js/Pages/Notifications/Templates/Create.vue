@@ -40,7 +40,7 @@ function submit() {
                 v-model="form.channel"
                 :options="channels.map((c) => ({ label: c.label, value: c.value }))"
               />
-              <p v-if="form.errors.channel" class="mt-1 text-xs text-error-600">{{ form.errors.channel }}</p>
+              <p v-if="form.errors.channel" class="mt-1 text-xs text-error">{{ form.errors.channel }}</p>
             </div>
           </div>
           <div>

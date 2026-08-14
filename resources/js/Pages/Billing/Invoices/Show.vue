@@ -119,7 +119,7 @@ function statusBadge(s) {
             <div class="flex justify-between font-semibold border-t border-base-300 pt-1 mt-1">
               <span>Total</span><span>{{ invoice.total }}</span>
             </div>
-            <div class="flex justify-between text-success-600"><span>Paid</span><span>{{ invoice.paid_amount }}</span></div>
+            <div class="flex justify-between text-success"><span>Paid</span><span>{{ invoice.paid_amount }}</span></div>
             <div class="flex justify-between font-semibold"><span>Balance due</span><span>{{ invoice.balance_due }}</span></div>
           </div>
         </div>

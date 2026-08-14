@@ -81,7 +81,7 @@ function destroy(id) {
                 </td>
                 <td class="px-4 py-2 text-right space-x-2">
                   <Link :href="`/notifications/templates/${t.id}/edit`" class="text-primary hover:text-primary text-sm">Edit</Link>
-                  <button type="button" class="text-error-600 hover:text-error-700 text-sm" @click="destroy(t.id)">Delete</button>
+                  <button type="button" class="text-error hover:text-error/80 text-sm" @click="destroy(t.id)">Delete</button>
                 </td>
               </tr>
               <tr v-if="templates.data.length === 0">
