@@ -13,7 +13,8 @@ export function useNav() {
 
   const all = [
     { label: 'Dashboard', href: '/dashboard', icon: 'home', permission: 'view-dashboard' },
-    { label: 'Appointments', href: '#', icon: 'calendar', comingSoon: true, permission: 'view-dashboard' },
+    { label: 'Appointments', href: '/appointments', icon: 'calendar', permission: 'view-appointments' },
+    { label: 'Doctors', href: '/doctors', icon: 'stethoscope', permission: 'view-doctors' },
     { label: 'Patients', href: '#', icon: 'users', comingSoon: true, permission: 'view-dashboard' },
     { label: 'Billing', href: '#', icon: 'receipt', comingSoon: true, permission: 'view-dashboard' },
     { label: 'Inventory', href: '#', icon: 'package', comingSoon: true, permission: 'view-dashboard' },
