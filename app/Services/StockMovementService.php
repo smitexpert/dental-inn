@@ -87,7 +87,16 @@ class StockMovementService
             if ($type === StockMovementType::Adjustment) {
                 $this->applyAdjustment($productId, $locationId, $quantity);
             } else {
-                $this->bumpLevel($productId, $locationId, $type->sign() * $quantity);
+                // Apply the movement's sign: +1 for in-flows (purchase,
+                // transfer_in, return), -1 for out-flows (sale,
+                // consumption, transfer_out). The caller passes an
+                // unsigned quantity; the service derives the sign from
+                // the type so the StockMovement row stores the signed
+                // value as well.
+                $signedQty = $type->sign() * abs($quantity);
+                $movement->quantity = $signedQty;
+                $movement->save();
+                $this->bumpLevel($productId, $locationId, $signedQty);
             }
 
             return $movement;
@@ -146,7 +155,7 @@ class StockMovementService
             'product_id' => $product->id,
             'location_id' => $location->id,
             'type' => StockMovementType::Consumption,
-            'quantity' => -$quantity,
+            'quantity' => $quantity,
             'reason' => $reason,
             'performed_by' => $user->id,
             'reference' => $reference,
@@ -186,7 +195,7 @@ class StockMovementService
             'product_id' => $product->id,
             'location_id' => $from->id,
             'type' => StockMovementType::TransferOut,
-            'quantity' => -$quantity,
+            'quantity' => $quantity,
             'reason' => $notes,
             'performed_by' => $user->id,
         ]);
