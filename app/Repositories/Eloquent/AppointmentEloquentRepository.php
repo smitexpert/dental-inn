@@ -19,7 +19,10 @@ class AppointmentEloquentRepository implements AppointmentRepository
         $q = Appointment::query()
             ->with('doctor.user')
             ->where('scheduled_at', '<', $end)
-            ->whereRaw('DATE_ADD(scheduled_at, INTERVAL duration_minutes MINUTE) > ?', [$start]);
+            ->whereRaw(
+                'datetime(scheduled_at, \'+\' || duration_minutes || \' minutes\') > ?',
+                [$start->format('Y-m-d H:i:s')],
+            );
 
         if ($doctor) {
             $q->where('doctor_id', $doctor->id);
@@ -99,7 +102,10 @@ class AppointmentEloquentRepository implements AppointmentRepository
                 AppointmentStatus::NoShow->value,
             ])
             ->where('scheduled_at', '<', $end)
-            ->whereRaw('DATE_ADD(scheduled_at, INTERVAL duration_minutes MINUTE) > ?', [$start]);
+            ->whereRaw(
+                'datetime(scheduled_at, \'+\' || duration_minutes || \' minutes\') > ?',
+                [$start->format('Y-m-d H:i:s')],
+            );
 
         if ($ignoreId !== null) {
             $q->where('id', '!=', $ignoreId);
