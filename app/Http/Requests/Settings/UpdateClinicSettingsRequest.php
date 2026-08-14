@@ -38,6 +38,7 @@ class UpdateClinicSettingsRequest extends FormRequest
             'invoice_prefix' => ['required', 'string', 'max:16'],
             'next_invoice_number' => ['required', 'integer', 'min:1'],
             'appointment_slot_minutes' => ['required', 'in:15,30,60'],
+            'appointment_buffer_minutes' => ['required', 'integer', 'min:0', 'max:120'],
         ];
     }
 }

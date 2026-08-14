@@ -43,6 +43,7 @@ class UpdateClinicSettingsTest extends TestCase
             'invoice_prefix' => 'INV-',
             'next_invoice_number' => 1,
             'appointment_slot_minutes' => '30',
+            'appointment_buffer_minutes' => 0,
         ]);
 
         $response->assertRedirect();
@@ -70,6 +71,7 @@ class UpdateClinicSettingsTest extends TestCase
             'invoice_prefix' => 'INV-',
             'next_invoice_number' => 1,
             'appointment_slot_minutes' => '30',
+            'appointment_buffer_minutes' => 0,
         ]);
 
         $response->assertStatus(403);

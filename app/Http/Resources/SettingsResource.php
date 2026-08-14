@@ -34,6 +34,7 @@ class SettingsResource
             'invoice_prefix' => $s->invoice_prefix,
             'next_invoice_number' => $s->next_invoice_number,
             'appointment_slot_minutes' => $s->appointment_slot_minutes,
+            'appointment_buffer_minutes' => $s->appointment_buffer_minutes,
             'working_hours' => json_decode($s->working_hours_json, true) ?? [],
         ];
     }

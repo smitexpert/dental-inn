@@ -35,6 +35,7 @@ class SettingsSeeder extends Seeder
             'invoice_prefix' => 'INV-',
             'next_invoice_number' => 1,
             'appointment_slot_minutes' => '30',
+            'appointment_buffer_minutes' => 0,
             'working_hours_json' => json_encode([
                 'mon' => [['start' => '09:00', 'end' => '18:00']],
                 'tue' => [['start' => '09:00', 'end' => '18:00']],

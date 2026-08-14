@@ -54,6 +54,8 @@ class ClinicSettings extends Settings
 
     public string $appointment_slot_minutes;
 
+    public int $appointment_buffer_minutes;
+
     public string $working_hours_json;
 
     public static function group(): string
