@@ -58,6 +58,16 @@ class ClinicSettings extends Settings
 
     public string $working_hours_json;
 
+    public string $notification_default_channel;
+
+    public bool $appointment_reminder_24h_enabled;
+
+    public bool $appointment_reminder_1h_enabled;
+
+    public bool $invoice_notification_enabled;
+
+    public bool $payment_notification_enabled;
+
     public static function group(): string
     {
         return 'clinic';
