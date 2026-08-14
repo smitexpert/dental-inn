@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Repositories\Contracts;
 
 use App\Models\Doctor;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 interface DoctorRepository
 {
@@ -16,4 +16,9 @@ interface DoctorRepository
     public function update(Doctor $doctor, array $data): Doctor;
 
     public function toggleAvailability(Doctor $doctor): Doctor;
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    public function listActive(): array;
 }

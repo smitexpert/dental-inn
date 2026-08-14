@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace App\Repositories\Eloquent;
 
+use App\Http\Resources\DoctorResource;
 use App\Models\Doctor;
 use App\Models\User;
 use App\Repositories\Contracts\DoctorRepository;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
@@ -33,6 +34,16 @@ class DoctorEloquentRepository implements DoctorRepository
         return $q->orderBy(
             User::query()->select('name')->whereColumn('users.id', 'doctors.user_id'),
         )->paginate($perPage)->withQueryString();
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    public function listActive(): array
+    {
+        return DoctorResource::collection(
+            Doctor::query()->with('user')->where('is_available', true)->orderBy('id')->get(),
+        )->resolve();
     }
 
     public function create(array $data): Doctor

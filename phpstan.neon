@@ -19,6 +19,8 @@ parameters:
         # All repository paginate() methods return LengthAwarePaginator without explicit generics — acceptable at level 6
         - '#Method App\\Repositories\\Contracts\\.*::paginate\(\) return type with generic interface Illuminate\\Contracts\\Pagination\\LengthAwarePaginator does not specify its types: TKey, TValue#'
         - '#Method App\\Repositories\\Eloquent\\.*::paginate\(\) return type with generic interface Illuminate\\Contracts\\Pagination\\LengthAwarePaginator does not specify its types: TKey, TValue#'
+        - '#Method App\\Repositories\\Contracts\\.*::paginate\(\) return type with generic class Illuminate\\Pagination\\LengthAwarePaginator does not specify its types: TKey, TValue#'
+        - '#Method App\\Repositories\\Eloquent\\.*::paginate\(\) return type with generic class Illuminate\\Pagination\\LengthAwarePaginator does not specify its types: TKey, TValue#'
         # Eloquent relations typed via PHPDoc @property — generic params are documented in IDE/static analyser
         - '#Method App\\Models\\.*::(user|doctor|schedules|timeOffs|appointments|creator)\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\(BelongsTo|HasMany) does not specify its types: T.*#'
         # Collection return types from repository interfaces are documented via @property in callers
