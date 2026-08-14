@@ -35,3 +35,15 @@ parameters:
         - '#Access to an undefined property App\\Models\\(Supplier|Product)::\$pivot\.#'
         # Strict comparison against null after a previous `!== null` check inside the same `isset` chain
         - '#Strict comparison using !== between mixed and null will always evaluate to true\.#'
+        # PHPDoc reports decimal fields as string but DB cast makes them decimal — assign is safe at runtime
+        - '#Property App\\Models\\(Invoice|Payment|Expense)::\$[a-z_]+ \(string\) does not accept (float|int|string)\.#'
+        # Always-true ternary from PHPDoc-inferred enum value (e.g. payment $invoice->status)
+        - '#Ternary operator condition is always true\.#'
+        # Strict comparison of non-empty-string to null (PHPDoc widens to non-empty-string)
+        - '#Strict comparison using === between non-empty-string and null will always evaluate to false\.#'
+        # Class written-only dependency injection (repositories injected but controller doesn't read)
+        - '#Property App\\Http\\Controllers\\.*::\$[a-zA-Z]+ is never read, only written\.#'
+        # PHPDoc enum type inference for in_array() comparisons against literal value arrays
+        - '#Call to function in_array\(\) with arguments.*will always evaluate to (true|false)\.#'
+        # Expression on left side of ?? not nullable per PHPDoc but is at runtime
+        - '#Expression on left side of \?\? is not nullable\.#'

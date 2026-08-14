@@ -22,8 +22,8 @@ use Illuminate\Support\Carbon;
  * @property ?int $patient_id
  * @property ?int $appointment_id
  * @property ?int $treatment_record_id
- * @property string $invoice_date
- * @property string $due_date
+ * @property Carbon|string $invoice_date
+ * @property Carbon|string $due_date
  * @property InvoiceStatus $status
  * @property string $subtotal
  * @property string $tax_rate

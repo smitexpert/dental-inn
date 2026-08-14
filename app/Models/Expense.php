@@ -17,7 +17,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 
 /**
  * @property int $id
- * @property string $expense_date
+ * @property Carbon|string $expense_date
  * @property int $category_id
  * @property string $amount
  * @property string $currency_code
