@@ -112,7 +112,7 @@ function submit() {
               <td class="px-4 py-2 text-base-content/70 text-xs">{{ r.creator?.name ?? '—' }}</td>
               <td v-if="canManage" class="px-4 py-2 text-right">
                 <button
-                  class="text-error-600 hover:underline"
+                  class="text-error hover:underline"
                   @click="router.delete(`/exchange/rates/${r.id}`)"
                 >
                   Delete
