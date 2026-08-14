@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Listeners;
 
 use App\Events\PaymentReceived;
-use App\Settings\ClinicSettings;
 use App\Services\NotificationService;
+use App\Settings\ClinicSettings;
 
 class SendPaymentReceivedNotification
 {
@@ -25,7 +25,7 @@ class SendPaymentReceivedNotification
         $invoice = $payment->invoice;
         $patient = $invoice?->patient;
 
-        if ($patient === null || $invoice === null) {
+        if ($patient === null) {
             return;
         }
 

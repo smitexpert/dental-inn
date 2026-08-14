@@ -11,6 +11,5 @@ class PaymentReceived
 {
     use Dispatchable;
 
-    public function __construct(public readonly Payment $payment)
-    {}
+    public function __construct(public readonly Payment $payment) {}
 }

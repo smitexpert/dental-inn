@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Listeners;
 
 use App\Events\AppointmentCreated;
-use App\Settings\ClinicSettings;
 use App\Services\NotificationService;
+use App\Settings\ClinicSettings;
 
 class SendAppointmentCreatedNotification
 {
@@ -39,7 +39,7 @@ class SendAppointmentCreatedNotification
             recipients: $recipients,
             variables: [
                 'patient_name' => $patient->name,
-                'doctor_name' => $doctor?->name ?? 'our clinic',
+                'doctor_name' => $doctor?->user?->name ?: 'our clinic',
                 'scheduled_at' => $appointment->scheduled_at?->format('Y-m-d H:i'),
                 'clinic_name' => $this->settings->clinic_name,
             ],

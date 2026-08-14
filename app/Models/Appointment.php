@@ -27,7 +27,7 @@ use Spatie\Activitylog\Support\LogOptions;
  * @property ?string $cancelled_reason
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
- * @property-read Patient $patient
+ * @property-read ?Patient $patient
  * @property-read ?Doctor $doctor
  * @property-read ?User $creator
  */

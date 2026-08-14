@@ -23,7 +23,7 @@ use Illuminate\Support\Carbon;
  * @property ?int $appointment_id
  * @property ?int $treatment_record_id
  * @property Carbon|string $invoice_date
- * @property Carbon|string $due_date
+ * @property Carbon|string|null $due_date
  * @property InvoiceStatus $status
  * @property string $subtotal
  * @property string $tax_rate

@@ -47,3 +47,5 @@ parameters:
         - '#Call to function in_array\(\) with arguments.*will always evaluate to (true|false)\.#'
         # Expression on left side of ?? not nullable per PHPDoc but is at runtime
         - '#Expression on left side of \?\? is not nullable\.#'
+        # nullsafe property access flagged as unnecessary because PHPDoc widens type but runtime may still be null
+        - '#Using nullsafe property access.*Use -> instead\.#'

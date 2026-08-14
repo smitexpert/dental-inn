@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Listeners;
 
 use App\Events\AppointmentCancelled;
-use App\Settings\ClinicSettings;
 use App\Services\NotificationService;
+use App\Settings\ClinicSettings;
 
 class SendAppointmentCancelledNotification
 {
@@ -37,7 +37,7 @@ class SendAppointmentCancelledNotification
             recipients: $recipients,
             variables: [
                 'patient_name' => $patient->name,
-                'doctor_name' => $appointment->doctor?->name ?? 'our clinic',
+                'doctor_name' => $appointment->doctor?->user?->name ?: 'our clinic',
                 'scheduled_at' => $appointment->scheduled_at?->format('Y-m-d H:i'),
                 'clinic_name' => $this->settings->clinic_name,
             ],

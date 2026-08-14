@@ -11,6 +11,5 @@ class AppointmentCreated
 {
     use Dispatchable;
 
-    public function __construct(public readonly Appointment $appointment)
-    {}
+    public function __construct(public readonly Appointment $appointment) {}
 }

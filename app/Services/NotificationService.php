@@ -26,14 +26,15 @@ use RuntimeException;
  */
 class NotificationService
 {
-    public function __construct(private readonly NotificationDriver $driver)
-    {}
+    public function __construct(private readonly NotificationDriver $driver) {}
 
     /**
      * Send a templated notification.
      *
      * @param  array<int, string>  $recipients
+     * @param  array<int, string>  $recipients
      * @param  array<string, mixed>  $variables
+     * @return array<int, array<string, mixed>>
      */
     public function send(
         string $templateKey,
@@ -74,6 +75,7 @@ class NotificationService
      * Send an ad-hoc notification without a template.
      *
      * @param  array<int, string>  $recipients
+     * @return array<int, array<string, mixed>>
      */
     public function sendDirect(
         string $channelValue,
@@ -138,9 +140,7 @@ class NotificationService
         $replace = [];
 
         foreach ($variables as $key => $value) {
-            if (! is_string($key)) {
-                continue;
-            }
+            $key = (string) $key;
             $search[] = '{{ '.$key.' }}';
             $replace[] = is_scalar($value) || $value === null ? (string) $value : '';
         }
@@ -184,6 +184,7 @@ class NotificationService
                     'sent' => false,
                     'error' => 'Invalid recipient for channel '.$channel->value,
                 ];
+
                 continue;
             }
 
@@ -195,6 +196,7 @@ class NotificationService
                     'error' => null,
                     'skipped' => 'already_sent_today',
                 ];
+
                 continue;
             }
 
