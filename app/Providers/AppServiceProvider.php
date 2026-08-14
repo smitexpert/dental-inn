@@ -14,9 +14,13 @@ use App\Models\Supplier;
 use App\Models\User;
 use App\Repositories\Contracts\AccountRepository;
 use App\Repositories\Contracts\AppointmentRepository;
+use App\Repositories\Contracts\CashDrawerRepository;
+use App\Repositories\Contracts\CashMovementRepository;
+use App\Repositories\Contracts\CurrencyRepository;
 use App\Repositories\Contracts\DoctorRepository;
 use App\Repositories\Contracts\DoctorScheduleRepository;
 use App\Repositories\Contracts\DoctorTimeOffRepository;
+use App\Repositories\Contracts\ExchangeRateRepository;
 use App\Repositories\Contracts\ExpenseCategoryRepository;
 use App\Repositories\Contracts\ExpenseRepository;
 use App\Repositories\Contracts\InvoiceRepository;
@@ -30,9 +34,13 @@ use App\Repositories\Contracts\TreatmentRecordRepository;
 use App\Repositories\Contracts\UserRepository;
 use App\Repositories\Eloquent\AccountEloquentRepository;
 use App\Repositories\Eloquent\AppointmentEloquentRepository;
+use App\Repositories\Eloquent\CashDrawerEloquentRepository;
+use App\Repositories\Eloquent\CashMovementEloquentRepository;
+use App\Repositories\Eloquent\CurrencyEloquentRepository;
 use App\Repositories\Eloquent\DoctorEloquentRepository;
 use App\Repositories\Eloquent\DoctorScheduleEloquentRepository;
 use App\Repositories\Eloquent\DoctorTimeOffEloquentRepository;
+use App\Repositories\Eloquent\ExchangeRateEloquentRepository;
 use App\Repositories\Eloquent\ExpenseCategoryEloquentRepository;
 use App\Repositories\Eloquent\ExpenseEloquentRepository;
 use App\Repositories\Eloquent\InvoiceEloquentRepository;
@@ -137,6 +145,26 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             ExpenseRepository::class,
             ExpenseEloquentRepository::class,
+        );
+
+        $this->app->bind(
+            CurrencyRepository::class,
+            CurrencyEloquentRepository::class,
+        );
+
+        $this->app->bind(
+            ExchangeRateRepository::class,
+            ExchangeRateEloquentRepository::class,
+        );
+
+        $this->app->bind(
+            CashDrawerRepository::class,
+            CashDrawerEloquentRepository::class,
+        );
+
+        $this->app->bind(
+            CashMovementRepository::class,
+            CashMovementEloquentRepository::class,
         );
 
         // Services are singletons because they hold no per-request state
