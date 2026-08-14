@@ -4,28 +4,42 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Repositories\Contracts\AccountRepository;
 use App\Repositories\Contracts\AppointmentRepository;
 use App\Repositories\Contracts\DoctorRepository;
 use App\Repositories\Contracts\DoctorScheduleRepository;
 use App\Repositories\Contracts\DoctorTimeOffRepository;
+use App\Repositories\Contracts\ExpenseCategoryRepository;
+use App\Repositories\Contracts\ExpenseRepository;
+use App\Repositories\Contracts\InvoiceRepository;
 use App\Repositories\Contracts\PatientRepository;
+use App\Repositories\Contracts\PaymentRepository;
 use App\Repositories\Contracts\ProductRepository;
 use App\Repositories\Contracts\StockLocationRepository;
 use App\Repositories\Contracts\StockMovementRepository;
 use App\Repositories\Contracts\SupplierRepository;
 use App\Repositories\Contracts\TreatmentRecordRepository;
 use App\Repositories\Contracts\UserRepository;
+use App\Repositories\Eloquent\AccountEloquentRepository;
 use App\Repositories\Eloquent\AppointmentEloquentRepository;
 use App\Repositories\Eloquent\DoctorEloquentRepository;
 use App\Repositories\Eloquent\DoctorScheduleEloquentRepository;
 use App\Repositories\Eloquent\DoctorTimeOffEloquentRepository;
+use App\Repositories\Eloquent\ExpenseCategoryEloquentRepository;
+use App\Repositories\Eloquent\ExpenseEloquentRepository;
+use App\Repositories\Eloquent\InvoiceEloquentRepository;
 use App\Repositories\Eloquent\PatientEloquentRepository;
+use App\Repositories\Eloquent\PaymentEloquentRepository;
 use App\Repositories\Eloquent\ProductEloquentRepository;
 use App\Repositories\Eloquent\StockLocationEloquentRepository;
 use App\Repositories\Eloquent\StockMovementEloquentRepository;
 use App\Repositories\Eloquent\SupplierEloquentRepository;
 use App\Repositories\Eloquent\TreatmentRecordEloquentRepository;
 use App\Repositories\Eloquent\UserEloquentRepository;
+use App\Services\ExpenseService;
+use App\Services\InvoiceService;
+use App\Services\LedgerService;
+use App\Services\PaymentService;
 use Illuminate\Support\ServiceProvider;
 use Inertia\Inertia;
 
@@ -90,6 +104,38 @@ class AppServiceProvider extends ServiceProvider
             StockMovementRepository::class,
             StockMovementEloquentRepository::class,
         );
+
+        $this->app->bind(
+            AccountRepository::class,
+            AccountEloquentRepository::class,
+        );
+
+        $this->app->bind(
+            InvoiceRepository::class,
+            InvoiceEloquentRepository::class,
+        );
+
+        $this->app->bind(
+            PaymentRepository::class,
+            PaymentEloquentRepository::class,
+        );
+
+        $this->app->bind(
+            ExpenseCategoryRepository::class,
+            ExpenseCategoryEloquentRepository::class,
+        );
+
+        $this->app->bind(
+            ExpenseRepository::class,
+            ExpenseEloquentRepository::class,
+        );
+
+        // Services are singletons because they hold no per-request state
+        // and depend only on the bound repositories + other services.
+        $this->app->singleton(LedgerService::class);
+        $this->app->singleton(InvoiceService::class);
+        $this->app->singleton(PaymentService::class);
+        $this->app->singleton(ExpenseService::class);
     }
 
     /**
