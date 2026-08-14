@@ -23,6 +23,10 @@ class RoleSeeder extends Seeder
             'view-own-appointments',
             'cancel-appointments',
             'check-in-appointments',
+            'view-patients',
+            'manage-patients',
+            'view-treatment-records',
+            'manage-treatment-records',
         ];
 
         foreach ($permissions as $p) {
@@ -38,6 +42,9 @@ class RoleSeeder extends Seeder
             'view-appointments',
             'view-doctors',
             'view-own-appointments',
+            'view-patients',
+            'view-treatment-records',
+            'manage-treatment-records',
         ]);
 
         $receptionist = Role::firstOrCreate(['name' => 'receptionist', 'guard_name' => 'web']);
@@ -48,6 +55,9 @@ class RoleSeeder extends Seeder
             'manage-appointments',
             'cancel-appointments',
             'check-in-appointments',
+            'view-patients',
+            'view-treatment-records',
+            'manage-patients',
         ]);
     }
 }

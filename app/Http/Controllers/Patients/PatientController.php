@@ -1,0 +1,136 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Http\Controllers\Patients;
+
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Patients\QuickStorePatientRequest;
+use App\Http\Requests\Patients\StorePatientRequest;
+use App\Http\Requests\Patients\UpdatePatientRequest;
+use App\Http\Resources\PatientResource;
+use App\Models\Patient;
+use App\Repositories\Contracts\PatientRepository;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
+
+class PatientController extends Controller
+{
+    public function __construct(private readonly PatientRepository $patients) {}
+
+    public function index(): Response
+    {
+        $page = $this->patients->paginate(
+            request()->integer('per_page', 25),
+            request()->only(['q', 'is_active']),
+        );
+        $page->setCollection(PatientResource::collection($page->getCollection())->collection);
+
+        return Inertia::render('Patients/Index', [
+            'patients' => $page,
+            'filters' => request()->only(['q', 'is_active']),
+        ]);
+    }
+
+    public function create(): Response
+    {
+        return Inertia::render('Patients/Create');
+    }
+
+    public function store(StorePatientRequest $request): RedirectResponse
+    {
+        $data = $request->validated();
+        $data['created_by'] = $request->user()->id;
+        $patient = $this->patients->create($data);
+
+        return redirect()->route('patients.show', $patient)->with('success', 'Patient created.');
+    }
+
+    public function show(Patient $patient): Response
+    {
+        $patient->load([
+            'appointments' => fn ($q) => $q->with('doctor.user')->limit(20),
+            'treatmentRecords' => fn ($q) => $q->with('doctor.user')->limit(20),
+        ]);
+
+        $duplicates = $this->patients->findDuplicates(
+            $patient->phone,
+            $patient->name,
+            $patient->email,
+            $patient->id,
+        );
+
+        return Inertia::render('Patients/Show', [
+            'patient' => (new PatientResource($patient))->resolve(),
+            'appointments' => $patient->appointments->map(fn ($a) => [
+                'id' => $a->id,
+                'doctor_name' => $a->doctor?->user?->name,
+                'doctor_color' => $a->doctor?->color,
+                'scheduled_at' => $a->scheduled_at?->toIso8601String(),
+                'status' => $a->status?->value,
+                'status_label' => $a->status?->label(),
+            ])->all(),
+            'treatment_records' => $patient->treatmentRecords->map(fn ($r) => [
+                'id' => $r->id,
+                'doctor_name' => $r->doctor?->user?->name,
+                'visited_at' => $r->visited_at?->toIso8601String(),
+                'chief_complaint' => $r->chief_complaint,
+                'status' => $r->status->value,
+                'status_label' => $r->status->label(),
+            ])->all(),
+            'duplicates' => $duplicates->map(fn (Patient $p) => [
+                'id' => $p->id,
+                'patient_code' => $p->patient_code,
+                'name' => $p->name,
+                'phone' => $p->phone,
+                'email' => $p->email,
+            ])->all(),
+        ]);
+    }
+
+    public function edit(Patient $patient): Response
+    {
+        return Inertia::render('Patients/Edit', [
+            'patient' => (new PatientResource($patient))->resolve(),
+        ]);
+    }
+
+    public function update(UpdatePatientRequest $request, Patient $patient): RedirectResponse
+    {
+        $this->patients->update($patient, $request->validated());
+
+        return redirect()->route('patients.show', $patient)->with('success', 'Patient updated.');
+    }
+
+    public function destroy(Patient $patient): RedirectResponse
+    {
+        $this->patients->delete($patient);
+
+        return redirect()->route('patients.index')->with('success', 'Patient archived.');
+    }
+
+    public function search(Request $request): JsonResponse
+    {
+        $term = (string) $request->string('q', '');
+        $limit = (int) $request->integer('limit', 10);
+
+        return response()->json([
+            'data' => $this->patients->search($term, $limit),
+        ]);
+    }
+
+    public function quickStore(QuickStorePatientRequest $request): RedirectResponse
+    {
+        $data = $request->validated();
+        $data['created_by'] = $request->user()->id;
+        $patient = $this->patients->create($data);
+
+        return redirect()->back()->with([
+            'success' => 'Patient created.',
+            'patient' => (new PatientResource($patient))->resolve(),
+        ]);
+    }
+}

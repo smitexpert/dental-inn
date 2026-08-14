@@ -8,11 +8,15 @@ use App\Repositories\Contracts\AppointmentRepository;
 use App\Repositories\Contracts\DoctorRepository;
 use App\Repositories\Contracts\DoctorScheduleRepository;
 use App\Repositories\Contracts\DoctorTimeOffRepository;
+use App\Repositories\Contracts\PatientRepository;
+use App\Repositories\Contracts\TreatmentRecordRepository;
 use App\Repositories\Contracts\UserRepository;
 use App\Repositories\Eloquent\AppointmentEloquentRepository;
 use App\Repositories\Eloquent\DoctorEloquentRepository;
 use App\Repositories\Eloquent\DoctorScheduleEloquentRepository;
 use App\Repositories\Eloquent\DoctorTimeOffEloquentRepository;
+use App\Repositories\Eloquent\PatientEloquentRepository;
+use App\Repositories\Eloquent\TreatmentRecordEloquentRepository;
 use App\Repositories\Eloquent\UserEloquentRepository;
 use Illuminate\Support\ServiceProvider;
 use Inertia\Inertia;
@@ -47,6 +51,16 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             AppointmentRepository::class,
             AppointmentEloquentRepository::class,
+        );
+
+        $this->app->bind(
+            PatientRepository::class,
+            PatientEloquentRepository::class,
+        );
+
+        $this->app->bind(
+            TreatmentRecordRepository::class,
+            TreatmentRecordEloquentRepository::class,
         );
     }
 
