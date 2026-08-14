@@ -6,7 +6,7 @@ namespace Tests\Feature\Exchange;
 
 use App\Enums\CashMovementType;
 use App\Models\CashDrawer;
-use App\Models\CashMovement;
+use App\Models\User;
 use App\Services\CashDrawerReconciliationService;
 use App\Services\CashDrawerService;
 use Database\Seeders\CurrencySeeder;
@@ -25,7 +25,7 @@ class CashDrawerReconciliationTest extends TestCase
 
     public function test_reconcile_with_matching_balance_writes_zero_adjustment(): void
     {
-        $user = \App\Models\User::factory()->create();
+        $user = User::factory()->create();
         CashDrawer::query()->firstOrCreate(['currency_code' => 'BDT'], ['balance' => '0.0000']);
         app(CashDrawerService::class)->cashIn('BDT', '100.00', 'Seed', null, $user->id);
 
@@ -39,7 +39,7 @@ class CashDrawerReconciliationTest extends TestCase
 
     public function test_reconcile_with_variance_creates_adjustment_movement(): void
     {
-        $user = \App\Models\User::factory()->create();
+        $user = User::factory()->create();
         CashDrawer::query()->firstOrCreate(['currency_code' => 'BDT'], ['balance' => '0.0000']);
         app(CashDrawerService::class)->cashIn('BDT', '200.00', 'Seed', null, $user->id);
 
@@ -54,7 +54,7 @@ class CashDrawerReconciliationTest extends TestCase
     public function test_reconcile_rejects_negative_counted(): void
     {
         $service = app(CashDrawerReconciliationService::class);
-        $user = \App\Models\User::factory()->create();
+        $user = User::factory()->create();
 
         $this->expectException(\RuntimeException::class);
         $service->run('BDT', '-1', $user->id);

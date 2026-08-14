@@ -62,7 +62,7 @@ class ExchangeReconcileCashVsLedger extends Command
 
         $this->line("Drawer total in {$base}: ".number_format($drawerInBase, 4, '.', ''));
         $this->line("Cash ledger ({$base}): ".number_format($ledgerTotal, 4, '.', ''));
-        $this->line("Variance: ".number_format($diff, 4, '.', ''));
+        $this->line('Variance: '.number_format($diff, 4, '.', ''));
         $this->line("Status: {$status}");
 
         return self::SUCCESS;

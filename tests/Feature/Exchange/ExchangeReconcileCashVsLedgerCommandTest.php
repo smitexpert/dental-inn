@@ -7,12 +7,10 @@ namespace Tests\Feature\Exchange;
 use App\Models\CashDrawer;
 use App\Models\User;
 use App\Services\CashDrawerService;
-use App\Services\ExchangeRateService;
 use Database\Seeders\ChartOfAccountsSeeder;
 use Database\Seeders\CurrencySeeder;
 use Database\Seeders\ExchangeRateSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Carbon;
 use Tests\TestCase;
 
 class ExchangeReconcileCashVsLedgerCommandTest extends TestCase

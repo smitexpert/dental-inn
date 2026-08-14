@@ -6,7 +6,7 @@ namespace Tests\Feature\Exchange;
 
 use App\Enums\CashMovementType;
 use App\Models\CashDrawer;
-use App\Models\CashMovement;
+use App\Models\User;
 use App\Services\CashDrawerService;
 use App\Services\ExchangeRateService;
 use Database\Seeders\CurrencySeeder;
@@ -30,7 +30,7 @@ class CashDrawerServiceTest extends TestCase
     public function test_cash_in_increments_drawer_and_writes_movement(): void
     {
         $service = app(CashDrawerService::class);
-        $user = \App\Models\User::factory()->create();
+        $user = User::factory()->create();
 
         $movement = $service->cashIn('BDT', '500.00', 'Owner deposit', null, $user->id);
 
@@ -42,7 +42,7 @@ class CashDrawerServiceTest extends TestCase
     public function test_cash_out_decrements_drawer(): void
     {
         $service = app(CashDrawerService::class);
-        $user = \App\Models\User::factory()->create();
+        $user = User::factory()->create();
 
         $service->cashIn('BDT', '1000.00', 'Initial', null, $user->id);
         $movement = $service->cashOut('BDT', '250.00', 'Petty cash', null, $user->id);
@@ -55,7 +55,7 @@ class CashDrawerServiceTest extends TestCase
     public function test_cash_out_rejects_insufficient_balance(): void
     {
         $service = app(CashDrawerService::class);
-        $user = \App\Models\User::factory()->create();
+        $user = User::factory()->create();
 
         $this->expectException(RuntimeException::class);
         $service->cashOut('BDT', '100.00', 'Too much', null, $user->id);
@@ -63,7 +63,7 @@ class CashDrawerServiceTest extends TestCase
 
     public function test_exchange_writes_two_linked_movements(): void
     {
-        $user = \App\Models\User::factory()->create();
+        $user = User::factory()->create();
         app(ExchangeRateService::class)->setRate('USD', 'BDT', '110', Carbon::now(), null);
 
         CashDrawer::query()->firstOrCreate(['currency_code' => 'USD'], ['balance' => '0.0000']);
@@ -86,7 +86,7 @@ class CashDrawerServiceTest extends TestCase
     public function test_exchange_rejects_same_currency(): void
     {
         $service = app(CashDrawerService::class);
-        $user = \App\Models\User::factory()->create();
+        $user = User::factory()->create();
 
         $this->expectException(RuntimeException::class);
         $service->exchange('BDT', 'BDT', '100.00', $user->id);
@@ -95,7 +95,7 @@ class CashDrawerServiceTest extends TestCase
     public function test_exchange_throws_when_no_rate(): void
     {
         $service = app(CashDrawerService::class);
-        $user = \App\Models\User::factory()->create();
+        $user = User::factory()->create();
 
         $this->expectException(RuntimeException::class);
         $service->exchange('EUR', 'GBP', '50.00', $user->id);
@@ -103,7 +103,7 @@ class CashDrawerServiceTest extends TestCase
 
     public function test_exchange_rejects_when_source_insufficient(): void
     {
-        $user = \App\Models\User::factory()->create();
+        $user = User::factory()->create();
         app(ExchangeRateService::class)->setRate('USD', 'BDT', '110', Carbon::now(), null);
         CashDrawer::query()->firstOrCreate(['currency_code' => 'USD'], ['balance' => '0.0000']);
         $service = app(CashDrawerService::class);
@@ -115,7 +115,7 @@ class CashDrawerServiceTest extends TestCase
     public function test_adjust_can_drive_balance_negative_check(): void
     {
         $service = app(CashDrawerService::class);
-        $user = \App\Models\User::factory()->create();
+        $user = User::factory()->create();
 
         $this->expectException(RuntimeException::class);
         $service->adjust('BDT', '-100.00', 'Over-adjust', $user->id);
@@ -124,7 +124,7 @@ class CashDrawerServiceTest extends TestCase
     public function test_adjust_writes_movement(): void
     {
         $service = app(CashDrawerService::class);
-        $user = \App\Models\User::factory()->create();
+        $user = User::factory()->create();
 
         $service->cashIn('BDT', '100.00', 'Seed', null, $user->id);
         $movement = $service->adjust('BDT', '50.00', 'Found extra', $user->id);
@@ -137,7 +137,7 @@ class CashDrawerServiceTest extends TestCase
     public function test_movement_immutability(): void
     {
         $service = app(CashDrawerService::class);
-        $user = \App\Models\User::factory()->create();
+        $user = User::factory()->create();
         $movement = $service->cashIn('BDT', '1.00', 'Test', null, $user->id);
 
         $this->expectException(RuntimeException::class);
