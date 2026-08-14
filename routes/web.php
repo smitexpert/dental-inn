@@ -13,6 +13,7 @@ require __DIR__.'/doctors.php';
 require __DIR__.'/appointments.php';
 require __DIR__.'/patients.php';
 require __DIR__.'/treatment-records.php';
+require __DIR__.'/inventory.php';
 
 Route::middleware(['auth', 'active'])->group(function () {
     Route::get('/', fn () => redirect()->route('dashboard'));
