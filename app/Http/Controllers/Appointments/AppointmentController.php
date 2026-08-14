@@ -10,9 +10,11 @@ use App\Http\Requests\Appointments\StoreAppointmentRequest;
 use App\Http\Requests\Appointments\UpdateAppointmentRequest;
 use App\Http\Resources\AppointmentResource;
 use App\Models\Appointment;
+use App\Models\Doctor;
 use App\Repositories\Contracts\AppointmentRepository;
 use App\Repositories\Contracts\DoctorRepository;
 use App\Settings\ClinicSettings;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Carbon;
 use Inertia\Inertia;
@@ -114,5 +116,20 @@ class AppointmentController extends Controller
         $this->appointments->delete($appointment);
 
         return redirect()->route('appointments.index')->with('success', 'Appointment deleted.');
+    }
+
+    public function apiList(): JsonResponse
+    {
+        $request = request();
+        $start = Carbon::parse((string) $request->string('from'));
+        $end = Carbon::parse((string) $request->string('to'));
+        $doctor = $request->integer('doctor_id') ?: null;
+        $doctorModel = $doctor ? Doctor::find($doctor) : null;
+
+        $items = $this->appointments->between($start, $end, $doctorModel);
+
+        return response()->json([
+            'data' => AppointmentResource::collection($items)->resolve(),
+        ]);
     }
 }

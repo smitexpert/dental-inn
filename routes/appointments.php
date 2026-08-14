@@ -11,6 +11,7 @@ Route::middleware(['auth', 'active', 'permission:view-appointments'])
     ->prefix('appointments')->name('appointments.')->group(function (): void {
         Route::get('/', [AppointmentController::class, 'index'])->name('index');
         Route::get('/calendar', [AppointmentController::class, 'calendar'])->name('calendar');
+        Route::get('/api/list', [AppointmentController::class, 'apiList'])->name('api.list');
         Route::get('/{appointment}', [AppointmentController::class, 'show'])->name('show');
         Route::get('/slots/{doctor}', [AvailableSlotsController::class, 'index'])->name('slots');
     });
