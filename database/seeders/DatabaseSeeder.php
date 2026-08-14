@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             CurrencySeeder::class,
             ExchangeRateSeeder::class,
             CashDrawerSeeder::class,
+            NotificationTemplateSeeder::class,
         ]);
     }
 }
