@@ -35,8 +35,30 @@ export function useNav() {
         { label: 'Low stock', href: '/inventory/low-stock' },
       ],
     },
-    { label: 'Billing', href: '#', icon: 'receipt', comingSoon: true, permission: 'view-dashboard' },
-    { label: 'Exchange', href: '#', icon: 'arrows', comingSoon: true, permission: 'view-dashboard' },
+    {
+      label: 'Billing',
+      href: '/billing/invoices',
+      icon: 'receipt',
+      permission: 'view-invoices',
+      children: [
+        { label: 'Invoices', href: '/billing/invoices', permission: 'view-invoices' },
+        { label: 'Payments', href: '/billing/payments', permission: 'view-payments' },
+        { label: 'Expenses', href: '/billing/expenses', permission: 'view-expenses' },
+        { label: 'Chart of accounts', href: '/billing/accounts', permission: 'view-invoices' },
+      ],
+    },
+    {
+      label: 'Reports',
+      href: '/reports/ledger',
+      icon: 'chart',
+      permission: 'view-reports',
+      children: [
+        { label: 'Ledger', href: '/reports/ledger', permission: 'view-reports' },
+        { label: 'Income statement', href: '/reports/income-statement', permission: 'view-reports' },
+        { label: 'Balance sheet', href: '/reports/balance-sheet', permission: 'view-reports' },
+        { label: 'A/R aging', href: '/reports/accounts-receivable', permission: 'view-reports' },
+      ],
+    },
     { label: 'Settings', href: '/settings', icon: 'cog', permission: 'manage-settings' },
     { label: 'Users', href: '/admin/users', icon: 'shield', permission: 'manage-users' },
   ]
