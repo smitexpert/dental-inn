@@ -26,4 +26,13 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->shouldRenderJsonWhen(
             fn (Request $request) => $request->is('api/*') || $request->expectsJson(),
         );
+
+        $exceptions->respond(function ($response, $exception, $request) {
+            if (! $request->expectsJson() && in_array($response->getStatusCode(), [403, 404, 500], true)) {
+                return inertia("Errors/{$response->getStatusCode()}")
+                    ->toResponse($request)
+                    ->setStatusCode($response->getStatusCode());
+            }
+            return $response;
+        });
     })->create();
