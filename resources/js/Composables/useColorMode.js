@@ -2,14 +2,17 @@ import { ref, watch, onMounted } from 'vue'
 
 const STORAGE_KEY = 'dental-color-mode'
 
-const mode = ref('light')
+// DaisyUI theme names. `corporate` is the light theme; `business` is the dark
+// theme (configured in resources/css/app.css).
+const LIGHT = 'corporate'
+const DARK = 'business'
+
+const mode = ref(LIGHT)
 let initialized = false
 
-function apply(mode) {
+function apply(m) {
   if (typeof document === 'undefined') return
-  if (mode === 'dark') document.documentElement.dataset.theme = 'dark'
-  else if (mode === 'light') document.documentElement.dataset.theme = 'light'
-  else document.documentElement.dataset.theme = ''
+  document.documentElement.dataset.theme = m === DARK ? DARK : LIGHT
 }
 
 export function useColorMode() {
@@ -17,10 +20,10 @@ export function useColorMode() {
     if (initialized) return
     initialized = true
     const stored = localStorage.getItem(STORAGE_KEY)
-    if (stored === 'dark' || stored === 'light') {
+    if (stored === DARK || stored === LIGHT) {
       mode.value = stored
     } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      mode.value = 'dark'
+      mode.value = DARK
     }
     apply(mode.value)
   })
@@ -31,7 +34,7 @@ export function useColorMode() {
   })
 
   function toggle() {
-    mode.value = mode.value === 'dark' ? 'light' : 'dark'
+    mode.value = mode.value === DARK ? LIGHT : DARK
   }
 
   return { mode, toggle }

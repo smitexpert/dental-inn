@@ -55,41 +55,41 @@ function submit() {
         <form @submit.prevent="submit" class="space-y-3">
           <div class="grid grid-cols-2 gap-3">
             <div>
-              <label class="block text-sm font-medium mb-1 text-foreground">Channel</label>
+              <label class="block text-sm font-medium mb-1 text-base-content">Channel</label>
               <UiSelect
                 v-model="form.channel"
                 :options="channels.map((c) => ({ label: c.label, value: c.value }))"
               />
             </div>
             <div>
-              <label class="block text-sm font-medium mb-1 text-foreground">Locale</label>
+              <label class="block text-sm font-medium mb-1 text-base-content">Locale</label>
               <UiInput v-model="form.locale" :error="form.errors.locale" required />
             </div>
           </div>
           <div>
-            <label class="block text-sm font-medium mb-1 text-foreground">Subject (email only)</label>
+            <label class="block text-sm font-medium mb-1 text-base-content">Subject (email only)</label>
             <UiInput v-model="form.subject" :error="form.errors.subject" />
           </div>
           <div>
-            <label class="block text-sm font-medium mb-1 text-foreground">Body</label>
+            <label class="block text-sm font-medium mb-1 text-base-content">Body</label>
             <UiTextarea v-model="form.body" rows="6" :error="form.errors.body" required />
           </div>
           <label class="flex items-center gap-2">
-            <input type="checkbox" v-model="form.is_active" class="rounded border-border" />
-            <span class="text-sm text-foreground">Active</span>
+            <input type="checkbox" v-model="form.is_active" class="rounded border-base-300" />
+            <span class="text-sm text-base-content">Active</span>
           </label>
-          <div class="flex items-center justify-end gap-2 pt-3 border-t border-border">
-            <Link href="/notifications/templates" class="h-10 px-4 inline-flex items-center rounded-md bg-surface-muted text-foreground border border-border text-sm">Cancel</Link>
+          <div class="flex items-center justify-end gap-2 pt-3 border-t border-base-300">
+            <Link href="/notifications/templates" class="h-10 px-4 inline-flex items-center rounded-md bg-base-200 text-base-content border border-base-300 text-sm">Cancel</Link>
             <UiButton type="submit" :loading="form.processing">Save</UiButton>
           </div>
         </form>
       </UiCard>
 
       <UiCard title="Live preview">
-        <p class="text-sm text-muted-foreground mb-2">Provide variable values as JSON.</p>
+        <p class="text-sm text-base-content/70 mb-2">Provide variable values as JSON.</p>
         <UiTextarea v-model="previewVarsText" rows="3" placeholder='{"patient_name": "Alice", "time": "10:30"}' />
         <UiButton class="mt-2" @click="runPreview">Render</UiButton>
-        <div v-if="preview.body || preview.subject" class="mt-3 rounded-md border border-border bg-surface-muted p-3 text-sm text-foreground">
+        <div v-if="preview.body || preview.subject" class="mt-3 rounded-md border border-base-300 bg-base-200 p-3 text-sm text-base-content">
           <div v-if="preview.subject" class="font-medium">Subject: {{ preview.subject }}</div>
           <div class="whitespace-pre-wrap">{{ preview.body }}</div>
         </div>

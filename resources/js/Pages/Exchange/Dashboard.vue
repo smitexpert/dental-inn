@@ -32,7 +32,7 @@ function trendTotal(trend) {
   <AuthenticatedLayout>
     <template #header>
       <div class="flex items-center justify-between gap-3">
-        <h2 class="text-lg font-semibold text-foreground">Exchange</h2>
+        <h2 class="text-lg font-semibold text-base-content">Exchange</h2>
         <div class="flex gap-2">
           <Link href="/exchange/movements/create"><UiButton>New movement</UiButton></Link>
           <Link href="/exchange/rates"><UiButton variant="secondary">Manage rates</UiButton></Link>
@@ -59,12 +59,12 @@ function trendTotal(trend) {
     </div>
 
     <UiCard title="Cash drawers">
-      <div v-if="currencies.length === 0" class="py-12 text-center text-muted-foreground">
+      <div v-if="currencies.length === 0" class="py-12 text-center text-base-content/70">
         No drawers yet. Currencies must be active to have a drawer.
       </div>
       <div v-else class="overflow-x-auto">
         <table class="w-full text-sm">
-          <thead class="bg-surface-muted text-muted-foreground">
+          <thead class="bg-base-200 text-base-content/70">
             <tr>
               <th class="text-left px-4 py-2">Currency</th>
               <th class="text-right px-4 py-2">Balance</th>
@@ -77,16 +77,16 @@ function trendTotal(trend) {
             <tr
               v-for="row in currencies"
               :key="row.currency_code"
-              class="border-b border-border last:border-b-0"
+              class="border-b border-base-300 last:border-b-0"
             >
-              <td class="px-4 py-2 text-foreground font-medium">
+              <td class="px-4 py-2 text-base-content font-medium">
                 {{ row.currency.symbol }} {{ row.currency_code }}
-                <span class="text-muted-foreground text-xs ml-1">{{ row.currency.name }}</span>
+                <span class="text-base-content/70 text-xs ml-1">{{ row.currency.name }}</span>
               </td>
-              <td class="px-4 py-2 text-right text-foreground">
+              <td class="px-4 py-2 text-right text-base-content">
                 {{ row.currency.symbol }}{{ formatAmount(row.balance, row.currency.decimals) }}
               </td>
-              <td class="px-4 py-2 text-right text-foreground">
+              <td class="px-4 py-2 text-right text-base-content">
                 {{ formatInBase(row.balance_in_base) }}
               </td>
               <td class="px-4 py-2 text-right">
@@ -94,7 +94,7 @@ function trendTotal(trend) {
                   {{ trendTotal(row.trend) >= 0 ? '+' : '' }}{{ formatAmount(trendTotal(row.trend), row.currency.decimals) }}
                 </UiBadge>
               </td>
-              <td class="px-4 py-2 text-muted-foreground text-xs">
+              <td class="px-4 py-2 text-base-content/70 text-xs">
                 <template v-if="row.last_reconciled_at">{{ row.last_reconciled_at }}</template>
                 <span v-else>—</span>
               </td>

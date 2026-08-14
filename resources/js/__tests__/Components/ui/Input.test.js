@@ -17,6 +17,6 @@ describe('UiInput', () => {
 
   it('applies error border when invalid', () => {
     const wrapper = mount(Input, { props: { modelValue: '', invalid: true } })
-    expect(wrapper.html()).toContain('border-danger')
+    expect(wrapper.html()).toContain('border-error')
   })
 })

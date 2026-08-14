@@ -63,7 +63,7 @@ function submit() {
     <UiCard :title="`Edit ${invoice.invoice_number}`">
       <template #header>
         <div class="flex items-center justify-between gap-3">
-          <h3 class="text-base font-semibold text-foreground">Edit invoice {{ invoice.invoice_number }}</h3>
+          <h3 class="text-base font-semibold text-base-content">Edit invoice {{ invoice.invoice_number }}</h3>
           <Link :href="`/billing/invoices/${invoice.id}`"><UiButton variant="ghost">Back</UiButton></Link>
         </div>
       </template>
@@ -87,7 +87,7 @@ function submit() {
         </div>
 
         <div class="mt-4">
-          <h4 class="text-sm font-medium text-foreground mb-2">Line items</h4>
+          <h4 class="text-sm font-medium text-base-content mb-2">Line items</h4>
           <div class="space-y-2">
             <div v-for="(item, idx) in form.items" :key="idx" class="grid grid-cols-12 gap-2 items-end">
               <UiField class="col-span-6" label="Description" required><UiInput v-model="item.description" /></UiField>
@@ -99,11 +99,11 @@ function submit() {
           <UiButton type="button" variant="secondary" class="mt-2" @click="addItem">+ Add line</UiButton>
         </div>
 
-        <div class="mt-4 bg-surface-muted p-4 rounded-md text-sm space-y-1">
+        <div class="mt-4 bg-base-200 p-4 rounded-md text-sm space-y-1">
           <div class="flex justify-between"><span>Subtotal</span><span>{{ subtotal.toFixed(2) }}</span></div>
           <div class="flex justify-between"><span>Discount</span><span>-{{ discountAmount.toFixed(2) }}</span></div>
           <div class="flex justify-between"><span>Tax</span><span>{{ taxAmount.toFixed(2) }}</span></div>
-          <div class="flex justify-between font-semibold border-t border-border pt-1 mt-1"><span>Total</span><span>{{ total.toFixed(2) }}</span></div>
+          <div class="flex justify-between font-semibold border-t border-base-300 pt-1 mt-1"><span>Total</span><span>{{ total.toFixed(2) }}</span></div>
         </div>
 
         <UiField label="Notes"><UiInput v-model="form.notes" /></UiField>

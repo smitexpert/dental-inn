@@ -30,16 +30,16 @@ watch(asOf, () => {
   <Head title="Accounts receivable aging" />
   <AuthenticatedLayout>
     <div class="max-w-6xl space-y-6">
-      <h1 class="text-2xl font-semibold text-foreground">Accounts receivable aging</h1>
+      <h1 class="text-2xl font-semibold text-base-content">Accounts receivable aging</h1>
 
       <UiCard title="As of">
         <div class="flex items-end gap-4">
           <div>
-            <label class="block text-sm font-medium text-foreground mb-1">As of</label>
+            <label class="block text-sm font-medium text-base-content mb-1">As of</label>
             <UiInput v-model="asOf" type="date" />
           </div>
           <div class="ml-auto text-right">
-            <p class="text-xs text-muted-foreground">Total outstanding</p>
+            <p class="text-xs text-base-content/70">Total outstanding</p>
             <p class="text-2xl font-semibold tabular-nums">{{ format(props.total_outstanding) }}</p>
           </div>
         </div>
@@ -53,7 +53,7 @@ watch(asOf, () => {
 
       <UiCard title="Outstanding invoices">
         <table class="w-full text-sm">
-          <thead class="border-b border-border text-left text-muted-foreground">
+          <thead class="border-b border-base-300 text-left text-base-content/70">
             <tr>
               <th class="py-2 pr-3">Invoice</th>
               <th class="py-2 pr-3">Patient</th>
@@ -67,14 +67,14 @@ watch(asOf, () => {
             </tr>
           </thead>
           <tbody>
-            <tr v-for="row in props.rows" :key="row.id" class="border-b border-border/50">
+            <tr v-for="row in props.rows" :key="row.id" class="border-b border-base-300/50">
               <td class="py-2 pr-3">
                 <a :href="`/billing/invoices/${row.id}`" class="text-primary hover:underline">{{ row.invoice_number }}</a>
               </td>
               <td class="py-2 pr-3">
                 <span v-if="row.patient_name">{{ row.patient_name }}</span>
-                <span v-else class="text-muted-foreground italic">walk-in</span>
-                <span v-if="row.patient_code" class="text-xs text-muted-foreground ml-1">({{ row.patient_code }})</span>
+                <span v-else class="text-base-content/70 italic">walk-in</span>
+                <span v-if="row.patient_code" class="text-xs text-base-content/70 ml-1">({{ row.patient_code }})</span>
               </td>
               <td class="py-2 pr-3 whitespace-nowrap">{{ row.invoice_date }}</td>
               <td class="py-2 pr-3 whitespace-nowrap">{{ row.due_date }}</td>
@@ -85,7 +85,7 @@ watch(asOf, () => {
               <td class="py-2 pr-3 text-right tabular-nums">{{ row.days_past_due }}</td>
             </tr>
             <tr v-if="props.rows.length === 0">
-              <td colspan="9" class="py-6 text-center text-muted-foreground">No outstanding invoices.</td>
+              <td colspan="9" class="py-6 text-center text-base-content/70">No outstanding invoices.</td>
             </tr>
           </tbody>
         </table>

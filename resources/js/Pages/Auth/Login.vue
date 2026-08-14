@@ -24,12 +24,12 @@ function submit() {
       {{ status }}
     </div>
 
-    <h1 class="text-xl font-semibold text-foreground mb-1">Sign in</h1>
-    <p class="text-sm text-muted-foreground mb-6">Use your clinic account to continue.</p>
+    <h1 class="text-xl font-semibold text-base-content mb-1">Sign in</h1>
+    <p class="text-sm text-base-content/70 mb-6">Use your clinic account to continue.</p>
 
     <form @submit.prevent="submit" class="space-y-4">
       <div>
-        <label for="email" class="block text-sm font-medium text-foreground mb-1">Email</label>
+        <label for="email" class="block text-sm font-medium text-base-content mb-1">Email</label>
         <input
           id="email"
           v-model="form.email"
@@ -37,16 +37,16 @@ function submit() {
           required
           autofocus
           autocomplete="email"
-          class="w-full h-10 px-3 rounded-md border border-border bg-surface text-foreground focus:outline-none focus:ring-2 focus:ring-primary-500"
-          :class="form.errors.email && 'border-danger'"
+          class="w-full h-10 px-3 rounded-md border border-base-300 bg-base-100 text-base-content focus:outline-none focus:ring-2 focus:ring-primary"
+          :class="form.errors.email && 'border-error'"
         />
-        <p v-if="form.errors.email" class="mt-1 text-sm text-danger">{{ form.errors.email }}</p>
+        <p v-if="form.errors.email" class="mt-1 text-sm text-error">{{ form.errors.email }}</p>
       </div>
 
       <div>
         <div class="flex items-center justify-between mb-1">
-          <label for="password" class="block text-sm font-medium text-foreground">Password</label>
-          <Link href="/forgot-password" class="text-sm text-primary-600 hover:text-primary-700">Forgot?</Link>
+          <label for="password" class="block text-sm font-medium text-base-content">Password</label>
+          <Link href="/forgot-password" class="text-sm text-primary hover:text-primary">Forgot?</Link>
         </div>
         <input
           id="password"
@@ -54,21 +54,21 @@ function submit() {
           type="password"
           required
           autocomplete="current-password"
-          class="w-full h-10 px-3 rounded-md border border-border bg-surface text-foreground focus:outline-none focus:ring-2 focus:ring-primary-500"
-          :class="form.errors.password && 'border-danger'"
+          class="w-full h-10 px-3 rounded-md border border-base-300 bg-base-100 text-base-content focus:outline-none focus:ring-2 focus:ring-primary"
+          :class="form.errors.password && 'border-error'"
         />
-        <p v-if="form.errors.password" class="mt-1 text-sm text-danger">{{ form.errors.password }}</p>
+        <p v-if="form.errors.password" class="mt-1 text-sm text-error">{{ form.errors.password }}</p>
       </div>
 
-      <label class="flex items-center gap-2 text-sm text-foreground">
-        <input v-model="form.remember" type="checkbox" class="rounded border-border" />
+      <label class="flex items-center gap-2 text-sm text-base-content">
+        <input v-model="form.remember" type="checkbox" class="rounded border-base-300" />
         Remember me
       </label>
 
       <button
         type="submit"
         :disabled="form.processing"
-        class="w-full h-10 rounded-md bg-primary-600 text-white font-medium hover:bg-primary-700 disabled:opacity-50"
+        class="w-full h-10 rounded-md bg-primary text-white font-medium hover:bg-primary disabled:opacity-50"
       >
         {{ form.processing ? 'Signing in…' : 'Sign in' }}
       </button>

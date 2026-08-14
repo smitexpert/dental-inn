@@ -72,7 +72,7 @@ const typeOptions = [
     <UiCard title="Locations">
       <template #header>
         <div class="flex items-center justify-between gap-3">
-          <h3 class="text-base font-semibold text-foreground">Locations</h3>
+          <h3 class="text-base font-semibold text-base-content">Locations</h3>
           <UiButton @click="openCreate">New location</UiButton>
         </div>
       </template>
@@ -88,7 +88,7 @@ const typeOptions = [
         />
       </div>
       <table class="w-full text-sm">
-        <thead class="bg-surface-muted text-muted-foreground">
+        <thead class="bg-base-200 text-base-content/70">
           <tr>
             <th class="text-left px-4 py-2">Name</th>
             <th class="text-left px-4 py-2">Type</th>
@@ -98,19 +98,19 @@ const typeOptions = [
           </tr>
         </thead>
         <tbody>
-          <tr v-for="loc in locations.data" :key="loc.id" class="border-b border-border last:border-b-0">
-            <td class="px-4 py-2 text-foreground font-medium">{{ loc.name }}</td>
-            <td class="px-4 py-2 text-muted-foreground capitalize">{{ loc.location_type }}</td>
-            <td class="px-4 py-2 text-right text-muted-foreground">{{ loc.stock_levels_count }}</td>
+          <tr v-for="loc in locations.data" :key="loc.id" class="border-b border-base-300 last:border-b-0">
+            <td class="px-4 py-2 text-base-content font-medium">{{ loc.name }}</td>
+            <td class="px-4 py-2 text-base-content/70 capitalize">{{ loc.location_type }}</td>
+            <td class="px-4 py-2 text-right text-base-content/70">{{ loc.stock_levels_count }}</td>
             <td class="px-4 py-2">
               <UiBadge :variant="loc.is_active ? 'success' : 'neutral'">{{ loc.is_active ? 'Active' : 'Inactive' }}</UiBadge>
             </td>
             <td class="px-4 py-2 text-right">
-              <button type="button" class="text-primary-600 hover:text-primary-700 text-sm" @click="openEdit(loc)">Edit</button>
+              <button type="button" class="text-primary hover:text-primary text-sm" @click="openEdit(loc)">Edit</button>
             </td>
           </tr>
           <tr v-if="locations.data.length === 0">
-            <td colspan="5" class="text-center text-muted-foreground py-6">No locations yet.</td>
+            <td colspan="5" class="text-center text-base-content/70 py-6">No locations yet.</td>
           </tr>
         </tbody>
       </table>
@@ -120,7 +120,7 @@ const typeOptions = [
       <form @submit.prevent="submitCreate" class="space-y-3">
         <UiField label="Name" required>
           <UiInput v-model="createForm.name" placeholder="e.g. Operatory 1" />
-          <p v-if="createForm.errors.name" class="text-xs text-danger mt-1">{{ createForm.errors.name }}</p>
+          <p v-if="createForm.errors.name" class="text-xs text-error mt-1">{{ createForm.errors.name }}</p>
         </UiField>
         <UiField label="Type">
           <UiSelect v-model="createForm.location_type" :options="typeOptions" />
@@ -137,7 +137,7 @@ const typeOptions = [
       <form @submit.prevent="submitEdit" class="space-y-3">
         <UiField label="Name" required>
           <UiInput v-model="editForm.name" />
-          <p v-if="editForm.errors.name" class="text-xs text-danger mt-1">{{ editForm.errors.name }}</p>
+          <p v-if="editForm.errors.name" class="text-xs text-error mt-1">{{ editForm.errors.name }}</p>
         </UiField>
         <UiField label="Type">
           <UiSelect v-model="editForm.location_type" :options="typeOptions" />

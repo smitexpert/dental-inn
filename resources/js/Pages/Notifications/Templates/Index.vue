@@ -54,7 +54,7 @@ function destroy(id) {
         </div>
         <div class="overflow-x-auto">
           <table class="w-full text-sm">
-            <thead class="bg-surface-muted text-muted-foreground">
+            <thead class="bg-base-200 text-base-content/70">
               <tr>
                 <th class="text-left px-4 py-2">Key</th>
                 <th class="text-left px-4 py-2">Channel</th>
@@ -67,25 +67,25 @@ function destroy(id) {
               <tr
                 v-for="t in templates.data"
                 :key="t.id"
-                class="border-b border-border last:border-b-0"
+                class="border-b border-base-300 last:border-b-0"
               >
-                <td class="px-4 py-2 text-foreground font-mono">{{ t.key }}</td>
+                <td class="px-4 py-2 text-base-content font-mono">{{ t.key }}</td>
                 <td class="px-4 py-2">
                   <UiBadge variant="secondary">{{ t.channel }}</UiBadge>
                 </td>
-                <td class="px-4 py-2 text-muted-foreground">{{ t.subject || '—' }}</td>
+                <td class="px-4 py-2 text-base-content/70">{{ t.subject || '—' }}</td>
                 <td class="px-4 py-2">
                   <UiBadge :variant="t.is_active ? 'success' : 'secondary'">
                     {{ t.is_active ? 'Active' : 'Inactive' }}
                   </UiBadge>
                 </td>
                 <td class="px-4 py-2 text-right space-x-2">
-                  <Link :href="`/notifications/templates/${t.id}/edit`" class="text-primary-600 hover:text-primary-700 text-sm">Edit</Link>
-                  <button type="button" class="text-danger-600 hover:text-danger-700 text-sm" @click="destroy(t.id)">Delete</button>
+                  <Link :href="`/notifications/templates/${t.id}/edit`" class="text-primary hover:text-primary text-sm">Edit</Link>
+                  <button type="button" class="text-error-600 hover:text-error-700 text-sm" @click="destroy(t.id)">Delete</button>
                 </td>
               </tr>
               <tr v-if="templates.data.length === 0">
-                <td colspan="5" class="text-center text-muted-foreground py-6">No templates.</td>
+                <td colspan="5" class="text-center text-base-content/70 py-6">No templates.</td>
               </tr>
             </tbody>
           </table>

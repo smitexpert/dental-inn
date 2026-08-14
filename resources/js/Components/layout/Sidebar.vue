@@ -9,9 +9,9 @@ const isActive = (href) => page.url === href || (href !== '/dashboard' && page.u
 </script>
 
 <template>
-  <aside class="w-64 bg-surface border-r border-border flex flex-col h-full">
-    <div class="px-4 py-4 border-b border-border">
-      <h2 class="text-sm font-semibold text-foreground">Navigation</h2>
+  <aside class="w-64 bg-base-100 border-r border-base-300 flex flex-col h-full">
+    <div class="px-4 py-4 border-b border-base-300">
+      <h2 class="text-sm font-semibold text-base-content">Navigation</h2>
     </div>
     <nav class="flex-1 p-2 space-y-0.5 overflow-y-auto">
       <SidebarItem

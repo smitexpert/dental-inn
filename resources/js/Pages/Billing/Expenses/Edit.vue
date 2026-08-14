@@ -35,7 +35,7 @@ function submit() {
     <UiCard title="Edit expense">
       <template #header>
         <div class="flex items-center justify-between gap-3">
-          <h3 class="text-base font-semibold text-foreground">Edit expense #{{ expense.id }}</h3>
+          <h3 class="text-base font-semibold text-base-content">Edit expense #{{ expense.id }}</h3>
           <Link :href="`/billing/expenses/${expense.id}`"><UiButton variant="ghost">Back</UiButton></Link>
         </div>
       </template>

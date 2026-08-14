@@ -50,7 +50,7 @@ function statusBadge(s) {
     <UiCard title="Invoices">
       <template #header>
         <div class="flex items-center justify-between gap-3">
-          <h3 class="text-base font-semibold text-foreground">Invoices</h3>
+          <h3 class="text-base font-semibold text-base-content">Invoices</h3>
           <Link href="/billing/invoices/create"><UiButton>New invoice</UiButton></Link>
         </div>
       </template>
@@ -69,7 +69,7 @@ function statusBadge(s) {
 
       <div v-else class="overflow-x-auto">
         <table class="w-full text-sm">
-          <thead class="bg-surface-muted text-muted-foreground">
+          <thead class="bg-base-200 text-base-content/70">
             <tr>
               <th class="text-left px-4 py-2">Number</th>
               <th class="text-left px-4 py-2">Patient</th>
@@ -82,18 +82,18 @@ function statusBadge(s) {
             </tr>
           </thead>
           <tbody>
-            <tr v-for="i in invoices.data" :key="i.id" class="border-b border-border last:border-b-0">
-              <td class="px-4 py-2 text-foreground font-mono text-xs">{{ i.invoice_number }}</td>
-              <td class="px-4 py-2 text-foreground">{{ i.patient?.name ?? '—' }}</td>
-              <td class="px-4 py-2 text-muted-foreground">{{ i.invoice_date }}</td>
-              <td class="px-4 py-2 text-muted-foreground">{{ i.due_date }}</td>
-              <td class="px-4 py-2 text-right text-foreground font-medium">{{ i.total }}</td>
-              <td class="px-4 py-2 text-right text-foreground">{{ i.balance_due }}</td>
+            <tr v-for="i in invoices.data" :key="i.id" class="border-b border-base-300 last:border-b-0">
+              <td class="px-4 py-2 text-base-content font-mono text-xs">{{ i.invoice_number }}</td>
+              <td class="px-4 py-2 text-base-content">{{ i.patient?.name ?? '—' }}</td>
+              <td class="px-4 py-2 text-base-content/70">{{ i.invoice_date }}</td>
+              <td class="px-4 py-2 text-base-content/70">{{ i.due_date }}</td>
+              <td class="px-4 py-2 text-right text-base-content font-medium">{{ i.total }}</td>
+              <td class="px-4 py-2 text-right text-base-content">{{ i.balance_due }}</td>
               <td class="px-4 py-2">
                 <UiBadge :variant="statusBadge(i.status)">{{ i.status_label }}</UiBadge>
               </td>
               <td class="px-4 py-2 text-right">
-                <Link :href="`/billing/invoices/${i.id}`" class="text-primary-600 hover:underline">View</Link>
+                <Link :href="`/billing/invoices/${i.id}`" class="text-primary hover:underline">View</Link>
               </td>
             </tr>
           </tbody>

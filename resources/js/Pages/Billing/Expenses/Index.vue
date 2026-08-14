@@ -38,7 +38,7 @@ watch([q, status, categoryId, dateFrom, dateTo], applyFilters)
     <UiCard title="Expenses">
       <template #header>
         <div class="flex items-center justify-between gap-3">
-          <h3 class="text-base font-semibold text-foreground">Expenses</h3>
+          <h3 class="text-base font-semibold text-base-content">Expenses</h3>
           <Link href="/billing/expenses/create"><UiButton>Submit expense</UiButton></Link>
         </div>
       </template>
@@ -55,7 +55,7 @@ watch([q, status, categoryId, dateFrom, dateTo], applyFilters)
 
       <div v-else class="overflow-x-auto">
         <table class="w-full text-sm">
-          <thead class="bg-surface-muted text-muted-foreground">
+          <thead class="bg-base-200 text-base-content/70">
             <tr>
               <th class="text-left px-4 py-2">Date</th>
               <th class="text-left px-4 py-2">Category</th>
@@ -67,7 +67,7 @@ watch([q, status, categoryId, dateFrom, dateTo], applyFilters)
             </tr>
           </thead>
           <tbody>
-            <tr v-for="e in expenses.data" :key="e.id" class="border-b border-border last:border-b-0">
+            <tr v-for="e in expenses.data" :key="e.id" class="border-b border-base-300 last:border-b-0">
               <td class="px-4 py-2">{{ e.expense_date }}</td>
               <td class="px-4 py-2">{{ e.category.name }}</td>
               <td class="px-4 py-2">{{ e.vendor ?? '—' }}</td>
@@ -77,7 +77,7 @@ watch([q, status, categoryId, dateFrom, dateTo], applyFilters)
                 <UiBadge :variant="e.status_color">{{ e.status_label }}</UiBadge>
               </td>
               <td class="px-4 py-2 text-right">
-                <Link :href="`/billing/expenses/${e.id}`" class="text-primary-600 hover:underline">View</Link>
+                <Link :href="`/billing/expenses/${e.id}`" class="text-primary hover:underline">View</Link>
               </td>
             </tr>
           </tbody>

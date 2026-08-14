@@ -8,8 +8,8 @@ import UiButton from '@/Components/ui/Button.vue'
   <Head title="Forbidden" />
   <AuthenticatedLayout>
     <div class="max-w-md mx-auto text-center py-12">
-      <h1 class="text-3xl font-semibold text-foreground mb-2">403 — Forbidden</h1>
-      <p class="text-muted-foreground mb-6">You don't have permission to view this page.</p>
+      <h1 class="text-3xl font-semibold text-base-content mb-2">403 — Forbidden</h1>
+      <p class="text-base-content/70 mb-6">You don't have permission to view this page.</p>
       <Link href="/dashboard"><UiButton>Go to dashboard</UiButton></Link>
     </div>
   </AuthenticatedLayout>

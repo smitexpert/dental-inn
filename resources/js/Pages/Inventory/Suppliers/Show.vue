@@ -14,39 +14,39 @@ const props = defineProps({ supplier: Object, products: Array })
       <template #header>
         <div class="flex items-center justify-between gap-3">
           <div>
-            <h3 class="text-base font-semibold text-foreground">{{ supplier.name }}</h3>
-            <p class="text-xs text-muted-foreground mt-1">{{ supplier.contact_person || 'No contact on file' }}</p>
+            <h3 class="text-base font-semibold text-base-content">{{ supplier.name }}</h3>
+            <p class="text-xs text-base-content/70 mt-1">{{ supplier.contact_person || 'No contact on file' }}</p>
           </div>
           <div class="flex items-center gap-2">
             <UiBadge :variant="supplier.is_active ? 'success' : 'neutral'">{{ supplier.is_active ? 'Active' : 'Inactive' }}</UiBadge>
-            <Link :href="`/inventory/suppliers/${supplier.id}/edit`" class="text-primary-600 hover:text-primary-700 text-sm">Edit</Link>
-            <Link href="/inventory/suppliers" class="text-muted-foreground text-sm">← Back</Link>
+            <Link :href="`/inventory/suppliers/${supplier.id}/edit`" class="text-primary hover:text-primary text-sm">Edit</Link>
+            <Link href="/inventory/suppliers" class="text-base-content/70 text-sm">← Back</Link>
           </div>
         </div>
       </template>
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
         <div>
-          <p class="text-xs uppercase tracking-wide text-muted-foreground">Phone</p>
-          <p class="text-foreground">{{ supplier.phone || '—' }}</p>
+          <p class="text-xs uppercase tracking-wide text-base-content/70">Phone</p>
+          <p class="text-base-content">{{ supplier.phone || '—' }}</p>
         </div>
         <div>
-          <p class="text-xs uppercase tracking-wide text-muted-foreground">Email</p>
-          <p class="text-foreground">{{ supplier.email || '—' }}</p>
+          <p class="text-xs uppercase tracking-wide text-base-content/70">Email</p>
+          <p class="text-base-content">{{ supplier.email || '—' }}</p>
         </div>
         <div class="col-span-2">
-          <p class="text-xs uppercase tracking-wide text-muted-foreground">Address</p>
-          <p class="text-foreground whitespace-pre-line">{{ supplier.address || '—' }}</p>
+          <p class="text-xs uppercase tracking-wide text-base-content/70">Address</p>
+          <p class="text-base-content whitespace-pre-line">{{ supplier.address || '—' }}</p>
         </div>
         <div class="col-span-2">
-          <p class="text-xs uppercase tracking-wide text-muted-foreground">Notes</p>
-          <p class="text-foreground whitespace-pre-line">{{ supplier.notes || '—' }}</p>
+          <p class="text-xs uppercase tracking-wide text-base-content/70">Notes</p>
+          <p class="text-base-content whitespace-pre-line">{{ supplier.notes || '—' }}</p>
         </div>
       </div>
     </UiCard>
 
     <UiCard class="mt-4" title="Products supplied">
       <table class="w-full text-sm">
-        <thead class="bg-surface-muted text-muted-foreground">
+        <thead class="bg-base-200 text-base-content/70">
           <tr>
             <th class="text-left px-4 py-2">SKU</th>
             <th class="text-left px-4 py-2">Name</th>
@@ -57,10 +57,10 @@ const props = defineProps({ supplier: Object, products: Array })
           </tr>
         </thead>
         <tbody>
-          <tr v-for="p in products" :key="p.id" class="border-b border-border last:border-b-0">
-            <td class="px-4 py-2 text-muted-foreground font-mono text-xs">{{ p.sku }}</td>
-            <td class="px-4 py-2 text-foreground">{{ p.name }}</td>
-            <td class="px-4 py-2 text-muted-foreground font-mono text-xs">{{ p.supplier_sku || '—' }}</td>
+          <tr v-for="p in products" :key="p.id" class="border-b border-base-300 last:border-b-0">
+            <td class="px-4 py-2 text-base-content/70 font-mono text-xs">{{ p.sku }}</td>
+            <td class="px-4 py-2 text-base-content">{{ p.name }}</td>
+            <td class="px-4 py-2 text-base-content/70 font-mono text-xs">{{ p.supplier_sku || '—' }}</td>
             <td class="px-4 py-2 text-right">{{ p.unit_cost || '—' }}</td>
             <td class="px-4 py-2 text-right">{{ p.lead_time_days ? `${p.lead_time_days} d` : '—' }}</td>
             <td class="px-4 py-2">
@@ -68,7 +68,7 @@ const props = defineProps({ supplier: Object, products: Array })
             </td>
           </tr>
           <tr v-if="products.length === 0">
-            <td colspan="6" class="text-center text-muted-foreground py-6">No products linked yet.</td>
+            <td colspan="6" class="text-center text-base-content/70 py-6">No products linked yet.</td>
           </tr>
         </tbody>
       </table>

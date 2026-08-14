@@ -8,18 +8,18 @@ describe('UiButton', () => {
   it('renders default primary variant classes', () => {
     const wrapper = factory()
     const html = wrapper.html()
-    expect(html).toContain('bg-primary-600')
+    expect(html).toContain('bg-primary')
     expect(html).toContain('text-white')
   })
 
   it('renders secondary variant', () => {
     const wrapper = factory({ variant: 'secondary' })
-    expect(wrapper.html()).toContain('bg-surface-muted')
+    expect(wrapper.html()).toContain('bg-base-200')
   })
 
   it('renders danger variant', () => {
     const wrapper = factory({ variant: 'danger' })
-    expect(wrapper.html()).toContain('bg-danger')
+    expect(wrapper.html()).toContain('bg-error')
   })
 
   it('renders size sm', () => {

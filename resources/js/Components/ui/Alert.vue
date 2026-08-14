@@ -9,10 +9,10 @@ defineProps({
 })
 
 const classes = {
-  info: 'bg-primary-50 text-primary-700 border-primary-200',
+  info: 'bg-primary/10 text-primary border-primary-200',
   success: 'bg-success/10 text-success border-success/30',
   warning: 'bg-warning/10 text-warning border-warning/30',
-  danger: 'bg-danger/10 text-danger border-danger/30',
+  danger: 'bg-error/10 text-error border-error/30',
 }
 </script>
 

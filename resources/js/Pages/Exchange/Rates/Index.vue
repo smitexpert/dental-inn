@@ -51,12 +51,12 @@ function submit() {
     <UiCard title="Exchange rates">
       <template #header>
         <div class="flex items-center justify-between gap-3">
-          <h3 class="text-base font-semibold text-foreground">Exchange rates</h3>
+          <h3 class="text-base font-semibold text-base-content">Exchange rates</h3>
           <UiButton v-if="canManage && !showForm" @click="showForm = true">Add rate</UiButton>
         </div>
       </template>
 
-      <div v-if="canManage && showForm" class="bg-surface-muted rounded-md p-4 mb-4 grid grid-cols-5 gap-3">
+      <div v-if="canManage && showForm" class="bg-base-200 rounded-md p-4 mb-4 grid grid-cols-5 gap-3">
         <UiSelect
           v-model="form.from_currency_code"
           label="From"
@@ -93,7 +93,7 @@ function submit() {
 
       <div v-else class="overflow-x-auto">
         <table class="w-full text-sm">
-          <thead class="bg-surface-muted text-muted-foreground">
+          <thead class="bg-base-200 text-base-content/70">
             <tr>
               <th class="text-left px-4 py-2">From</th>
               <th class="text-left px-4 py-2">To</th>
@@ -104,15 +104,15 @@ function submit() {
             </tr>
           </thead>
           <tbody>
-            <tr v-for="r in rates.data" :key="r.id" class="border-b border-border last:border-b-0">
-              <td class="px-4 py-2 text-foreground font-mono text-xs">{{ r.from_currency_code }}</td>
-              <td class="px-4 py-2 text-foreground font-mono text-xs">{{ r.to_currency_code }}</td>
-              <td class="px-4 py-2 text-right text-foreground">{{ r.rate }}</td>
-              <td class="px-4 py-2 text-muted-foreground">{{ r.effective_at }}</td>
-              <td class="px-4 py-2 text-muted-foreground text-xs">{{ r.creator?.name ?? '—' }}</td>
+            <tr v-for="r in rates.data" :key="r.id" class="border-b border-base-300 last:border-b-0">
+              <td class="px-4 py-2 text-base-content font-mono text-xs">{{ r.from_currency_code }}</td>
+              <td class="px-4 py-2 text-base-content font-mono text-xs">{{ r.to_currency_code }}</td>
+              <td class="px-4 py-2 text-right text-base-content">{{ r.rate }}</td>
+              <td class="px-4 py-2 text-base-content/70">{{ r.effective_at }}</td>
+              <td class="px-4 py-2 text-base-content/70 text-xs">{{ r.creator?.name ?? '—' }}</td>
               <td v-if="canManage" class="px-4 py-2 text-right">
                 <button
-                  class="text-danger-600 hover:underline"
+                  class="text-error-600 hover:underline"
                   @click="router.delete(`/exchange/rates/${r.id}`)"
                 >
                   Delete

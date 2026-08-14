@@ -8,9 +8,9 @@ defineProps({
 
 <template>
   <div class="flex flex-col items-center justify-center text-center p-8">
-    <div v-if="icon" :class="icon" class="text-4xl text-muted-foreground mb-2" />
-    <h3 class="text-base font-semibold text-foreground">{{ title }}</h3>
-    <p v-if="description" class="text-sm text-muted-foreground mt-1 max-w-sm">{{ description }}</p>
+    <div v-if="icon" :class="icon" class="text-4xl text-base-content/70 mb-2" />
+    <h3 class="text-base font-semibold text-base-content">{{ title }}</h3>
+    <p v-if="description" class="text-sm text-base-content/70 mt-1 max-w-sm">{{ description }}</p>
     <div v-if="$slots.action" class="mt-4">
       <slot name="action" />
     </div>

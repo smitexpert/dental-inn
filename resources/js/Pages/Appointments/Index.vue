@@ -74,12 +74,12 @@ function fmt(iso) {
             v-model="status"
             :options="[{ label: 'All statuses', value: null }, ...statuses.map((s) => ({ label: s.label, value: s.value }))]"
           />
-          <input v-model="from" type="date" class="h-10 rounded-md border border-border bg-surface px-3 text-sm" />
-          <input v-model="to" type="date" class="h-10 rounded-md border border-border bg-surface px-3 text-sm" />
+          <input v-model="from" type="date" class="h-10 rounded-md border border-base-300 bg-base-100 px-3 text-sm" />
+          <input v-model="to" type="date" class="h-10 rounded-md border border-base-300 bg-base-100 px-3 text-sm" />
         </div>
         <div class="overflow-x-auto">
           <table class="w-full text-sm">
-            <thead class="bg-surface-muted text-muted-foreground">
+            <thead class="bg-base-200 text-base-content/70">
               <tr>
                 <th class="text-left px-4 py-2">When</th>
                 <th class="text-left px-4 py-2">Doctor</th>
@@ -93,33 +93,33 @@ function fmt(iso) {
               <tr
                 v-for="a in appointments.data"
                 :key="a.id"
-                class="border-b border-border last:border-b-0"
+                class="border-b border-base-300 last:border-b-0"
               >
-                <td class="px-4 py-2 text-foreground">{{ fmt(a.scheduled_at) }}</td>
-                <td class="px-4 py-2 text-foreground">
+                <td class="px-4 py-2 text-base-content">{{ fmt(a.scheduled_at) }}</td>
+                <td class="px-4 py-2 text-base-content">
                   <div class="flex items-center gap-2">
                     <span class="inline-block h-2 w-2 rounded-full" :style="{ backgroundColor: a.doctor_color }" />
                     {{ a.doctor_name }}
                   </div>
                 </td>
-                <td class="px-4 py-2 text-foreground">{{ a.patient_name }}</td>
-                <td class="px-4 py-2 text-muted-foreground">{{ a.duration_minutes }} min</td>
+                <td class="px-4 py-2 text-base-content">{{ a.patient_name }}</td>
+                <td class="px-4 py-2 text-base-content/70">{{ a.duration_minutes }} min</td>
                 <td class="px-4 py-2">
                   <UiBadge :variant="statusVariant(a.status)">{{ statusLabels[a.status] || a.status }}</UiBadge>
                 </td>
                 <td class="px-4 py-2 text-right">
-                  <Link :href="`/appointments/${a.id}`" class="text-primary-600 hover:text-primary-700 text-sm">View</Link>
+                  <Link :href="`/appointments/${a.id}`" class="text-primary hover:text-primary text-sm">View</Link>
                 </td>
               </tr>
               <tr v-if="appointments.data.length === 0">
-                <td colspan="6" class="text-center text-muted-foreground py-6">No appointments.</td>
+                <td colspan="6" class="text-center text-base-content/70 py-6">No appointments.</td>
               </tr>
             </tbody>
           </table>
         </div>
         <div
           v-if="appointments.last_page > 1"
-          class="mt-3 flex items-center justify-between text-sm text-muted-foreground"
+          class="mt-3 flex items-center justify-between text-sm text-base-content/70"
         >
           <span>Page {{ appointments.current_page }} of {{ appointments.last_page }}</span>
           <div class="flex gap-1">
@@ -127,7 +127,7 @@ function fmt(iso) {
               <Link
                 v-if="link.url"
                 :href="link.url"
-                class="px-2 py-1 rounded hover:bg-surface-muted"
+                class="px-2 py-1 rounded hover:bg-base-200"
                 ><!-- eslint-disable-next-line vue/no-v-text-v-html-on-component --><span v-html="link.label" /></Link>
             </template>
           </div>

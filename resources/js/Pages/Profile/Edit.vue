@@ -39,7 +39,7 @@ function deactivate() {
     <div class="max-w-2xl space-y-6">
       <UiCard title="Profile">
         <UiForm @submit.prevent="saveProfile">
-          <div v-if="profile.errors._all" class="text-sm text-danger">{{ profile.errors._all }}</div>
+          <div v-if="profile.errors._all" class="text-sm text-error">{{ profile.errors._all }}</div>
           <UiField label="Name" :error="profile.errors.name">
             <UiInput v-model="profile.name" type="text" required />
           </UiField>
@@ -73,7 +73,7 @@ function deactivate() {
       </UiCard>
 
       <UiCard title="Danger zone">
-        <p class="text-sm text-muted-foreground mb-3">
+        <p class="text-sm text-base-content/70 mb-3">
           Deactivating your account will sign you out and prevent future logins.
         </p>
         <UiButton variant="danger" @click="deactivate">Deactivate my account</UiButton>

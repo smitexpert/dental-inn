@@ -34,28 +34,28 @@ watch([dateFrom, dateTo], () => {
   <Head title="Ledger report" />
   <AuthenticatedLayout>
     <div class="max-w-7xl space-y-6">
-      <h1 class="text-2xl font-semibold text-foreground">Ledger</h1>
+      <h1 class="text-2xl font-semibold text-base-content">Ledger</h1>
 
       <UiCard title="Filters">
         <div class="flex flex-wrap items-end gap-4">
           <div>
-            <label class="block text-sm font-medium text-foreground mb-1">From</label>
+            <label class="block text-sm font-medium text-base-content mb-1">From</label>
             <UiInput v-model="dateFrom" type="date" />
           </div>
           <div>
-            <label class="block text-sm font-medium text-foreground mb-1">To</label>
+            <label class="block text-sm font-medium text-base-content mb-1">To</label>
             <UiInput v-model="dateTo" type="date" />
           </div>
           <div class="ml-auto text-right">
-            <p class="text-xs text-muted-foreground">Total debits</p>
-            <p class="text-lg font-semibold text-foreground">{{ format(props.totals.debits || 0) }}</p>
+            <p class="text-xs text-base-content/70">Total debits</p>
+            <p class="text-lg font-semibold text-base-content">{{ format(props.totals.debits || 0) }}</p>
           </div>
         </div>
       </UiCard>
 
       <UiCard title="Entries">
         <table class="w-full text-sm">
-          <thead class="border-b border-border text-left text-muted-foreground">
+          <thead class="border-b border-base-300 text-left text-base-content/70">
             <tr>
               <th class="py-2 pr-3">Date</th>
               <th class="py-2 pr-3">Description</th>
@@ -66,16 +66,16 @@ watch([dateFrom, dateTo], () => {
             </tr>
           </thead>
           <tbody>
-            <tr v-for="entry in props.entries.data" :key="entry.id" class="border-b border-border/50">
+            <tr v-for="entry in props.entries.data" :key="entry.id" class="border-b border-base-300/50">
               <td class="py-2 pr-3 whitespace-nowrap">{{ entry.entry_date }}</td>
               <td class="py-2 pr-3">{{ entry.description }}</td>
               <td class="py-2 pr-3">
                 <span class="font-mono text-xs">{{ entry.debit_account?.code }}</span>
-                <span class="text-muted-foreground text-xs ml-1">{{ entry.debit_account?.name }}</span>
+                <span class="text-base-content/70 text-xs ml-1">{{ entry.debit_account?.name }}</span>
               </td>
               <td class="py-2 pr-3">
                 <span class="font-mono text-xs">{{ entry.credit_account?.code }}</span>
-                <span class="text-muted-foreground text-xs ml-1">{{ entry.credit_account?.name }}</span>
+                <span class="text-base-content/70 text-xs ml-1">{{ entry.credit_account?.name }}</span>
               </td>
               <td class="py-2 pr-3 text-right tabular-nums">{{ format(entry.amount) }}</td>
               <td class="py-2 pr-3">
@@ -85,7 +85,7 @@ watch([dateFrom, dateTo], () => {
               </td>
             </tr>
             <tr v-if="props.entries.data.length === 0">
-              <td colspan="6" class="py-6 text-center text-muted-foreground">No entries in this period.</td>
+              <td colspan="6" class="py-6 text-center text-base-content/70">No entries in this period.</td>
             </tr>
           </tbody>
         </table>
@@ -94,7 +94,7 @@ watch([dateFrom, dateTo], () => {
           <UiButton variant="ghost" :disabled="!props.entries.prev_page_url" @click="router.get(props.entries.prev_page_url, {}, { preserveState: true })">
             Previous
           </UiButton>
-          <span class="text-xs text-muted-foreground">
+          <span class="text-xs text-base-content/70">
             Page {{ props.entries.current_page }} of {{ props.entries.last_page }}
           </span>
           <UiButton variant="ghost" :disabled="!props.entries.next_page_url" @click="router.get(props.entries.next_page_url, {}, { preserveState: true })">

@@ -90,19 +90,19 @@ function submit() {
           </div>
 
           <UiField label="Patient" :error="form.errors.patient_id" required>
-            <div v-if="selectedPatient" class="flex items-center justify-between gap-2 rounded-md border border-border bg-surface-muted px-3 py-2">
+            <div v-if="selectedPatient" class="flex items-center justify-between gap-2 rounded-md border border-base-300 bg-base-200 px-3 py-2">
               <div>
-                <div class="text-sm font-medium text-foreground">{{ selectedPatient.name }}</div>
-                <div class="text-xs text-muted-foreground font-mono">{{ selectedPatient.patient_code }} · {{ selectedPatient.phone || 'no phone' }}</div>
+                <div class="text-sm font-medium text-base-content">{{ selectedPatient.name }}</div>
+                <div class="text-xs text-base-content/70 font-mono">{{ selectedPatient.patient_code }} · {{ selectedPatient.phone || 'no phone' }}</div>
               </div>
-              <button type="button" class="text-xs text-primary-600 hover:underline" @click="pickerOpen = true">
+              <button type="button" class="text-xs text-primary hover:underline" @click="pickerOpen = true">
                 Change
               </button>
             </div>
             <button
               v-else
               type="button"
-              class="h-10 w-full rounded-md border border-dashed border-border bg-surface px-3 text-sm text-muted-foreground hover:bg-surface-muted"
+              class="h-10 w-full rounded-md border border-dashed border-base-300 bg-base-100 px-3 text-sm text-base-content/70 hover:bg-base-200"
               @click="pickerOpen = true"
             >
               Select or create a patient
@@ -114,7 +114,7 @@ function submit() {
               <input
                 v-model="form.scheduled_at"
                 type="date"
-                class="h-10 w-full rounded-md border border-border bg-surface px-3 text-sm"
+                class="h-10 w-full rounded-md border border-base-300 bg-base-100 px-3 text-sm"
                 @change="loadSlots"
               />
             </UiField>
@@ -122,33 +122,33 @@ function submit() {
               <input
                 v-model="form.scheduled_at"
                 type="datetime-local"
-                class="h-10 w-full rounded-md border border-border bg-surface px-3 text-sm"
+                class="h-10 w-full rounded-md border border-base-300 bg-base-100 px-3 text-sm"
               />
             </UiField>
           </div>
-          <div v-if="loadingSlots" class="text-sm text-muted-foreground">Loading slots…</div>
+          <div v-if="loadingSlots" class="text-sm text-base-content/70">Loading slots…</div>
           <div v-else-if="slots.length > 0" class="grid grid-cols-6 gap-2">
             <button
               v-for="s in slots"
               :key="s"
               type="button"
               @click="pickSlot(s)"
-              class="h-9 rounded-md border border-border bg-surface px-2 text-xs text-foreground hover:bg-surface-muted"
+              class="h-9 rounded-md border border-base-300 bg-base-100 px-2 text-xs text-base-content hover:bg-base-200"
               :class="{ 'ring-2 ring-primary': form.scheduled_at === s.slice(0, 16) }"
             >
               {{ fmtSlot(s) }}
             </button>
           </div>
-          <div v-else-if="form.doctor_id && form.scheduled_at" class="text-sm text-muted-foreground">
+          <div v-else-if="form.doctor_id && form.scheduled_at" class="text-sm text-base-content/70">
             No available slots for this date.
           </div>
           <UiField label="Notes" :error="form.errors.notes">
             <UiTextarea v-model="form.notes" rows="3" />
           </UiField>
-          <div class="flex items-center justify-end gap-2 pt-3 border-t border-border">
+          <div class="flex items-center justify-end gap-2 pt-3 border-t border-base-300">
             <Link
               href="/appointments"
-              class="h-10 px-4 inline-flex items-center rounded-md bg-surface-muted text-foreground border border-border text-sm"
+              class="h-10 px-4 inline-flex items-center rounded-md bg-base-200 text-base-content border border-base-300 text-sm"
               >Cancel</Link
             >
             <UiButton type="submit" :loading="form.processing" :disabled="!form.patient_id">Book</UiButton>

@@ -25,10 +25,10 @@ watch(
 const classes = computed(() => [
   'flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors',
   props.comingSoon
-    ? 'text-muted-foreground cursor-not-allowed'
+    ? 'text-base-content/70 cursor-not-allowed'
     : props.active
-      ? 'bg-primary-50 text-primary-700 font-medium'
-      : 'text-foreground hover:bg-surface-muted',
+      ? 'bg-primary/10 text-primary font-medium'
+      : 'text-base-content hover:bg-base-200',
 ])
 </script>
 
@@ -45,15 +45,15 @@ const classes = computed(() => [
       <Badge v-if="badge" variant="warning">{{ badge }}</Badge>
       <span class="text-xs">{{ open ? '▾' : '▸' }}</span>
     </button>
-    <ul v-if="open" class="ml-4 mt-0.5 space-y-0.5 border-l border-border pl-2">
+    <ul v-if="open" class="ml-4 mt-0.5 space-y-0.5 border-l border-base-300 pl-2">
       <li v-for="child in children" :key="child.href">
         <Link
           :href="child.href"
           :class="[
             'flex items-center gap-2 px-3 py-1.5 rounded-md text-sm transition-colors',
             $page.url === child.href || ($page.url.startsWith(child.href) && child.href !== '/inventory/products')
-              ? 'bg-primary-50 text-primary-700 font-medium'
-              : 'text-muted-foreground hover:bg-surface-muted hover:text-foreground',
+              ? 'bg-primary/10 text-primary font-medium'
+              : 'text-base-content/70 hover:bg-base-200 hover:text-base-content',
           ]"
         >
           <span class="flex-1 truncate">{{ child.label }}</span>

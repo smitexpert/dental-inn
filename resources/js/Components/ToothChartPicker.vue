@@ -26,11 +26,11 @@ const CYCLE = [null, 'caries', 'filled', 'crown', 'missing', 'extraction_needed'
 
 const STATUS_COLOR = {
   healthy: 'bg-success/20 border-success text-success-700',
-  caries: 'bg-danger/20 border-danger text-danger-700',
-  filled: 'bg-primary/20 border-primary text-primary-700',
+  caries: 'bg-error/20 border-error text-error-700',
+  filled: 'bg-primary/20 border-primary text-primary',
   crown: 'bg-warning/20 border-warning text-warning-700',
-  missing: 'bg-surface-muted border-border text-muted-foreground line-through',
-  extraction_needed: 'bg-danger/30 border-danger text-danger-700',
+  missing: 'bg-base-200 border-base-300 text-base-content/70 line-through',
+  extraction_needed: 'bg-error/30 border-error text-error-700',
 }
 
 function getStatus(num) {
@@ -61,18 +61,18 @@ function clearAll() {
 function toothClasses(num) {
   const s = getStatus(num)
   return s
-    ? STATUS_COLOR[s] || 'bg-surface-muted border-border text-foreground'
-    : 'bg-surface border-border text-foreground hover:bg-surface-muted'
+    ? STATUS_COLOR[s] || 'bg-base-200 border-base-300 text-base-content'
+    : 'bg-base-100 border-base-300 text-base-content hover:bg-base-200'
 }
 </script>
 
 <template>
   <div class="space-y-3">
-    <div class="flex items-center justify-between text-xs text-muted-foreground">
+    <div class="flex items-center justify-between text-xs text-base-content/70">
       <span>Click a tooth to set its status. {{ Object.keys(modelValue).length }} marked.</span>
       <button
         type="button"
-        class="text-primary-600 hover:text-primary-700 disabled:opacity-50"
+        class="text-primary hover:text-primary disabled:opacity-50"
         :disabled="Object.keys(modelValue).length === 0"
         @click="clearAll"
       >
@@ -80,7 +80,7 @@ function toothClasses(num) {
       </button>
     </div>
 
-    <div class="rounded-md border border-border bg-surface-muted p-3 space-y-2">
+    <div class="rounded-md border border-base-300 bg-base-200 p-3 space-y-2">
       <div class="flex items-center justify-center gap-2">
         <div class="flex-1 grid grid-cols-8 gap-1 justify-items-center" dir="rtl">
           <button
@@ -108,7 +108,7 @@ function toothClasses(num) {
         </div>
       </div>
 
-      <div class="border-t border-border"></div>
+      <div class="border-t border-base-300"></div>
 
       <div class="flex items-center justify-center gap-2">
         <div class="flex-1 grid grid-cols-8 gap-1 justify-items-center" dir="rtl">
@@ -139,14 +139,14 @@ function toothClasses(num) {
     </div>
 
     <details v-if="Object.keys(modelValue).length > 0" class="text-xs">
-      <summary class="cursor-pointer text-muted-foreground">Per-tooth detail</summary>
+      <summary class="cursor-pointer text-base-content/70">Per-tooth detail</summary>
       <div class="mt-2 grid grid-cols-2 gap-2">
         <div
           v-for="(s, num) in modelValue"
           :key="num"
           class="flex items-center gap-2"
         >
-          <span class="font-mono w-6 text-muted-foreground">#{{ num }}</span>
+          <span class="font-mono w-6 text-base-content/70">#{{ num }}</span>
           <UiSelect
             :model-value="s"
             :options="[{ label: '—', value: '' }, ...STATUS_OPTIONS]"
