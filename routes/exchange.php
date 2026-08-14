@@ -27,16 +27,19 @@ Route::middleware(['auth', 'active', 'permission:manage-exchange-rates'])
     });
 
 // Cash movements
-Route::middleware(['auth', 'active', 'permission:view-cash-movements'])
-    ->prefix('exchange/movements')->name('exchange.movements.')->group(function (): void {
-        Route::get('/', [CashMovementController::class, 'index'])->name('index');
-        Route::get('/{movement}', [CashMovementController::class, 'show'])->name('show');
-    });
-
+// 1) record-cash-movements MUST be declared before the view routes that
+//    bind a model on `/{movement}` so that the literal "create" path
+//    isn't resolved as a model id (which would 404 the user).
 Route::middleware(['auth', 'active', 'permission:record-cash-movements'])
     ->prefix('exchange/movements')->name('exchange.movements.')->group(function (): void {
         Route::get('/create', [CashMovementController::class, 'create'])->name('create');
         Route::post('/', [CashMovementController::class, 'store'])->name('store');
+    });
+
+Route::middleware(['auth', 'active', 'permission:view-cash-movements'])
+    ->prefix('exchange/movements')->name('exchange.movements.')->group(function (): void {
+        Route::get('/', [CashMovementController::class, 'index'])->name('index');
+        Route::get('/{movement}', [CashMovementController::class, 'show'])->name('show');
     });
 
 // Reconciliation
