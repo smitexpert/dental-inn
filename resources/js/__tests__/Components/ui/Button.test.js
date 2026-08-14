@@ -2,8 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
 import Button from '@/Components/ui/Button.vue'
 
-const factory = (props = {}, slots = { default: 'Click me' }) =>
-  mount(Button, { props, slots })
+const factory = (props = {}, slots = { default: 'Click me' }) => mount(Button, { props, slots })
 
 describe('UiButton', () => {
   it('renders default primary variant classes', () => {

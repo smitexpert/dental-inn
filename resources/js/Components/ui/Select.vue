@@ -22,7 +22,9 @@ defineEmits(['update:modelValue', 'change'])
     :placeholder="placeholder"
     :disabled="disabled"
     :pt="{
-      root: { class: 'h-10 w-full rounded-md border bg-surface' + (invalid ? ' border-danger' : ' border-border') },
+      root: {
+        class: 'h-10 w-full rounded-md border bg-surface' + (invalid ? ' border-danger' : ' border-border'),
+      },
       label: { class: 'px-3 text-foreground' },
       panel: { class: 'rounded-md border border-border bg-surface' },
       option: { class: 'px-3 py-2 hover:bg-surface-muted cursor-pointer' },

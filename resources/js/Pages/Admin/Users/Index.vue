@@ -46,7 +46,10 @@ function destroyUser(user) {
       </template>
       <div class="grid grid-cols-2 gap-3 mb-4">
         <UiInput v-model="q" placeholder="Search by name or email" />
-        <UiSelect v-model="role" :options="[{ label: 'All roles', value: null }, ...roles.map(r => ({ label: r, value: r }))]" />
+        <UiSelect
+          v-model="role"
+          :options="[{ label: 'All roles', value: null }, ...roles.map((r) => ({ label: r, value: r }))]"
+        />
       </div>
       <div class="overflow-x-auto">
         <table class="w-full text-sm">
@@ -67,12 +70,30 @@ function destroyUser(user) {
                 <UiBadge v-for="r in u.roles" :key="r" variant="primary" class="mr-1">{{ r }}</UiBadge>
               </td>
               <td class="px-4 py-2">
-                <UiBadge :variant="u.is_active ? 'success' : 'danger'">{{ u.is_active ? 'Active' : 'Inactive' }}</UiBadge>
+                <UiBadge :variant="u.is_active ? 'success' : 'danger'">{{
+                  u.is_active ? 'Active' : 'Inactive'
+                }}</UiBadge>
               </td>
               <td class="px-4 py-2 text-right">
-                <Link :href="`/admin/users/${u.id}/edit`" class="text-primary-600 hover:text-primary-700 mr-3 text-sm">Edit</Link>
-                <button v-if="u.id !== $page.props.auth.user.id" @click="toggleActive(u)" class="text-muted-foreground hover:text-foreground mr-3 text-sm">Toggle</button>
-                <button v-if="u.id !== $page.props.auth.user.id" @click="destroyUser(u)" class="text-danger hover:text-danger/80 text-sm">Delete</button>
+                <Link
+                  :href="`/admin/users/${u.id}/edit`"
+                  class="text-primary-600 hover:text-primary-700 mr-3 text-sm"
+                  >Edit</Link
+                >
+                <button
+                  v-if="u.id !== $page.props.auth.user.id"
+                  @click="toggleActive(u)"
+                  class="text-muted-foreground hover:text-foreground mr-3 text-sm"
+                >
+                  Toggle
+                </button>
+                <button
+                  v-if="u.id !== $page.props.auth.user.id"
+                  @click="destroyUser(u)"
+                  class="text-danger hover:text-danger/80 text-sm"
+                >
+                  Delete
+                </button>
               </td>
             </tr>
             <tr v-if="users.data.length === 0">
@@ -81,11 +102,18 @@ function destroyUser(user) {
           </tbody>
         </table>
       </div>
-      <div v-if="users.last_page > 1" class="mt-3 flex items-center justify-between text-sm text-muted-foreground">
+      <div
+        v-if="users.last_page > 1"
+        class="mt-3 flex items-center justify-between text-sm text-muted-foreground"
+      >
         <span>Page {{ users.current_page }} of {{ users.last_page }}</span>
         <div class="flex gap-1">
           <template v-for="link in users.links" :key="link.label">
-            <Link v-if="link.url" :href="link.url" v-html="link.label" class="px-2 py-1 rounded hover:bg-surface-muted" />
+            <Link
+              v-if="link.url"
+              :href="link.url"
+              class="px-2 py-1 rounded hover:bg-surface-muted"
+            ><!-- eslint-disable-next-line vue/no-v-text-v-html-on-component --><span v-html="link.label" /></Link>
           </template>
         </div>
       </div>

@@ -34,7 +34,9 @@ const form = useForm({
   appointment_slot_minutes: initial.appointment_slot_minutes,
 })
 
-function submit() { form.patch('/settings') }
+function submit() {
+  form.patch('/settings')
+}
 </script>
 
 <template>
@@ -84,18 +86,29 @@ function submit() { form.patch('/settings') }
       <UiCard title="Currency">
         <UiForm @submit="submit">
           <div class="grid grid-cols-2 gap-4">
-            <UiField label="Code" required><UiInput v-model="form.currency_code" maxlength="3" required /></UiField>
+            <UiField label="Code" required
+              ><UiInput v-model="form.currency_code" maxlength="3" required
+            /></UiField>
             <UiField label="Symbol" required><UiInput v-model="form.currency_symbol" required /></UiField>
             <UiField label="Decimals" required>
-              <UiSelect v-model="form.currency_decimals" :options="[
-                { label: '0', value: 0 }, { label: '2', value: 2 }, { label: '3', value: 3 }, { label: '4', value: 4 },
-              ]" />
+              <UiSelect
+                v-model="form.currency_decimals"
+                :options="[
+                  { label: '0', value: 0 },
+                  { label: '2', value: 2 },
+                  { label: '3', value: 3 },
+                  { label: '4', value: 4 },
+                ]"
+              />
             </UiField>
             <UiField label="Position" required>
-              <UiSelect v-model="form.currency_position" :options="[
-                { label: 'Before (৳100)', value: 'before' },
-                { label: 'After (100৳)', value: 'after' },
-              ]" />
+              <UiSelect
+                v-model="form.currency_position"
+                :options="[
+                  { label: 'Before (৳100)', value: 'before' },
+                  { label: 'After (100৳)', value: 'after' },
+                ]"
+              />
             </UiField>
             <UiField label="Default tax rate (%)" :error="form.errors.default_tax_rate">
               <UiInput v-model="form.default_tax_rate" type="number" step="0.01" min="0" max="100" />

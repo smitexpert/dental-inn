@@ -39,7 +39,14 @@ describe('UiSwitch', () => {
 describe('UiRadioGroup', () => {
   it('renders one option per item', () => {
     const wrapper = mount(RadioGroup, {
-      props: { modelValue: 'a', name: 'r', options: [{ label: 'A', value: 'a' }, { label: 'B', value: 'b' }] },
+      props: {
+        modelValue: 'a',
+        name: 'r',
+        options: [
+          { label: 'A', value: 'a' },
+          { label: 'B', value: 'b' },
+        ],
+      },
     })
     expect(wrapper.findAll('label')).toHaveLength(2)
   })

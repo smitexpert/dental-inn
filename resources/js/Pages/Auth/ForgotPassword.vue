@@ -27,7 +27,11 @@ function submit() {
         />
         <p v-if="form.errors.email" class="mt-1 text-sm text-danger">{{ form.errors.email }}</p>
       </div>
-      <button type="submit" :disabled="form.processing" class="w-full h-10 rounded-md bg-primary-600 text-white font-medium hover:bg-primary-700 disabled:opacity-50">
+      <button
+        type="submit"
+        :disabled="form.processing"
+        class="w-full h-10 rounded-md bg-primary-600 text-white font-medium hover:bg-primary-700 disabled:opacity-50"
+      >
         {{ form.processing ? 'Sending…' : 'Email reset link' }}
       </button>
       <p class="text-sm text-muted-foreground text-center">

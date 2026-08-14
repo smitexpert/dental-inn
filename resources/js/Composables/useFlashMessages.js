@@ -10,9 +10,9 @@ export function useFlashMessages() {
     () => ({ ...page.props.flash }),
     (flash) => {
       if (flash.success) toast.success(flash.success)
-      if (flash.error)   toast.error(flash.error)
+      if (flash.error) toast.error(flash.error)
       if (flash.warning) toast.warn(flash.warning)
     },
-    { deep: true, immediate: true }
+    { deep: true, immediate: true },
   )
 }

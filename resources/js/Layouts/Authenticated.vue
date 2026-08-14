@@ -32,7 +32,8 @@ onMounted(() => {
       v-else
       enter-active-class="transition-opacity"
       leave-active-class="transition-opacity"
-      enter-from-class="opacity-0" leave-to-class="opacity-0"
+      enter-from-class="opacity-0"
+      leave-to-class="opacity-0"
     >
       <div v-if="sidebarOpen" class="fixed inset-0 z-40 flex" @click.self="sidebarOpen = false">
         <div class="relative z-50">

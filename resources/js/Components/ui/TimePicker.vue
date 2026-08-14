@@ -20,7 +20,10 @@ defineEmits(['update:modelValue'])
     :disabled="disabled"
     :pt="{
       root: { class: 'w-full' },
-      input: { class: 'w-full h-10 px-3 rounded-md border border-border bg-surface text-foreground focus:outline-none focus:ring-2 focus:ring-primary-500' },
+      input: {
+        class:
+          'w-full h-10 px-3 rounded-md border border-border bg-surface text-foreground focus:outline-none focus:ring-2 focus:ring-primary-500',
+      },
     }"
     @update:model-value="$emit('update:modelValue', $event)"
   />

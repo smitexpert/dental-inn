@@ -13,7 +13,11 @@ defineEmits(['submit', 'cancel'])
 
 <template>
   <div class="flex items-center justify-end gap-2 pt-4 border-t border-border">
-    <Link v-if="showCancel && cancelHref" :href="cancelHref" class="h-10 px-4 inline-flex items-center rounded-md bg-surface-muted text-foreground border border-border hover:bg-surface-muted/70 text-sm">
+    <Link
+      v-if="showCancel && cancelHref"
+      :href="cancelHref"
+      class="h-10 px-4 inline-flex items-center rounded-md bg-surface-muted text-foreground border border-border hover:bg-surface-muted/70 text-sm"
+    >
       Cancel
     </Link>
     <button

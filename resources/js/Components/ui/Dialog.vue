@@ -6,7 +6,7 @@ defineProps({
   title: { type: String, default: null },
   modal: { type: Boolean, default: true },
   closable: { type: Boolean, default: true },
-  size: { type: String, default: 'md', validator: (v) => ['sm','md','lg','xl'].includes(v) },
+  size: { type: String, default: 'md', validator: (v) => ['sm', 'md', 'lg', 'xl'].includes(v) },
 })
 defineEmits(['update:modelValue', 'close'])
 
@@ -21,7 +21,9 @@ const sizeClass = { sm: 'max-w-sm', md: 'max-w-md', lg: 'max-w-lg', xl: 'max-w-2
     :pt="{
       root: { class: 'fixed inset-0 z-50 flex items-center justify-center p-4' },
       mask: { class: 'fixed inset-0 bg-black/50' },
-      container: { class: 'relative bg-surface border border-border rounded-lg shadow-xl w-full ' + sizeClass[size] },
+      container: {
+        class: 'relative bg-surface border border-border rounded-lg shadow-xl w-full ' + sizeClass[size],
+      },
       header: { class: 'flex items-center justify-between px-4 py-3 border-b border-border' },
       title: { class: 'text-lg font-semibold text-foreground' },
       content: { class: 'p-4 text-foreground' },

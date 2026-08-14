@@ -15,12 +15,14 @@ const props = defineProps({
 
 defineEmits(['update:modelValue', 'blur', 'focus'])
 
-const classes = computed(() => [
-  'w-full h-10 px-3 rounded-md bg-surface text-foreground placeholder:text-muted-foreground',
-  'focus:outline-none focus:ring-2 focus:ring-primary-500',
-  'disabled:opacity-50 disabled:cursor-not-allowed',
-  props.invalid ? 'border border-danger' : 'border border-border',
-].join(' '))
+const classes = computed(() =>
+  [
+    'w-full h-10 px-3 rounded-md bg-surface text-foreground placeholder:text-muted-foreground',
+    'focus:outline-none focus:ring-2 focus:ring-primary-500',
+    'disabled:opacity-50 disabled:cursor-not-allowed',
+    props.invalid ? 'border border-danger' : 'border border-border',
+  ].join(' '),
+)
 </script>
 
 <template>

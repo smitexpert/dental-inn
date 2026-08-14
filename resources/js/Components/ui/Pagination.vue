@@ -10,7 +10,9 @@ const props = defineProps({
 defineEmits(['page', 'update:first'])
 
 const pt = {
-  root: { class: 'flex items-center justify-between gap-2 px-4 py-2 bg-surface border border-border rounded-md' },
+  root: {
+    class: 'flex items-center justify-between gap-2 px-4 py-2 bg-surface border border-border rounded-md',
+  },
   pageButton: ({ context }) => [
     'h-8 min-w-[2rem] px-2 rounded text-sm',
     context.active ? 'bg-primary-600 text-white' : 'text-foreground hover:bg-surface-muted',

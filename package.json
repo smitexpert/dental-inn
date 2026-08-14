@@ -5,9 +5,12 @@
     "scripts": {
         "build": "vite build",
         "dev": "vite",
-        "test": "vitest run"
+        "test": "vitest run",
+        "lint": "eslint resources/js --ext .js,.vue",
+        "format": "prettier --write \"resources/**/*.{js,vue,css}\""
     },
     "devDependencies": {
+        "@eslint/js": "^10.0.1",
         "@tailwindcss/vite": "^4.0.0",
         "@vitejs/plugin-vue": "^6.0.8",
         "@vue/test-utils": "^2.4.11",

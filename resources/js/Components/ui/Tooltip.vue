@@ -2,8 +2,12 @@
 import { ref } from 'vue'
 
 const visible = ref(false)
-function show() { visible.value = true }
-function hide() { visible.value = false }
+function show() {
+  visible.value = true
+}
+function hide() {
+  visible.value = false
+}
 </script>
 
 <template>
@@ -12,7 +16,8 @@ function hide() { visible.value = false }
     <Transition
       enter-active-class="transition-opacity"
       leave-active-class="transition-opacity"
-      enter-from-class="opacity-0" leave-to-class="opacity-0"
+      enter-from-class="opacity-0"
+      leave-to-class="opacity-0"
     >
       <span
         v-if="visible"

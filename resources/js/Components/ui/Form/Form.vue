@@ -6,12 +6,7 @@ defineProps({
 </script>
 
 <template>
-  <form
-    :method="method"
-    :action="action"
-    @submit.prevent="$emit('submit', $event)"
-    class="space-y-4"
-  >
+  <form :method="method" :action="action" @submit.prevent="$emit('submit', $event)" class="space-y-4">
     <slot />
   </form>
 </template>

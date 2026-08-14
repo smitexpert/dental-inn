@@ -14,7 +14,12 @@ defineEmits(['update:modelValue'])
     <PrimeCheckbox
       :model-value="modelValue"
       :disabled="disabled"
-      :pt="{ root: { class: 'w-4 h-4 rounded border border-border text-primary-600 focus:ring-2 focus:ring-primary-500' }, box: { class: 'rounded' } }"
+      :pt="{
+        root: {
+          class: 'w-4 h-4 rounded border border-border text-primary-600 focus:ring-2 focus:ring-primary-500',
+        },
+        box: { class: 'rounded' },
+      }"
       @update:model-value="$emit('update:modelValue', $event)"
     />
     <span v-if="label" class="text-sm text-foreground">{{ label }}</span>

@@ -10,11 +10,13 @@ import UiButton from '@/Components/ui/Button.vue'
 const props = defineProps({ user: { type: Object, required: true } })
 
 const profile = useForm({
-  name:  props.user.name,
+  name: props.user.name,
   email: props.user.email,
   phone: props.user.phone,
 })
-function saveProfile() { profile.patch('/profile') }
+function saveProfile() {
+  profile.patch('/profile')
+}
 
 const password = useForm({
   current_password: '',
@@ -26,7 +28,7 @@ function savePassword() {
 }
 
 function deactivate() {
-  if (! confirm('This will deactivate your account. Continue?')) return
+  if (!confirm('This will deactivate your account. Continue?')) return
   router.delete('/profile')
 }
 </script>
@@ -71,7 +73,9 @@ function deactivate() {
       </UiCard>
 
       <UiCard title="Danger zone">
-        <p class="text-sm text-muted-foreground mb-3">Deactivating your account will sign you out and prevent future logins.</p>
+        <p class="text-sm text-muted-foreground mb-3">
+          Deactivating your account will sign you out and prevent future logins.
+        </p>
         <UiButton variant="danger" @click="deactivate">Deactivate my account</UiButton>
       </UiCard>
     </div>
