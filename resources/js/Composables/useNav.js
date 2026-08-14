@@ -48,6 +48,18 @@ export function useNav() {
       ],
     },
     {
+      label: 'Exchange',
+      href: '/exchange',
+      icon: 'wallet',
+      permission: 'view-exchange-rates',
+      children: [
+        { label: 'Dashboard', href: '/exchange', permission: 'view-exchange-rates' },
+        { label: 'Rates', href: '/exchange/rates', permission: 'view-exchange-rates' },
+        { label: 'Movements', href: '/exchange/movements', permission: 'view-cash-movements' },
+        { label: 'Reconcile', href: '/exchange/reconcile', permission: 'reconcile-cash-drawer' },
+      ],
+    },
+    {
       label: 'Reports',
       href: '/reports/ledger',
       icon: 'chart',
