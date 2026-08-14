@@ -11,6 +11,7 @@ use App\Models\LedgerEntry;
 use App\Models\Payment;
 use App\Models\User;
 use Database\Seeders\ChartOfAccountsSeeder;
+use Database\Seeders\CurrencySeeder;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -23,7 +24,10 @@ class PaymentControllerTest extends TestCase
     {
         parent::setUp();
         $this->seed(RoleSeeder::class);
-        $this->seed(ChartOfAccountsSeeder::class);
+        $this->seed([
+            ChartOfAccountsSeeder::class,
+            CurrencySeeder::class,
+        ]);
     }
 
     public function test_payment_records_marks_partially_paid(): void
