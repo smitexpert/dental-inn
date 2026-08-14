@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature\Profile;
 
 use App\Models\User;
@@ -23,7 +25,7 @@ class UpdateProfileTest extends TestCase
         $this->actingAs($user);
 
         $response = $this->patch('/profile', [
-            'name'  => 'New Name',
+            'name' => 'New Name',
             'email' => 'new@example.com',
             'phone' => '+8801700000000',
         ]);
@@ -42,7 +44,7 @@ class UpdateProfileTest extends TestCase
         $this->actingAs($user);
 
         $response = $this->patch('/profile', [
-            'name'  => 'Me',
+            'name' => 'Me',
             'email' => 'taken@example.com',
         ]);
 

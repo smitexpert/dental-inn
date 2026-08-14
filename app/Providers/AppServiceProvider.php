@@ -1,7 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Providers;
 
+use App\Repositories\Contracts\UserRepository;
+use App\Repositories\Eloquent\UserEloquentRepository;
 use Illuminate\Support\ServiceProvider;
 use Inertia\Inertia;
 
@@ -13,8 +17,8 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(
-            \App\Repositories\Contracts\UserRepository::class,
-            \App\Repositories\Eloquent\UserEloquentRepository::class,
+            UserRepository::class,
+            UserEloquentRepository::class,
         );
     }
 
@@ -26,17 +30,17 @@ class AppServiceProvider extends ServiceProvider
         Inertia::share([
             'auth' => fn () => [
                 'user' => auth()->user() ? [
-                    'id'         => auth()->user()->id,
-                    'name'       => auth()->user()->name,
-                    'email'      => auth()->user()->email,
+                    'id' => auth()->user()->id,
+                    'name' => auth()->user()->name,
+                    'email' => auth()->user()->email,
                     'avatar_url' => auth()->user()->getFirstMediaUrl('avatar'),
-                    'roles'      => auth()->user()->getRoleNames(),
+                    'roles' => auth()->user()->getRoleNames(),
                     'permissions' => auth()->user()->getAllPermissions()->pluck('name'),
                 ] : null,
             ],
             'flash' => fn () => [
                 'success' => session('success'),
-                'error'   => session('error'),
+                'error' => session('error'),
                 'warning' => session('warning'),
             ],
         ]);

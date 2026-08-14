@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature\Profile;
 
 use App\Models\User;
@@ -27,8 +29,8 @@ class UpdatePasswordTest extends TestCase
         $this->actingAs($user);
 
         $response = $this->patch('/profile/password', [
-            'current_password'      => 'old-password',
-            'password'              => 'new-password',
+            'current_password' => 'old-password',
+            'password' => 'new-password',
             'password_confirmation' => 'new-password',
         ]);
 
@@ -45,8 +47,8 @@ class UpdatePasswordTest extends TestCase
         $this->actingAs($user);
 
         $response = $this->patch('/profile/password', [
-            'current_password'      => 'WRONG',
-            'password'              => 'new-password',
+            'current_password' => 'WRONG',
+            'password' => 'new-password',
             'password_confirmation' => 'new-password',
         ]);
 

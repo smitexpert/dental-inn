@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Settings;
 
 use App\Http\Controllers\Controller;
@@ -21,6 +23,7 @@ class ClinicSettingsController extends Controller
     public function update(UpdateClinicSettingsRequest $request, ClinicSettings $settings): RedirectResponse
     {
         $settings->fill($request->validated())->save();
+
         return back()->with('success', 'Clinic settings updated.');
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Settings;
 
 use App\Http\Controllers\Controller;
@@ -22,6 +24,7 @@ class WorkingHoursController extends Controller
     {
         $settings->working_hours_json = json_encode($request->validated('working_hours'));
         $settings->save();
+
         return back()->with('success', 'Working hours updated.');
     }
 }

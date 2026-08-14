@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Profile\UpdatePasswordRequest;
@@ -22,12 +24,14 @@ class ProfileController extends Controller
     public function update(UpdateProfileRequest $request): RedirectResponse
     {
         $request->user()->update($request->validated());
+
         return back()->with('success', 'Profile updated.');
     }
 
     public function updatePassword(UpdatePasswordRequest $request): RedirectResponse
     {
         $request->user()->update(['password' => Hash::make($request->validated('password'))]);
+
         return back()->with('success', 'Password changed.');
     }
 
@@ -37,6 +41,7 @@ class ProfileController extends Controller
         auth()->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+
         return redirect()->route('login')->with('success', 'Account deactivated.');
     }
 }

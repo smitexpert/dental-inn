@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests\Profile;
 
 use Illuminate\Foundation\Http\FormRequest;
@@ -9,13 +11,16 @@ use Illuminate\Validation\Validator;
 
 class UpdatePasswordRequest extends FormRequest
 {
-    public function authorize(): bool { return true; }
+    public function authorize(): bool
+    {
+        return true;
+    }
 
     public function rules(): array
     {
         return [
             'current_password' => ['required', 'string'],
-            'password'         => ['required', 'confirmed', Password::defaults()],
+            'password' => ['required', 'confirmed', Password::defaults()],
         ];
     }
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repositories\Eloquent;
 
 use App\Models\User;
@@ -16,7 +18,7 @@ class UserEloquentRepository implements UserRepository
         if (! empty($filters['q'])) {
             $q->where(function ($w) use ($filters) {
                 $w->where('name', 'like', "%{$filters['q']}%")
-                  ->orWhere('email', 'like', "%{$filters['q']}%");
+                    ->orWhere('email', 'like', "%{$filters['q']}%");
             });
         }
 
@@ -30,24 +32,25 @@ class UserEloquentRepository implements UserRepository
     public function create(array $data): User
     {
         $user = User::create([
-            'name'     => $data['name'],
-            'email'    => $data['email'],
-            'phone'    => $data['phone'] ?? null,
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'phone' => $data['phone'] ?? null,
             'password' => Hash::make($data['password']),
             'is_active' => $data['is_active'] ?? true,
         ]);
         if (! empty($data['role'])) {
             $user->assignRole($data['role']);
         }
+
         return $user;
     }
 
     public function update(User $user, array $data): User
     {
         $payload = [
-            'name'      => $data['name'],
-            'email'     => $data['email'],
-            'phone'     => $data['phone'] ?? null,
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'phone' => $data['phone'] ?? null,
             'is_active' => $data['is_active'] ?? $user->is_active,
         ];
         if (! empty($data['password'])) {
@@ -57,6 +60,7 @@ class UserEloquentRepository implements UserRepository
         if (! empty($data['role'])) {
             $user->syncRoles([$data['role']]);
         }
+
         return $user->fresh('roles');
     }
 
@@ -68,6 +72,7 @@ class UserEloquentRepository implements UserRepository
     public function toggleActive(User $user): User
     {
         $user->update(['is_active' => ! $user->is_active]);
+
         return $user;
     }
 }
