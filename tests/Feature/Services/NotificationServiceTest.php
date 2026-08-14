@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Services;
 
+use App\Contracts\NotificationDriver;
 use App\Enums\NotificationChannel;
 use App\Enums\NotificationStatus;
 use App\Models\NotificationLog;
 use App\Models\NotificationTemplate;
 use App\Models\Patient;
-use App\Services\NotificationService;
 use App\Services\Notifications\LogDriver;
+use App\Services\NotificationService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -189,7 +190,8 @@ class NotificationServiceTest extends TestCase
             'is_active' => true,
         ]);
 
-        $failingDriver = new class implements \App\Contracts\NotificationDriver {
+        $failingDriver = new class implements NotificationDriver
+        {
             public function send(string $channel, string $recipient, ?string $subject, string $body, array $meta = []): array
             {
                 return ['success' => false, 'error' => 'gateway down', 'provider_id' => null];
@@ -214,6 +216,6 @@ class NotificationServiceTest extends TestCase
 
     public function test_log_driver_is_the_default_driver(): void
     {
-        $this->assertInstanceOf(LogDriver::class, app(\App\Contracts\NotificationDriver::class));
+        $this->assertInstanceOf(LogDriver::class, app(NotificationDriver::class));
     }
 }

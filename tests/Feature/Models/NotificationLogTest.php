@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Models;
 
-use App\Models\NotificationLog;
 use Database\Factories\NotificationLogFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use RuntimeException;

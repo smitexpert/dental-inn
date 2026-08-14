@@ -71,6 +71,17 @@ export function useNav() {
         { label: 'A/R aging', href: '/reports/accounts-receivable', permission: 'view-reports' },
       ],
     },
+    {
+      label: 'Notifications',
+      href: '/notifications/templates',
+      icon: 'bell',
+      permission: 'view-notification-logs',
+      children: [
+        { label: 'Templates', href: '/notifications/templates', permission: 'manage-notification-templates' },
+        { label: 'Logs', href: '/notifications/logs', permission: 'view-notification-logs' },
+        { label: 'Manual send', href: '/notifications/send', permission: 'send-notifications' },
+      ],
+    },
     { label: 'Settings', href: '/settings', icon: 'cog', permission: 'manage-settings' },
     { label: 'Users', href: '/admin/users', icon: 'shield', permission: 'manage-users' },
   ]

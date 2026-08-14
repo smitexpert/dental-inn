@@ -9,6 +9,7 @@ use App\Models\NotificationLog;
 use App\Models\NotificationTemplate;
 use App\Models\Patient;
 use App\Models\User;
+use App\Repositories\Contracts\InvoiceRepository;
 use App\Settings\ClinicSettings;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -35,7 +36,7 @@ class SendInvoiceIssuedNotificationTest extends TestCase
         $admin = User::factory()->create();
 
         // Dispatch via the repository path (which is the prod dispatch site)
-        $repo = app(\App\Repositories\Contracts\InvoiceRepository::class);
+        $repo = app(InvoiceRepository::class);
         $invoice = $repo->create([
             'invoice_number' => 'INV-'.uniqid(),
             'patient_id' => $patient->id,
@@ -76,7 +77,7 @@ class SendInvoiceIssuedNotificationTest extends TestCase
         $patient = Patient::factory()->create(['phone' => '+8801712345678']);
         $admin = User::factory()->create();
 
-        $repo = app(\App\Repositories\Contracts\InvoiceRepository::class);
+        $repo = app(InvoiceRepository::class);
         $repo->create([
             'invoice_number' => 'INV-X',
             'patient_id' => $patient->id,

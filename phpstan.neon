@@ -49,3 +49,5 @@ parameters:
         - '#Expression on left side of \?\? is not nullable\.#'
         # nullsafe property access flagged as unnecessary because PHPDoc widens type but runtime may still be null
         - '#Using nullsafe property access.*Use -> instead\.#'
+        # Plain JSON response arrays from controllers (preview/diagnostics) — typed inline or in callers
+        - '#Method App\\Http\\Controllers\\Notifications\\TemplateController::preview\(\) return type has no value type specified in iterable type array\.#'

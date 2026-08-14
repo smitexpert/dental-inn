@@ -9,6 +9,7 @@ use App\Enums\InvoiceStatus;
 use App\Models\Appointment;
 use App\Models\CashDrawer;
 use App\Models\Invoice;
+use App\Models\NotificationLog;
 use App\Repositories\Contracts\ProductRepository;
 use App\Services\ExchangeRateService;
 use App\Settings\ClinicSettings;
@@ -53,6 +54,10 @@ class DashboardController extends Controller
 
         $outstandingBalance = (float) $openInvoices->sum(fn (Invoice $i) => (float) $i->total - (float) $i->paid_amount);
 
+        $notificationsToday = NotificationLog::query()
+            ->where('created_at', '>=', now()->startOfDay())
+            ->count();
+
         return Inertia::render('Dashboard', [
             'stats' => [
                 'todays_appointments' => [
@@ -85,6 +90,11 @@ class DashboardController extends Controller
                     'value' => $this->cashBalanceInBase(),
                     'label' => 'Cash drawer',
                     'hint' => sprintf('Total in %s', app(ClinicSettings::class)->currency_code),
+                ],
+                'notifications_today' => [
+                    'value' => $notificationsToday,
+                    'label' => 'Notifications sent',
+                    'hint' => 'SMS, WhatsApp, email',
                 ],
             ],
         ]);
