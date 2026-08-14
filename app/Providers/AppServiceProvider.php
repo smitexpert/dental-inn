@@ -53,6 +53,14 @@ use App\Repositories\Eloquent\SupplierEloquentRepository;
 use App\Repositories\Eloquent\TreatmentRecordEloquentRepository;
 use App\Repositories\Eloquent\UserEloquentRepository;
 use App\Contracts\NotificationDriver;
+use App\Events\AppointmentCancelled;
+use App\Events\AppointmentCreated;
+use App\Events\InvoiceIssued;
+use App\Events\PaymentReceived;
+use App\Listeners\SendAppointmentCancelledNotification;
+use App\Listeners\SendAppointmentCreatedNotification;
+use App\Listeners\SendInvoiceIssuedNotification;
+use App\Listeners\SendPaymentReceivedNotification;
 use App\Services\CashDrawerReconciliationService;
 use App\Services\CashDrawerService;
 use App\Services\ExchangeRateService;
@@ -62,6 +70,7 @@ use App\Services\LedgerService;
 use App\Services\NotificationService;
 use App\Services\PaymentService;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Inertia\Inertia;
 
@@ -218,6 +227,11 @@ class AppServiceProvider extends ServiceProvider
             'product' => Product::class,
             'supplier' => Supplier::class,
         ]);
+
+        Event::listen(AppointmentCreated::class, SendAppointmentCreatedNotification::class);
+        Event::listen(AppointmentCancelled::class, SendAppointmentCancelledNotification::class);
+        Event::listen(InvoiceIssued::class, SendInvoiceIssuedNotification::class);
+        Event::listen(PaymentReceived::class, SendPaymentReceivedNotification::class);
 
         Inertia::share([
             'auth' => fn () => [
