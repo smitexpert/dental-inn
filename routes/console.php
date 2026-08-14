@@ -11,3 +11,5 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 Schedule::command('invoices:mark-overdue')->dailyAt('00:05');
+Schedule::command('notifications:send-24h-reminders')->dailyAt('08:00');
+Schedule::command('notifications:send-hourly-reminders')->hourly();
