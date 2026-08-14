@@ -5,6 +5,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 require __DIR__ . '/auth.php';
+require __DIR__ . '/settings.php';
 
 Route::middleware(['auth', 'active'])->group(function () {
     Route::get('/', fn () => redirect()->route('dashboard'));
