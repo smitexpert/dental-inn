@@ -27,7 +27,7 @@ class PatientFactory extends Factory
             'address_line_1' => fake()->boolean(50) ? fake()->streetAddress() : null,
             'address_line_2' => null,
             'city' => fake()->boolean(50) ? fake()->city() : null,
-            'state' => fake()->boolean(50) ? fake()->state() : null,
+            'state' => fake()->boolean(50) ? fake()->word() : null,
             'postal_code' => fake()->boolean(50) ? fake()->postcode() : null,
             'country' => 'Bangladesh',
             'emergency_contact_name' => fake()->boolean(30) ? fake()->name() : null,

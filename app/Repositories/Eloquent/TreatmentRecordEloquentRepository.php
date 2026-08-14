@@ -12,6 +12,9 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class TreatmentRecordEloquentRepository implements TreatmentRecordRepository
 {
+    /**
+     * @return LengthAwarePaginator<int, TreatmentRecord>
+     */
     public function paginateForPatient(Patient $patient, int $perPage = 25): LengthAwarePaginator
     {
         return TreatmentRecord::query()
@@ -31,7 +34,7 @@ class TreatmentRecordEloquentRepository implements TreatmentRecordRepository
 
     public function create(array $data): TreatmentRecord
     {
-        $record = new TreatmentRecord();
+        $record = new TreatmentRecord;
         $record->fill($data);
         $record->status = $data['status'] ?? TreatmentStatus::InProgress->value;
         $record->save();

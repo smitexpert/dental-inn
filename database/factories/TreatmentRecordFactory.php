@@ -32,7 +32,7 @@ class TreatmentRecordFactory extends Factory
             'diagnosis' => fake()->optional(0.7)->sentence(),
             'treatment_notes' => fake()->optional(0.7)->paragraph(),
             'tooth_chart' => null,
-            'follow_up_date' => fake()->optional(0.3)->dateTimeBetween('+1 week', '+2 months')?->format('Y-m-d'),
+            'follow_up_date' => fake()->boolean(30) ? fake()->dateTimeBetween('+1 week', '+2 months')->format('Y-m-d') : null,
             'status' => TreatmentStatus::InProgress->value,
         ];
     }

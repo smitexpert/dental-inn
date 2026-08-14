@@ -17,7 +17,7 @@ return new class extends Migration
         // Sanity: every appointment must now have a patient_id.
         $unlinked = (int) DB::table('appointments')->whereNull('patient_id')->count();
         if ($unlinked > 0) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 "Backfill left {$unlinked} appointment(s) without a patient_id. ".
                 'Re-run `php artisan patients:backfill-from-appointments` to diagnose.',
             );

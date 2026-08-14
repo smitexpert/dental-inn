@@ -60,6 +60,9 @@ class TreatmentRecord extends Model
         ];
     }
 
+    /**
+     * @return BelongsTo<Patient, TreatmentRecord>
+     */
     public function patient(): BelongsTo
     {
         return $this->belongsTo(Patient::class);

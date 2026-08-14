@@ -6,10 +6,13 @@ namespace App\Repositories\Contracts;
 
 use App\Models\Patient;
 use App\Models\TreatmentRecord;
-use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 interface TreatmentRecordRepository
 {
+    /**
+     * @return LengthAwarePaginator<int, TreatmentRecord>
+     */
     public function paginateForPatient(Patient $patient, int $perPage = 25): LengthAwarePaginator;
 
     public function find(int $id): TreatmentRecord;

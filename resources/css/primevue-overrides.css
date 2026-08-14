@@ -1,18 +1,18 @@
 :root {
-  --p-primary-color:        var(--color-primary-600);
-  --p-primary-hover-color:  var(--color-primary-700);
+  --p-primary-color: var(--color-primary-600);
+  --p-primary-hover-color: var(--color-primary-700);
   --p-primary-active-color: var(--color-primary-700);
   --p-primary-contrast-color: #ffffff;
 
-  --p-content-background:    var(--color-surface);
+  --p-content-background: var(--color-surface);
   --p-content-hover-background: var(--color-surface-muted);
-  --p-content-border-color:  var(--color-border);
-  --p-content-color:         var(--color-foreground);
-  --p-content-hover-color:   var(--color-foreground);
+  --p-content-border-color: var(--color-border);
+  --p-content-color: var(--color-foreground);
+  --p-content-hover-color: var(--color-foreground);
 
-  --p-text-color:        var(--color-foreground);
-  --p-text-hover-color:  var(--color-foreground);
-  --p-text-muted-color:  var(--color-muted-foreground);
+  --p-text-color: var(--color-foreground);
+  --p-text-hover-color: var(--color-foreground);
+  --p-text-muted-color: var(--color-muted-foreground);
 
   --p-content-border-radius: var(--radius-md);
   --p-overlay-modal-border-radius: var(--radius-lg);

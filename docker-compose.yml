@@ -1,0 +1,31 @@
+services:
+  # PHP Application
+  dental-app:
+    image: php-8.4:latest
+    container_name: dental_app
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    environment:
+      - PHP_VALUE=memory_limit=512M
+      - PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
+    volumes:
+      - .:/var/www/html
+    networks:
+      - mollanet
+
+  # Web Server
+  dental-nginx:
+    image: nginx:alpine
+    container_name: dental_nginx
+    volumes:
+      - .:/var/www/html
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - dental-app
+    networks:
+      - mollanet
+
+networks:
+  mollanet:
+    external: true

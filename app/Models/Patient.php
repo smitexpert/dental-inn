@@ -15,10 +15,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
-use Throwable;
 
 /**
  * @property int $id
@@ -102,7 +100,7 @@ class Patient extends Model
             $count = (int) DB::table('patients')
                 ->whereYear('created_at', $year)
                 ->count();
-            $serial = Str::padLeft((string) ($count + 1), 4, '0');
+            $serial = str_pad((string) intval($count + 1), 4, '0', STR_PAD_LEFT);
             $code = "P-{$year}-{$serial}";
 
             $exists = DB::table('patients')->where('patient_code', $code)->exists();
@@ -113,7 +111,7 @@ class Patient extends Model
             $attempts++;
             if ($attempts > 3) {
                 // Fall back to timestamp-based suffix to guarantee uniqueness.
-                return 'P-'.$year.'-'.Str::padLeft((string) (int) (microtime(true) * 100) % 10000, 4, '0');
+                return 'P-'.$year.'-'.str_pad((string) intval((microtime(true) * 100) % 10000), 4, '0', STR_PAD_LEFT);
             }
         }
     }
@@ -123,6 +121,9 @@ class Patient extends Model
         return $this->hasMany(Appointment::class)->orderByDesc('scheduled_at');
     }
 
+    /**
+     * @return HasMany<TreatmentRecord, $this>
+     */
     public function treatmentRecords(): HasMany
     {
         return $this->hasMany(TreatmentRecord::class)->orderByDesc('visited_at');
@@ -147,11 +148,7 @@ class Patient extends Model
             return null;
         }
 
-        try {
-            return $this->date_of_birth->age;
-        } catch (Throwable) {
-            return null;
-        }
+        return $this->date_of_birth->age;
     }
 
     public function getFullAddressAttribute(): ?string

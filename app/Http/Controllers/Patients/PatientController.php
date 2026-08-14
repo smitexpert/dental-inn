@@ -76,7 +76,7 @@ class PatientController extends Controller
             'treatment_records' => $patient->treatmentRecords->map(fn ($r) => [
                 'id' => $r->id,
                 'doctor_name' => $r->doctor?->user?->name,
-                'visited_at' => $r->visited_at?->toIso8601String(),
+                'visited_at' => $r->visited_at->toIso8601String(),
                 'chief_complaint' => $r->chief_complaint,
                 'status' => $r->status->value,
                 'status_label' => $r->status->label(),

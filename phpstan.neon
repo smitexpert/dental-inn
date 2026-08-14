@@ -22,7 +22,11 @@ parameters:
         - '#Method App\\Repositories\\Contracts\\.*::paginate\(\) return type with generic class Illuminate\\Pagination\\LengthAwarePaginator does not specify its types: TKey, TValue#'
         - '#Method App\\Repositories\\Eloquent\\.*::paginate\(\) return type with generic class Illuminate\\Pagination\\LengthAwarePaginator does not specify its types: TKey, TValue#'
         # Eloquent relations typed via PHPDoc @property — generic params are documented in IDE/static analyser
-        - '#Method App\\Models\\.*::(user|doctor|schedules|timeOffs|appointments|creator)\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\(BelongsTo|HasMany) does not specify its types: T.*#'
+        - '#Method App\\Models\\.*::(user|doctor|schedules|timeOffs|appointments|creator|patient|appointment)\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\(BelongsTo|HasMany) does not specify its types: T.*#'
+        # BelongsTo $this-vs-self covariance — known PHPStan limitation
+        - '#Method App\\Models\\.*::patient\(\) should return.*#'
+        # LengthAwarePaginator->setCollection / getCollection are magic methods
+        - '#Call to an undefined method Illuminate\\Contracts\\Pagination\\LengthAwarePaginator.*#'
         # Collection return types from repository interfaces are documented via @property in callers
         - '#Method App\\Repositories\\.* return type with generic class Illuminate\\Database\\Eloquent\\Collection does not specify its types: TKey, TModel#'
         # Repository methods accept untyped $data/$rows/$filters arrays — typed in the caller

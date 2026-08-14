@@ -14,7 +14,7 @@ return new class extends Migration
         // populated on every row.
         $unlinked = (int) DB::table('appointments')->whereNull('patient_id')->count();
         if ($unlinked > 0) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 "Cannot drop legacy patient fields: {$unlinked} appointment(s) still ".
                 'have NULL patient_id. Run `php artisan patients:backfill-from-appointments` first.',
             );

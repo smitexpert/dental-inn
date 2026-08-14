@@ -27,7 +27,7 @@ class PatientEloquentRepository implements PatientRepository
 
     public function create(array $data): Patient
     {
-        $patient = new Patient();
+        $patient = new Patient;
         $patient->fill(array_diff_key($data, array_flip(['patient_code'])));
         $patient->save();
 
@@ -74,7 +74,7 @@ class PatientEloquentRepository implements PatientRepository
     public function findDuplicates(?string $phone, ?string $name, ?string $email, ?int $ignoreId = null): Collection
     {
         if (! $phone && (! $name || ! $email)) {
-            return new Collection();
+            return new Collection;
         }
 
         return Patient::query()
