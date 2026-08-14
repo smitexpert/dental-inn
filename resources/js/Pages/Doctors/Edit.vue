@@ -77,10 +77,10 @@ function submit() {
             <UiField label="Active"><UiSwitch v-model="form.is_active" /></UiField>
             <UiField label="Available for appointments"><UiSwitch v-model="form.is_available" /></UiField>
           </div>
-          <div class="flex items-center justify-end gap-2 pt-3 border-t border-border">
+          <div class="flex items-center justify-end gap-2 pt-3 border-t border-base-300">
             <Link
               :href="`/doctors/${doctor.id}`"
-              class="h-10 px-4 inline-flex items-center rounded-md bg-surface-muted text-foreground border border-border text-sm"
+              class="h-10 px-4 inline-flex items-center rounded-md bg-base-200 text-base-content border border-base-300 text-sm"
               >Cancel</Link
             >
             <UiButton type="submit" :loading="form.processing">Save</UiButton>

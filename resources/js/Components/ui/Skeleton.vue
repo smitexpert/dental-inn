@@ -7,5 +7,5 @@ defineProps({
 </script>
 
 <template>
-  <div :class="['animate-pulse bg-surface-muted', width, height, rounded]" />
+  <div :class="['animate-pulse bg-base-200', width, height, rounded]" />
 </template>

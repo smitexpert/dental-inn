@@ -74,14 +74,14 @@ function submit() {
         <form @submit.prevent="submit" class="space-y-3">
           <div class="grid grid-cols-2 gap-3">
             <div>
-              <label class="block text-sm font-medium mb-1 text-foreground">Channel</label>
+              <label class="block text-sm font-medium mb-1 text-base-content">Channel</label>
               <UiSelect
                 v-model="form.channel"
                 :options="channels.map((c) => ({ label: c.label, value: c.value }))"
               />
             </div>
             <div>
-              <label class="block text-sm font-medium mb-1 text-foreground">Template (optional)</label>
+              <label class="block text-sm font-medium mb-1 text-base-content">Template (optional)</label>
               <UiSelect
                 v-model="form.template_key"
                 :options="[{ label: '— Ad-hoc —', value: null }, ...filteredTemplates.map((t) => ({ label: t.key, value: t.key }))]"
@@ -89,22 +89,22 @@ function submit() {
             </div>
           </div>
           <div v-if="requiresSubject && !form.template_key">
-            <label class="block text-sm font-medium mb-1 text-foreground">Subject</label>
+            <label class="block text-sm font-medium mb-1 text-base-content">Subject</label>
             <UiInput v-model="form.subject" :error="form.errors.subject" />
           </div>
           <div v-if="!form.template_key">
-            <label class="block text-sm font-medium mb-1 text-foreground">Body</label>
+            <label class="block text-sm font-medium mb-1 text-base-content">Body</label>
             <UiTextarea v-model="form.body" rows="5" :error="form.errors.body" required />
           </div>
           <div>
-            <label class="block text-sm font-medium mb-1 text-foreground">Recipients</label>
+            <label class="block text-sm font-medium mb-1 text-base-content">Recipients</label>
             <UiTextarea v-model="form.recipients" rows="3" placeholder="One per line, or comma-separated" :error="form.errors.recipients" required />
           </div>
           <div v-if="form.template_key">
-            <label class="block text-sm font-medium mb-1 text-foreground">Template variables (JSON)</label>
+            <label class="block text-sm font-medium mb-1 text-base-content">Template variables (JSON)</label>
             <UiTextarea v-model="form.variables" rows="3" placeholder='{"patient_name": "Alice"}' :error="form.errors.variables" />
           </div>
-          <div class="flex items-center justify-end gap-2 pt-3 border-t border-border">
+          <div class="flex items-center justify-end gap-2 pt-3 border-t border-base-300">
             <UiButton type="submit" :loading="form.processing">Send</UiButton>
           </div>
         </form>

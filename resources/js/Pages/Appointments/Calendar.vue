@@ -131,7 +131,7 @@ function rangeLabel() {
             <UiButton variant="secondary" @click="prev">‹</UiButton>
             <UiButton variant="secondary" @click="today">Today</UiButton>
             <UiButton variant="secondary" @click="next">›</UiButton>
-            <span class="text-base font-medium text-foreground ml-3">{{ rangeLabel() }}</span>
+            <span class="text-base font-medium text-base-content ml-3">{{ rangeLabel() }}</span>
           </div>
           <div class="flex items-center gap-2">
             <UiSelect
@@ -146,23 +146,23 @@ function rangeLabel() {
         </div>
 
         <div v-if="view === 'week'" class="mt-4 grid grid-cols-7 gap-2">
-          <div v-for="d in weekDays" :key="d.toISOString()" class="border border-border rounded-md bg-surface min-h-32 p-2">
-            <div class="text-xs font-medium text-muted-foreground">{{ dayNames[d.getDay()] }}</div>
-            <div class="text-lg font-semibold text-foreground">{{ d.getDate() }}</div>
+          <div v-for="d in weekDays" :key="d.toISOString()" class="border border-base-300 rounded-md bg-base-100 min-h-32 p-2">
+            <div class="text-xs font-medium text-base-content/70">{{ dayNames[d.getDay()] }}</div>
+            <div class="text-lg font-semibold text-base-content">{{ d.getDate() }}</div>
             <div class="mt-2 space-y-1">
               <Link
                 v-for="a in apptsFor(d)"
                 :key="a.id"
                 :href="`/appointments/${a.id}`"
-                class="block text-xs p-1 rounded border-l-2 hover:bg-surface-muted"
+                class="block text-xs p-1 rounded border-l-2 hover:bg-base-200"
                 :style="{ borderColor: a.doctor_color }"
               >
                 <div class="flex justify-between">
-                  <span class="text-foreground">{{ timeLabel(a.scheduled_at) }}</span>
-                  <span class="text-muted-foreground">{{ a.duration_minutes }}m</span>
+                  <span class="text-base-content">{{ timeLabel(a.scheduled_at) }}</span>
+                  <span class="text-base-content/70">{{ a.duration_minutes }}m</span>
                 </div>
-                <div class="text-foreground truncate">{{ a.patient_name }}</div>
-                <div class="text-muted-foreground truncate">{{ a.doctor_name }}</div>
+                <div class="text-base-content truncate">{{ a.patient_name }}</div>
+                <div class="text-base-content/70 truncate">{{ a.doctor_name }}</div>
               </Link>
             </div>
           </div>
@@ -174,17 +174,17 @@ function rangeLabel() {
               v-for="a in apptsFor(dayDate)"
               :key="a.id"
               :href="`/appointments/${a.id}`"
-              class="block border border-border rounded-md p-3 bg-surface hover:bg-surface-muted"
+              class="block border border-base-300 rounded-md p-3 bg-base-100 hover:bg-base-200"
               :style="{ borderLeftWidth: '4px', borderLeftColor: a.doctor_color }"
             >
               <div class="flex items-center justify-between">
-                <div class="font-medium text-foreground">{{ timeLabel(a.scheduled_at) }} ({{ a.duration_minutes }} min)</div>
+                <div class="font-medium text-base-content">{{ timeLabel(a.scheduled_at) }} ({{ a.duration_minutes }} min)</div>
                 <UiBadge variant="secondary">{{ a.status_label }}</UiBadge>
               </div>
-              <div class="text-sm text-foreground mt-1">{{ a.patient_name }} · {{ a.patient_phone }}</div>
-              <div class="text-xs text-muted-foreground">{{ a.doctor_name }}</div>
+              <div class="text-sm text-base-content mt-1">{{ a.patient_name }} · {{ a.patient_phone }}</div>
+              <div class="text-xs text-base-content/70">{{ a.doctor_name }}</div>
             </Link>
-            <div v-if="apptsFor(dayDate).length === 0" class="text-center text-muted-foreground py-6">
+            <div v-if="apptsFor(dayDate).length === 0" class="text-center text-base-content/70 py-6">
               No appointments on this day.
             </div>
           </div>

@@ -39,14 +39,14 @@ function submit() {
     <div class="max-w-2xl">
       <UiCard title="Working hours">
         <form @submit.prevent="submit" class="space-y-4">
-          <div v-for="day in days" :key="day" class="border-b border-border pb-3 last:border-b-0 last:pb-0">
+          <div v-for="day in days" :key="day" class="border-b border-base-300 pb-3 last:border-b-0 last:pb-0">
             <div class="flex items-center justify-between mb-2">
-              <span class="font-medium text-foreground">{{ labels[day] }}</span>
+              <span class="font-medium text-base-content">{{ labels[day] }}</span>
               <UiButton size="sm" variant="secondary" type="button" @click="addSlot(day)"
                 >+ Add slot</UiButton
               >
             </div>
-            <div v-if="form.working_hours[day].length === 0" class="text-sm text-muted-foreground">
+            <div v-if="form.working_hours[day].length === 0" class="text-sm text-base-content/70">
               Closed
             </div>
             <div
@@ -55,13 +55,13 @@ function submit() {
               class="flex items-center gap-2 mb-2"
             >
               <UiInput v-model="form.working_hours[day][idx].start" type="time" />
-              <span class="text-muted-foreground">to</span>
+              <span class="text-base-content/70">to</span>
               <UiInput v-model="form.working_hours[day][idx].end" type="time" />
               <UiButton size="sm" variant="ghost" type="button" @click="removeSlot(day, idx)"
                 >Remove</UiButton
               >
             </div>
-            <p v-if="form.errors[`working_hours.${day}`]" class="text-sm text-danger mt-1">
+            <p v-if="form.errors[`working_hours.${day}`]" class="text-sm text-error mt-1">
               {{ form.errors[`working_hours.${day}`] }}
             </p>
           </div>

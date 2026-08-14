@@ -1,6 +1,4 @@
 <script setup>
-import PrimeRadioButton from 'primevue/radiobutton'
-
 defineProps({
   modelValue: { type: [String, Number, null], default: null },
   options: { type: Array, required: true },
@@ -9,25 +7,27 @@ defineProps({
   name: { type: String, required: true },
   disabled: { type: Boolean, default: false },
 })
+
 defineEmits(['update:modelValue'])
 </script>
 
 <template>
-  <div class="space-y-2">
+  <div class="flex flex-col gap-2">
     <label
       v-for="opt in options"
-      :key="opt[optionValue]"
-      class="flex items-center gap-2 cursor-pointer text-sm text-foreground"
+      :key="String(opt[optionValue])"
+      class="label cursor-pointer gap-2 justify-start"
     >
-      <PrimeRadioButton
-        :model-value="modelValue"
-        :value="opt[optionValue]"
+      <input
+        type="radio"
         :name="name"
+        :value="opt[optionValue]"
+        :checked="modelValue === opt[optionValue]"
         :disabled="disabled"
-        :pt="{ root: { class: 'w-4 h-4 text-primary-600 focus:ring-2 focus:ring-primary-500' } }"
-        @update:model-value="$emit('update:modelValue', $event)"
+        class="radio radio-primary"
+        @change="$emit('update:modelValue', opt[optionValue])"
       />
-      {{ opt[optionLabel] }}
+      <span class="label-text">{{ opt[optionLabel] }}</span>
     </label>
   </div>
 </template>

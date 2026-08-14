@@ -66,8 +66,8 @@ function submitAdjust() {
         <template #header>
           <div class="flex items-start justify-between gap-3">
             <div>
-              <h3 class="text-base font-semibold text-foreground">{{ product.name }}</h3>
-              <p class="text-xs text-muted-foreground font-mono mt-1">SKU {{ product.sku }}<span v-if="product.barcode"> · Barcode {{ product.barcode }}</span></p>
+              <h3 class="text-base font-semibold text-base-content">{{ product.name }}</h3>
+              <p class="text-xs text-base-content/70 font-mono mt-1">SKU {{ product.sku }}<span v-if="product.barcode"> · Barcode {{ product.barcode }}</span></p>
             </div>
             <div class="flex items-center gap-2">
               <UiBadge :variant="product.is_active ? 'success' : 'neutral'">
@@ -80,41 +80,41 @@ function submitAdjust() {
         </template>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
           <div>
-            <p class="text-xs uppercase tracking-wide text-muted-foreground">Category</p>
-            <p class="text-foreground font-medium">{{ product.category_label }}</p>
+            <p class="text-xs uppercase tracking-wide text-base-content/70">Category</p>
+            <p class="text-base-content font-medium">{{ product.category_label }}</p>
           </div>
           <div>
-            <p class="text-xs uppercase tracking-wide text-muted-foreground">Unit</p>
-            <p class="text-foreground font-medium">{{ product.unit_label }} <span class="text-muted-foreground">({{ product.unit_short }})</span></p>
+            <p class="text-xs uppercase tracking-wide text-base-content/70">Unit</p>
+            <p class="text-base-content font-medium">{{ product.unit_label }} <span class="text-base-content/70">({{ product.unit_short }})</span></p>
           </div>
           <div>
-            <p class="text-xs uppercase tracking-wide text-muted-foreground">Total stock</p>
+            <p class="text-xs uppercase tracking-wide text-base-content/70">Total stock</p>
             <UiBadge :variant="product.is_low ? 'danger' : 'neutral'">
               {{ product.total_quantity }} {{ product.unit_short }}
             </UiBadge>
           </div>
           <div>
-            <p class="text-xs uppercase tracking-wide text-muted-foreground">Reorder level</p>
-            <p class="text-foreground font-medium">{{ product.reorder_level }}</p>
+            <p class="text-xs uppercase tracking-wide text-base-content/70">Reorder level</p>
+            <p class="text-base-content font-medium">{{ product.reorder_level }}</p>
           </div>
           <div>
-            <p class="text-xs uppercase tracking-wide text-muted-foreground">Cost price</p>
-            <p class="text-foreground font-medium">{{ product.cost_price ?? '—' }}</p>
+            <p class="text-xs uppercase tracking-wide text-base-content/70">Cost price</p>
+            <p class="text-base-content font-medium">{{ product.cost_price ?? '—' }}</p>
           </div>
           <div>
-            <p class="text-xs uppercase tracking-wide text-muted-foreground">Selling price</p>
-            <p class="text-foreground font-medium">{{ product.selling_price ?? '—' }}</p>
+            <p class="text-xs uppercase tracking-wide text-base-content/70">Selling price</p>
+            <p class="text-base-content font-medium">{{ product.selling_price ?? '—' }}</p>
           </div>
           <div>
-            <p class="text-xs uppercase tracking-wide text-muted-foreground">Track stock</p>
-            <p class="text-foreground font-medium">{{ product.track_stock ? 'Yes' : 'No' }}</p>
+            <p class="text-xs uppercase tracking-wide text-base-content/70">Track stock</p>
+            <p class="text-base-content font-medium">{{ product.track_stock ? 'Yes' : 'No' }}</p>
           </div>
           <div>
-            <p class="text-xs uppercase tracking-wide text-muted-foreground">Reorder qty</p>
-            <p class="text-foreground font-medium">{{ product.reorder_quantity }}</p>
+            <p class="text-xs uppercase tracking-wide text-base-content/70">Reorder qty</p>
+            <p class="text-base-content font-medium">{{ product.reorder_quantity }}</p>
           </div>
         </div>
-        <p v-if="product.description" class="text-sm text-muted-foreground mt-4 whitespace-pre-line">{{ product.description }}</p>
+        <p v-if="product.description" class="text-sm text-base-content/70 mt-4 whitespace-pre-line">{{ product.description }}</p>
         <div class="mt-4 flex flex-wrap gap-2">
           <UiButton variant="primary" size="sm" @click="purchaseOpen = true">Record purchase</UiButton>
           <UiButton variant="secondary" size="sm" @click="consumeOpen = true">Consume</UiButton>
@@ -127,7 +127,7 @@ function submitAdjust() {
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <UiCard title="Stock per location">
           <table class="w-full text-sm">
-            <thead class="bg-surface-muted text-muted-foreground">
+            <thead class="bg-base-200 text-base-content/70">
               <tr>
                 <th class="text-left px-4 py-2">Location</th>
                 <th class="text-right px-4 py-2">Quantity</th>
@@ -135,13 +135,13 @@ function submitAdjust() {
               </tr>
             </thead>
             <tbody>
-              <tr v-for="l in product.stock_levels" :key="l.id" class="border-b border-border last:border-b-0">
-                <td class="px-4 py-2 text-foreground">{{ l.location_name }}</td>
+              <tr v-for="l in product.stock_levels" :key="l.id" class="border-b border-base-300 last:border-b-0">
+                <td class="px-4 py-2 text-base-content">{{ l.location_name }}</td>
                 <td class="px-4 py-2 text-right font-medium">{{ l.quantity }}</td>
-                <td class="px-4 py-2 text-right text-muted-foreground text-xs">{{ l.last_counted_at || '—' }}</td>
+                <td class="px-4 py-2 text-right text-base-content/70 text-xs">{{ l.last_counted_at || '—' }}</td>
               </tr>
               <tr v-if="product.stock_levels.length === 0">
-                <td colspan="3" class="text-center text-muted-foreground py-6">No stock recorded yet.</td>
+                <td colspan="3" class="text-center text-base-content/70 py-6">No stock recorded yet.</td>
               </tr>
             </tbody>
           </table>
@@ -149,22 +149,22 @@ function submitAdjust() {
 
         <UiCard title="Recent movements">
           <ul class="space-y-2 text-sm">
-            <li v-for="m in recent_movements" :key="m.id" class="flex items-start justify-between gap-2 border-b border-border pb-2 last:border-b-0 last:pb-0">
+            <li v-for="m in recent_movements" :key="m.id" class="flex items-start justify-between gap-2 border-b border-base-300 pb-2 last:border-b-0 last:pb-0">
               <div>
                 <UiBadge :variant="m.quantity >= 0 ? 'success' : 'danger'">
                   {{ m.type_label }}
                 </UiBadge>
-                <p class="text-muted-foreground text-xs mt-1">{{ m.location_name || '—' }} · {{ m.performer_name || '—' }}</p>
-                <p v-if="m.reason" class="text-muted-foreground text-xs">{{ m.reason }}</p>
+                <p class="text-base-content/70 text-xs mt-1">{{ m.location_name || '—' }} · {{ m.performer_name || '—' }}</p>
+                <p v-if="m.reason" class="text-base-content/70 text-xs">{{ m.reason }}</p>
               </div>
               <div class="text-right">
-                <p :class="['font-mono font-medium', m.quantity >= 0 ? 'text-success' : 'text-danger']">
+                <p :class="['font-mono font-medium', m.quantity >= 0 ? 'text-success' : 'text-error']">
                   {{ m.quantity >= 0 ? '+' : '' }}{{ m.quantity }}
                 </p>
-                <p class="text-xs text-muted-foreground">{{ m.created_at }}</p>
+                <p class="text-xs text-base-content/70">{{ m.created_at }}</p>
               </div>
             </li>
-            <li v-if="recent_movements.length === 0" class="text-center text-muted-foreground py-4">
+            <li v-if="recent_movements.length === 0" class="text-center text-base-content/70 py-4">
               No movements yet.
             </li>
           </ul>
@@ -173,7 +173,7 @@ function submitAdjust() {
 
       <UiCard title="Suppliers">
         <table class="w-full text-sm">
-          <thead class="bg-surface-muted text-muted-foreground">
+          <thead class="bg-base-200 text-base-content/70">
             <tr>
               <th class="text-left px-4 py-2">Supplier</th>
               <th class="text-left px-4 py-2">Their SKU</th>
@@ -183,9 +183,9 @@ function submitAdjust() {
             </tr>
           </thead>
           <tbody>
-            <tr v-for="s in product.suppliers" :key="s.id" class="border-b border-border last:border-b-0">
-              <td class="px-4 py-2 text-foreground">{{ s.name }}</td>
-              <td class="px-4 py-2 text-muted-foreground font-mono text-xs">{{ s.supplier_sku || '—' }}</td>
+            <tr v-for="s in product.suppliers" :key="s.id" class="border-b border-base-300 last:border-b-0">
+              <td class="px-4 py-2 text-base-content">{{ s.name }}</td>
+              <td class="px-4 py-2 text-base-content/70 font-mono text-xs">{{ s.supplier_sku || '—' }}</td>
               <td class="px-4 py-2 text-right">{{ s.unit_cost || '—' }}</td>
               <td class="px-4 py-2 text-right">{{ s.lead_time_days ? `${s.lead_time_days} d` : '—' }}</td>
               <td class="px-4 py-2">
@@ -195,7 +195,7 @@ function submitAdjust() {
               </td>
             </tr>
             <tr v-if="product.suppliers.length === 0">
-              <td colspan="5" class="text-center text-muted-foreground py-6">No suppliers linked.</td>
+              <td colspan="5" class="text-center text-base-content/70 py-6">No suppliers linked.</td>
             </tr>
           </tbody>
         </table>
@@ -215,7 +215,7 @@ function submitAdjust() {
         <div>
           <label class="block text-sm font-medium mb-1">Quantity</label>
           <UiInput v-model="purchaseForm.quantity" type="number" min="1" />
-          <p v-if="purchaseForm.errors.quantity" class="text-xs text-danger mt-1">{{ purchaseForm.errors.quantity }}</p>
+          <p v-if="purchaseForm.errors.quantity" class="text-xs text-error mt-1">{{ purchaseForm.errors.quantity }}</p>
         </div>
         <div>
           <label class="block text-sm font-medium mb-1">Unit cost</label>
@@ -241,7 +241,7 @@ function submitAdjust() {
         <div>
           <label class="block text-sm font-medium mb-1">Quantity</label>
           <UiInput v-model="consumeForm.quantity" type="number" min="1" />
-          <p v-if="consumeForm.errors.quantity" class="text-xs text-danger mt-1">{{ consumeForm.errors.quantity }}</p>
+          <p v-if="consumeForm.errors.quantity" class="text-xs text-error mt-1">{{ consumeForm.errors.quantity }}</p>
         </div>
         <div>
           <label class="block text-sm font-medium mb-1">Reason</label>
@@ -263,12 +263,12 @@ function submitAdjust() {
         <div>
           <label class="block text-sm font-medium mb-1">To</label>
           <UiSelect v-model="transferForm.to_location_id" :options="locations.map(l => ({ label: l.name, value: l.id }))" />
-          <p v-if="transferForm.errors.to_location_id" class="text-xs text-danger mt-1">{{ transferForm.errors.to_location_id }}</p>
+          <p v-if="transferForm.errors.to_location_id" class="text-xs text-error mt-1">{{ transferForm.errors.to_location_id }}</p>
         </div>
         <div>
           <label class="block text-sm font-medium mb-1">Quantity</label>
           <UiInput v-model="transferForm.quantity" type="number" min="1" />
-          <p v-if="transferForm.errors.quantity" class="text-xs text-danger mt-1">{{ transferForm.errors.quantity }}</p>
+          <p v-if="transferForm.errors.quantity" class="text-xs text-error mt-1">{{ transferForm.errors.quantity }}</p>
         </div>
         <div>
           <label class="block text-sm font-medium mb-1">Notes</label>

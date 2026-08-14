@@ -61,7 +61,7 @@ function submit() {
               ><input
                 v-model="form.date_of_birth"
                 type="date"
-                class="h-10 w-full rounded-md border border-border bg-surface px-3 text-sm"
+                class="h-10 w-full rounded-md border border-base-300 bg-base-100 px-3 text-sm"
             /></UiField>
             <UiField label="Gender" :error="form.errors.gender"
               ><UiSelect v-model="form.gender" :options="genderOptions" placeholder="Select gender" />
@@ -70,7 +70,7 @@ function submit() {
               ><UiInput v-model="form.country"
             /></UiField>
           </div>
-          <h3 class="text-sm font-semibold text-foreground pt-3 border-t border-border">Address</h3>
+          <h3 class="text-sm font-semibold text-base-content pt-3 border-t border-base-300">Address</h3>
           <div class="grid grid-cols-2 gap-3">
             <UiField label="Address line 1" :error="form.errors.address_line_1"
               ><UiInput v-model="form.address_line_1"
@@ -88,7 +88,7 @@ function submit() {
               ><UiInput v-model="form.postal_code"
             /></UiField>
           </div>
-          <h3 class="text-sm font-semibold text-foreground pt-3 border-t border-border">Emergency contact</h3>
+          <h3 class="text-sm font-semibold text-base-content pt-3 border-t border-base-300">Emergency contact</h3>
           <div class="grid grid-cols-2 gap-3">
             <UiField label="Name" :error="form.errors.emergency_contact_name"
               ><UiInput v-model="form.emergency_contact_name"
@@ -97,7 +97,7 @@ function submit() {
               ><UiInput v-model="form.emergency_contact_phone" type="tel"
             /></UiField>
           </div>
-          <h3 class="text-sm font-semibold text-foreground pt-3 border-t border-border">Medical history</h3>
+          <h3 class="text-sm font-semibold text-base-content pt-3 border-t border-base-300">Medical history</h3>
           <UiField label="Allergies, conditions, medications" :error="form.errors.medical_history"
             ><UiTextarea v-model="form.medical_history" rows="3"
           /></UiField>
@@ -108,10 +108,10 @@ function submit() {
             ><UiTextarea v-model="form.notes" rows="2"
           /></UiField>
           <UiField label="Active patient"><UiSwitch v-model="form.is_active" /></UiField>
-          <div class="flex items-center justify-end gap-2 pt-3 border-t border-border">
+          <div class="flex items-center justify-end gap-2 pt-3 border-t border-base-300">
             <Link
               href="/patients"
-              class="h-10 px-4 inline-flex items-center rounded-md bg-surface-muted text-foreground border border-border text-sm"
+              class="h-10 px-4 inline-flex items-center rounded-md bg-base-200 text-base-content border border-base-300 text-sm"
               >Cancel</Link
             >
             <UiButton type="submit" :loading="form.processing">Create</UiButton>

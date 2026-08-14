@@ -39,7 +39,7 @@ watch([q, isActive], applyFilters)
     <UiCard title="Patients">
       <template #header>
         <div class="flex items-center justify-between gap-3">
-          <h3 class="text-base font-semibold text-foreground">Patients</h3>
+          <h3 class="text-base font-semibold text-base-content">Patients</h3>
           <Link href="/patients/create"><UiButton>New patient</UiButton></Link>
         </div>
       </template>
@@ -56,7 +56,7 @@ watch([q, isActive], applyFilters)
       </div>
       <div class="overflow-x-auto">
         <table class="w-full text-sm">
-          <thead class="bg-surface-muted text-muted-foreground">
+          <thead class="bg-base-200 text-base-content/70">
             <tr>
               <th class="text-left px-4 py-2">Code</th>
               <th class="text-left px-4 py-2">Name</th>
@@ -67,26 +67,26 @@ watch([q, isActive], applyFilters)
             </tr>
           </thead>
           <tbody>
-            <tr v-for="p in patients.data" :key="p.id" class="border-b border-border last:border-b-0">
-              <td class="px-4 py-2 text-muted-foreground font-mono text-xs">{{ p.patient_code }}</td>
-              <td class="px-4 py-2 text-foreground font-medium">{{ p.name }}</td>
-              <td class="px-4 py-2 text-muted-foreground">{{ p.phone || '—' }}</td>
-              <td class="px-4 py-2 text-muted-foreground">{{ p.email || '—' }}</td>
-              <td class="px-4 py-2 text-muted-foreground">{{ p.age ?? '—' }}</td>
+            <tr v-for="p in patients.data" :key="p.id" class="border-b border-base-300 last:border-b-0">
+              <td class="px-4 py-2 text-base-content/70 font-mono text-xs">{{ p.patient_code }}</td>
+              <td class="px-4 py-2 text-base-content font-medium">{{ p.name }}</td>
+              <td class="px-4 py-2 text-base-content/70">{{ p.phone || '—' }}</td>
+              <td class="px-4 py-2 text-base-content/70">{{ p.email || '—' }}</td>
+              <td class="px-4 py-2 text-base-content/70">{{ p.age ?? '—' }}</td>
               <td class="px-4 py-2 text-right">
-                <Link :href="`/patients/${p.id}`" class="text-primary-600 hover:text-primary-700 mr-3 text-sm">View</Link>
-                <Link :href="`/patients/${p.id}/edit`" class="text-primary-600 hover:text-primary-700 text-sm">Edit</Link>
+                <Link :href="`/patients/${p.id}`" class="text-primary hover:text-primary mr-3 text-sm">View</Link>
+                <Link :href="`/patients/${p.id}/edit`" class="text-primary hover:text-primary text-sm">Edit</Link>
               </td>
             </tr>
             <tr v-if="patients.data.length === 0">
-              <td colspan="6" class="text-center text-muted-foreground py-6">No patients found.</td>
+              <td colspan="6" class="text-center text-base-content/70 py-6">No patients found.</td>
             </tr>
           </tbody>
         </table>
       </div>
       <div
         v-if="patients.last_page > 1"
-        class="mt-3 flex items-center justify-between text-sm text-muted-foreground"
+        class="mt-3 flex items-center justify-between text-sm text-base-content/70"
       >
         <span>Page {{ patients.current_page }} of {{ patients.last_page }}</span>
         <div class="flex gap-1">
@@ -94,7 +94,7 @@ watch([q, isActive], applyFilters)
             <Link
               v-if="link.url"
               :href="link.url"
-              class="px-2 py-1 rounded hover:bg-surface-muted"
+              class="px-2 py-1 rounded hover:bg-base-200"
               ><!-- eslint-disable-next-line vue/no-v-text-v-html-on-component --><span v-html="link.label" /></Link>
           </template>
         </div>

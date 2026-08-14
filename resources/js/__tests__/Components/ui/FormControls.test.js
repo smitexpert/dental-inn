@@ -28,11 +28,12 @@ describe('UiCheckbox', () => {
 })
 
 describe('UiSwitch', () => {
-  it('renders on and off classes based on value', () => {
+  it('renders toggle class', () => {
     const on = mount(Switch, { props: { modelValue: true } })
     const off = mount(Switch, { props: { modelValue: false } })
-    expect(on.html()).toContain('bg-primary-600')
-    expect(off.html()).toContain('bg-surface-muted')
+    expect(on.html()).toContain('toggle')
+    expect(on.html()).toContain('toggle-primary')
+    expect(off.html()).toContain('toggle')
   })
 })
 

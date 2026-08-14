@@ -35,16 +35,16 @@ watch([dateFrom, dateTo], () => {
   <Head title="Income statement" />
   <AuthenticatedLayout>
     <div class="max-w-5xl space-y-6">
-      <h1 class="text-2xl font-semibold text-foreground">Income statement</h1>
+      <h1 class="text-2xl font-semibold text-base-content">Income statement</h1>
 
       <UiCard title="Period">
         <div class="flex flex-wrap items-end gap-4">
           <div>
-            <label class="block text-sm font-medium text-foreground mb-1">From</label>
+            <label class="block text-sm font-medium text-base-content mb-1">From</label>
             <UiInput v-model="dateFrom" type="date" />
           </div>
           <div>
-            <label class="block text-sm font-medium text-foreground mb-1">To</label>
+            <label class="block text-sm font-medium text-base-content mb-1">To</label>
             <UiInput v-model="dateTo" type="date" />
           </div>
         </div>
@@ -53,14 +53,14 @@ watch([dateFrom, dateTo], () => {
       <UiCard title="Revenue">
         <table class="w-full text-sm">
           <tbody>
-            <tr v-for="acc in props.revenue_accounts" :key="acc.id" class="border-b border-border/40">
+            <tr v-for="acc in props.revenue_accounts" :key="acc.id" class="border-b border-base-300/40">
               <td class="py-2">
                 <span class="font-mono text-xs mr-2">{{ acc.code }}</span>
                 {{ acc.name }}
               </td>
               <td class="py-2 text-right tabular-nums">{{ format(acc.balance) }}</td>
             </tr>
-            <tr class="font-semibold border-t border-border">
+            <tr class="font-semibold border-t border-base-300">
               <td class="py-2">Total revenue</td>
               <td class="py-2 text-right tabular-nums">{{ format(props.revenue) }}</td>
             </tr>
@@ -71,14 +71,14 @@ watch([dateFrom, dateTo], () => {
       <UiCard title="Expenses">
         <table class="w-full text-sm">
           <tbody>
-            <tr v-for="acc in props.expense_accounts" :key="acc.id" class="border-b border-border/40">
+            <tr v-for="acc in props.expense_accounts" :key="acc.id" class="border-b border-base-300/40">
               <td class="py-2">
                 <span class="font-mono text-xs mr-2">{{ acc.code }}</span>
                 {{ acc.name }}
               </td>
               <td class="py-2 text-right tabular-nums">{{ format(acc.balance) }}</td>
             </tr>
-            <tr class="font-semibold border-t border-border">
+            <tr class="font-semibold border-t border-base-300">
               <td class="py-2">Total expenses</td>
               <td class="py-2 text-right tabular-nums">{{ format(props.expense) }}</td>
             </tr>
@@ -88,8 +88,8 @@ watch([dateFrom, dateTo], () => {
 
       <UiCard title="Net">
         <div class="flex items-baseline justify-between">
-          <span class="text-sm text-muted-foreground">Net income</span>
-          <span class="text-2xl font-semibold tabular-nums" :class="props.net >= 0 ? 'text-success' : 'text-danger'">
+          <span class="text-sm text-base-content/70">Net income</span>
+          <span class="text-2xl font-semibold tabular-nums" :class="props.net >= 0 ? 'text-success' : 'text-error'">
             {{ format(props.net) }}
           </span>
         </div>

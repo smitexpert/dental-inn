@@ -15,8 +15,8 @@ const props = defineProps({ account: Object })
       <template #header>
         <div class="flex items-start justify-between gap-3">
           <div>
-            <h3 class="text-base font-semibold text-foreground font-mono">{{ account.code }} — {{ account.name }}</h3>
-            <p class="text-xs text-muted-foreground mt-1">{{ account.type_label }}</p>
+            <h3 class="text-base font-semibold text-base-content font-mono">{{ account.code }} — {{ account.name }}</h3>
+            <p class="text-xs text-base-content/70 mt-1">{{ account.type_label }}</p>
           </div>
           <div class="flex items-center gap-2">
             <UiBadge :variant="account.is_active ? 'success' : 'neutral'">
@@ -30,20 +30,20 @@ const props = defineProps({ account: Object })
 
       <div class="grid grid-cols-2 gap-4 text-sm">
         <div>
-          <div class="text-muted-foreground text-xs">Code</div>
-          <div class="text-foreground font-mono">{{ account.code }}</div>
+          <div class="text-base-content/70 text-xs">Code</div>
+          <div class="text-base-content font-mono">{{ account.code }}</div>
         </div>
         <div>
-          <div class="text-muted-foreground text-xs">Type</div>
-          <div class="text-foreground">{{ account.type_label }}</div>
+          <div class="text-base-content/70 text-xs">Type</div>
+          <div class="text-base-content">{{ account.type_label }}</div>
         </div>
         <div>
-          <div class="text-muted-foreground text-xs">Parent account</div>
-          <div class="text-foreground">{{ account.parent_code ?? '—' }}</div>
+          <div class="text-base-content/70 text-xs">Parent account</div>
+          <div class="text-base-content">{{ account.parent_code ?? '—' }}</div>
         </div>
         <div>
-          <div class="text-muted-foreground text-xs">Name</div>
-          <div class="text-foreground">{{ account.name }}</div>
+          <div class="text-base-content/70 text-xs">Name</div>
+          <div class="text-base-content">{{ account.name }}</div>
         </div>
       </div>
     </UiCard>

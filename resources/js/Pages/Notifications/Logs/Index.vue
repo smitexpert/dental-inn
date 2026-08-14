@@ -62,7 +62,7 @@ function variantFor(s) {
         </div>
         <div class="overflow-x-auto">
           <table class="w-full text-sm">
-            <thead class="bg-surface-muted text-muted-foreground">
+            <thead class="bg-base-200 text-base-content/70">
               <tr>
                 <th class="text-left px-4 py-2">When</th>
                 <th class="text-left px-4 py-2">Channel</th>
@@ -76,17 +76,17 @@ function variantFor(s) {
               <tr
                 v-for="l in logs.data"
                 :key="l.id"
-                class="border-b border-border last:border-b-0"
+                class="border-b border-base-300 last:border-b-0"
               >
-                <td class="px-4 py-2 text-foreground">{{ fmt(l.created_at) }}</td>
+                <td class="px-4 py-2 text-base-content">{{ fmt(l.created_at) }}</td>
                 <td class="px-4 py-2"><UiBadge variant="secondary">{{ l.channel }}</UiBadge></td>
-                <td class="px-4 py-2 text-foreground font-mono text-xs">{{ l.recipient }}</td>
-                <td class="px-4 py-2 text-muted-foreground">{{ l.subject || '—' }}</td>
+                <td class="px-4 py-2 text-base-content font-mono text-xs">{{ l.recipient }}</td>
+                <td class="px-4 py-2 text-base-content/70">{{ l.subject || '—' }}</td>
                 <td class="px-4 py-2"><UiBadge :variant="variantFor(l.status)">{{ l.status }}</UiBadge></td>
-                <td class="px-4 py-2 text-muted-foreground">{{ l.template?.key || '—' }}</td>
+                <td class="px-4 py-2 text-base-content/70">{{ l.template?.key || '—' }}</td>
               </tr>
               <tr v-if="logs.data.length === 0">
-                <td colspan="6" class="text-center text-muted-foreground py-6">No logs.</td>
+                <td colspan="6" class="text-center text-base-content/70 py-6">No logs.</td>
               </tr>
             </tbody>
           </table>

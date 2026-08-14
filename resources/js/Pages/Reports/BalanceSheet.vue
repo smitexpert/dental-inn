@@ -34,12 +34,12 @@ function tableFor(label, accounts, total) {
   <Head title="Balance sheet" />
   <AuthenticatedLayout>
     <div class="max-w-5xl space-y-6">
-      <h1 class="text-2xl font-semibold text-foreground">Balance sheet</h1>
+      <h1 class="text-2xl font-semibold text-base-content">Balance sheet</h1>
 
       <UiCard title="As of">
         <div class="flex items-end gap-4">
           <div>
-            <label class="block text-sm font-medium text-foreground mb-1">As of</label>
+            <label class="block text-sm font-medium text-base-content mb-1">As of</label>
             <UiInput v-model="asOf" type="date" />
           </div>
         </div>
@@ -48,14 +48,14 @@ function tableFor(label, accounts, total) {
       <UiCard v-for="section in [tableFor('Assets', props.assets, props.totals.assets), tableFor('Liabilities', props.liabilities, props.totals.liabilities), tableFor('Equity', props.equity, props.totals.equity)]" :key="section.label" :title="section.label">
         <table class="w-full text-sm">
           <tbody>
-            <tr v-for="acc in section.accounts" :key="acc.id" class="border-b border-border/40">
+            <tr v-for="acc in section.accounts" :key="acc.id" class="border-b border-base-300/40">
               <td class="py-2">
                 <span class="font-mono text-xs mr-2">{{ acc.code }}</span>
                 {{ acc.name }}
               </td>
               <td class="py-2 text-right tabular-nums">{{ format(acc.balance) }}</td>
             </tr>
-            <tr class="font-semibold border-t border-border">
+            <tr class="font-semibold border-t border-base-300">
               <td class="py-2">Total {{ section.label.toLowerCase() }}</td>
               <td class="py-2 text-right tabular-nums">{{ format(section.total) }}</td>
             </tr>

@@ -72,7 +72,7 @@ function findCurrency(code) {
     <UiCard title="Cash movements">
       <template #header>
         <div class="flex items-center justify-between gap-3">
-          <h3 class="text-base font-semibold text-foreground">Cash movements</h3>
+          <h3 class="text-base font-semibold text-base-content">Cash movements</h3>
           <Link href="/exchange/movements/create"><UiButton>New movement</UiButton></Link>
         </div>
       </template>
@@ -95,7 +95,7 @@ function findCurrency(code) {
 
       <div v-else class="overflow-x-auto">
         <table class="w-full text-sm">
-          <thead class="bg-surface-muted text-muted-foreground">
+          <thead class="bg-base-200 text-base-content/70">
             <tr>
               <th class="text-left px-4 py-2">Date</th>
               <th class="text-left px-4 py-2">Type</th>
@@ -108,25 +108,25 @@ function findCurrency(code) {
             </tr>
           </thead>
           <tbody>
-            <tr v-for="m in movements.data" :key="m.id" class="border-b border-border last:border-b-0">
-              <td class="px-4 py-2 text-muted-foreground text-xs">{{ formatDate(m.created_at) }}</td>
+            <tr v-for="m in movements.data" :key="m.id" class="border-b border-base-300 last:border-b-0">
+              <td class="px-4 py-2 text-base-content/70 text-xs">{{ formatDate(m.created_at) }}</td>
               <td class="px-4 py-2">
                 <UiBadge :variant="variantFor(m.type)">{{ m.type_label }}</UiBadge>
               </td>
-              <td class="px-4 py-2 text-foreground font-mono text-xs">
+              <td class="px-4 py-2 text-base-content font-mono text-xs">
                 {{ findCurrency(m.currency_code)?.symbol ?? '' }} {{ m.currency_code }}
               </td>
-              <td class="px-4 py-2 text-right text-foreground">{{ m.amount }}</td>
-              <td class="px-4 py-2 text-right text-muted-foreground">
+              <td class="px-4 py-2 text-right text-base-content">{{ m.amount }}</td>
+              <td class="px-4 py-2 text-right text-base-content/70">
                 <template v-if="m.counter_amount">
                   {{ findCurrency(m.counter_currency_code)?.symbol ?? '' }} {{ m.counter_amount }}
                 </template>
                 <span v-else>—</span>
               </td>
-              <td class="px-4 py-2 text-muted-foreground">{{ m.reason ?? '—' }}</td>
-              <td class="px-4 py-2 text-muted-foreground text-xs">{{ m.performer?.name ?? '—' }}</td>
+              <td class="px-4 py-2 text-base-content/70">{{ m.reason ?? '—' }}</td>
+              <td class="px-4 py-2 text-base-content/70 text-xs">{{ m.performer?.name ?? '—' }}</td>
               <td class="px-4 py-2 text-right">
-                <Link :href="`/exchange/movements/${m.id}`" class="text-primary-600 hover:underline">View</Link>
+                <Link :href="`/exchange/movements/${m.id}`" class="text-primary hover:underline">View</Link>
               </td>
             </tr>
           </tbody>

@@ -36,7 +36,7 @@ function typeVariant(t) {
     <UiCard title="Chart of accounts">
       <template #header>
         <div class="flex items-center justify-between gap-3">
-          <h3 class="text-base font-semibold text-foreground">Chart of accounts</h3>
+          <h3 class="text-base font-semibold text-base-content">Chart of accounts</h3>
           <Link href="/billing/accounts/create"><UiButton>New account</UiButton></Link>
         </div>
       </template>
@@ -57,7 +57,7 @@ function typeVariant(t) {
 
       <div v-else class="overflow-x-auto">
         <table class="w-full text-sm">
-          <thead class="bg-surface-muted text-muted-foreground">
+          <thead class="bg-base-200 text-base-content/70">
             <tr>
               <th class="text-left px-4 py-2">Code</th>
               <th class="text-left px-4 py-2">Name</th>
@@ -67,9 +67,9 @@ function typeVariant(t) {
             </tr>
           </thead>
           <tbody>
-            <tr v-for="a in accounts.data" :key="a.id" class="border-b border-border last:border-b-0">
-              <td class="px-4 py-2 text-foreground font-mono text-xs">{{ a.code }}</td>
-              <td class="px-4 py-2 text-foreground font-medium">{{ a.name }}</td>
+            <tr v-for="a in accounts.data" :key="a.id" class="border-b border-base-300 last:border-b-0">
+              <td class="px-4 py-2 text-base-content font-mono text-xs">{{ a.code }}</td>
+              <td class="px-4 py-2 text-base-content font-medium">{{ a.name }}</td>
               <td class="px-4 py-2">
                 <UiBadge :variant="typeVariant(a.type)">{{ a.type_label ?? a.type }}</UiBadge>
               </td>
@@ -79,7 +79,7 @@ function typeVariant(t) {
                 </UiBadge>
               </td>
               <td class="px-4 py-2 text-right">
-                <Link :href="`/billing/accounts/${a.id}`" class="text-primary-600 hover:underline">View</Link>
+                <Link :href="`/billing/accounts/${a.id}`" class="text-primary hover:underline">View</Link>
               </td>
             </tr>
           </tbody>

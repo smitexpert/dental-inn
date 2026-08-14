@@ -39,7 +39,7 @@ function submit() {
   <AuthenticatedLayout>
     <div class="max-w-3xl">
       <UiCard :title="`Edit treatment record — ${patient.name}`">
-        <p class="text-xs text-muted-foreground font-mono -mt-2 mb-4">{{ patient.patient_code }}</p>
+        <p class="text-xs text-base-content/70 font-mono -mt-2 mb-4">{{ patient.patient_code }}</p>
         <UiForm @submit.prevent="submit">
           <div class="grid grid-cols-2 gap-3">
             <UiField label="Visit date" :error="form.errors.visited_at" required
@@ -47,7 +47,7 @@ function submit() {
                 v-model="form.visited_at"
                 type="date"
                 required
-                class="h-10 w-full rounded-md border border-border bg-surface px-3 text-sm"
+                class="h-10 w-full rounded-md border border-base-300 bg-base-100 px-3 text-sm"
             /></UiField>
             <UiField label="Doctor" :error="form.errors.doctor_id"
               ><UiSelect
@@ -63,7 +63,7 @@ function submit() {
               ><input
                 v-model="form.follow_up_date"
                 type="date"
-                class="h-10 w-full rounded-md border border-border bg-surface px-3 text-sm"
+                class="h-10 w-full rounded-md border border-base-300 bg-base-100 px-3 text-sm"
             /></UiField>
           </div>
 
@@ -83,10 +83,10 @@ function submit() {
             <ToothChartPicker v-model="form.tooth_chart" />
           </UiField>
 
-          <div class="flex items-center justify-end gap-2 pt-3 border-t border-border">
+          <div class="flex items-center justify-end gap-2 pt-3 border-t border-base-300">
             <Link
               :href="`/patients/${patient.id}/treatment-records/${record.id}`"
-              class="h-10 px-4 inline-flex items-center rounded-md bg-surface-muted text-foreground border border-border text-sm"
+              class="h-10 px-4 inline-flex items-center rounded-md bg-base-200 text-base-content border border-base-300 text-sm"
               >Cancel</Link
             >
             <UiButton type="submit" :loading="form.processing">Save</UiButton>

@@ -6,19 +6,19 @@ defineProps({
 </script>
 
 <template>
-  <div class="bg-surface border border-border rounded-lg shadow-sm">
+  <div class="bg-base-100 border border-base-300 rounded-lg shadow-sm">
     <div
       v-if="title || $slots.header"
-      class="px-4 py-3 border-b border-border flex items-center justify-between"
+      class="px-4 py-3 border-b border-base-300 flex items-center justify-between"
     >
       <slot name="header">
-        <h3 class="text-base font-semibold text-foreground">{{ title }}</h3>
+        <h3 class="text-base font-semibold text-base-content">{{ title }}</h3>
       </slot>
     </div>
     <div :class="padded ? 'p-4' : ''">
       <slot />
     </div>
-    <div v-if="$slots.footer" class="px-4 py-3 border-t border-border bg-surface-muted">
+    <div v-if="$slots.footer" class="px-4 py-3 border-t border-base-300 bg-base-200">
       <slot name="footer" />
     </div>
   </div>

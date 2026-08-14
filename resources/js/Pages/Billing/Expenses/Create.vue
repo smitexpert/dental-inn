@@ -35,7 +35,7 @@ function submit() {
     <UiCard title="Submit expense">
       <template #header>
         <div class="flex items-center justify-between gap-3">
-          <h3 class="text-base font-semibold text-foreground">Submit expense</h3>
+          <h3 class="text-base font-semibold text-base-content">Submit expense</h3>
           <Link href="/billing/expenses"><UiButton variant="ghost">Back</UiButton></Link>
         </div>
       </template>

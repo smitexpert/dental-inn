@@ -23,7 +23,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="min-h-screen flex bg-surface-muted text-foreground">
+  <div class="min-h-screen flex bg-base-200 text-base-content">
     <!-- Sidebar: always visible on lg+, drawer on smaller -->
     <div v-if="isLg" class="shrink-0">
       <Sidebar />

@@ -43,13 +43,13 @@ const toothEntries = () => {
     <div class="space-y-4 max-w-4xl">
       <div class="flex items-center justify-between">
         <div>
-          <Link :href="`/patients/${patient.id}`" class="text-sm text-muted-foreground hover:text-primary-600">
+          <Link :href="`/patients/${patient.id}`" class="text-sm text-base-content/70 hover:text-primary">
             {{ patient.name }}
           </Link>
-          <h2 class="text-xl font-semibold text-foreground mt-1">
+          <h2 class="text-xl font-semibold text-base-content mt-1">
             Treatment record — {{ fmtDate(record.visited_at) }}
           </h2>
-          <p class="text-xs text-muted-foreground font-mono">{{ patient.patient_code }}</p>
+          <p class="text-xs text-base-content/70 font-mono">{{ patient.patient_code }}</p>
         </div>
         <div class="flex gap-2">
           <Link v-if="can('view-treatment-records')" :href="`/patients/${patient.id}/treatment-records`">
@@ -77,23 +77,23 @@ const toothEntries = () => {
 
       <UiCard title="Visit details">
         <div class="grid grid-cols-2 gap-3 text-sm">
-          <div><span class="text-muted-foreground">Visit date:</span> {{ fmtDate(record.visited_at) }}</div>
-          <div><span class="text-muted-foreground">Doctor:</span>
+          <div><span class="text-base-content/70">Visit date:</span> {{ fmtDate(record.visited_at) }}</div>
+          <div><span class="text-base-content/70">Doctor:</span>
             <span v-if="record.doctor_name" class="inline-flex items-center gap-2">
               <span class="inline-block h-2 w-2 rounded-full" :style="{ backgroundColor: record.doctor_color }" />
               {{ record.doctor_name }}
             </span>
             <span v-else>—</span>
           </div>
-          <div><span class="text-muted-foreground">Status:</span>
+          <div><span class="text-base-content/70">Status:</span>
             <UiBadge :variant="record.status === 'completed' ? 'success' : record.status === 'cancelled' ? 'danger' : 'warning'">
               {{ record.status_label }}
             </UiBadge>
           </div>
-          <div><span class="text-muted-foreground">Follow-up:</span> {{ fmtDate(record.follow_up_date) }}</div>
+          <div><span class="text-base-content/70">Follow-up:</span> {{ fmtDate(record.follow_up_date) }}</div>
           <div v-if="record.appointment_id" class="col-span-2">
-            <span class="text-muted-foreground">Linked appointment:</span>
-            <Link :href="`/appointments/${record.appointment_id}`" class="text-primary-600 hover:underline ml-1">#{{ record.appointment_id }}</Link>
+            <span class="text-base-content/70">Linked appointment:</span>
+            <Link :href="`/appointments/${record.appointment_id}`" class="text-primary hover:underline ml-1">#{{ record.appointment_id }}</Link>
           </div>
         </div>
       </UiCard>
@@ -111,16 +111,16 @@ const toothEntries = () => {
       </UiCard>
 
       <UiCard title="Tooth chart">
-        <div v-if="toothEntries().length === 0" class="text-sm text-muted-foreground">No teeth marked.</div>
+        <div v-if="toothEntries().length === 0" class="text-sm text-base-content/70">No teeth marked.</div>
         <div v-else>
           <div class="flex flex-wrap gap-2">
             <div
               v-for="[num, status] in toothEntries()"
               :key="num"
-              class="rounded-md border border-border bg-surface-muted px-3 py-2 text-xs"
+              class="rounded-md border border-base-300 bg-base-200 px-3 py-2 text-xs"
             >
               <div class="font-mono font-semibold">Tooth {{ num }}</div>
-              <div class="text-muted-foreground">{{ status }}</div>
+              <div class="text-base-content/70">{{ status }}</div>
             </div>
           </div>
         </div>

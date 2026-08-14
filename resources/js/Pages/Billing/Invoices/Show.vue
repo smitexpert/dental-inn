@@ -58,8 +58,8 @@ function statusBadge(s) {
         <template #header>
           <div class="flex items-start justify-between gap-3">
             <div>
-              <h3 class="text-base font-semibold text-foreground">Invoice {{ invoice.invoice_number }}</h3>
-              <p class="text-xs text-muted-foreground mt-1">
+              <h3 class="text-base font-semibold text-base-content">Invoice {{ invoice.invoice_number }}</h3>
+              <p class="text-xs text-base-content/70 mt-1">
                 {{ invoice.patient?.name ?? 'No patient' }}
                 <span v-if="invoice.patient">· {{ invoice.patient.patient_code }}</span>
               </p>
@@ -73,26 +73,26 @@ function statusBadge(s) {
 
         <div class="grid grid-cols-4 gap-4 text-sm">
           <div>
-            <div class="text-muted-foreground text-xs">Invoice date</div>
-            <div class="text-foreground">{{ invoice.invoice_date }}</div>
+            <div class="text-base-content/70 text-xs">Invoice date</div>
+            <div class="text-base-content">{{ invoice.invoice_date }}</div>
           </div>
           <div>
-            <div class="text-muted-foreground text-xs">Due date</div>
-            <div class="text-foreground">{{ invoice.due_date }}</div>
+            <div class="text-base-content/70 text-xs">Due date</div>
+            <div class="text-base-content">{{ invoice.due_date }}</div>
           </div>
           <div>
-            <div class="text-muted-foreground text-xs">Created by</div>
-            <div class="text-foreground">{{ invoice.creator?.name ?? '—' }}</div>
+            <div class="text-base-content/70 text-xs">Created by</div>
+            <div class="text-base-content">{{ invoice.creator?.name ?? '—' }}</div>
           </div>
           <div>
-            <div class="text-muted-foreground text-xs">Issued at</div>
-            <div class="text-foreground">{{ invoice.issued_at ?? '—' }}</div>
+            <div class="text-base-content/70 text-xs">Issued at</div>
+            <div class="text-base-content">{{ invoice.issued_at ?? '—' }}</div>
           </div>
         </div>
 
         <div class="mt-6 overflow-x-auto">
           <table class="w-full text-sm">
-            <thead class="bg-surface-muted text-muted-foreground">
+            <thead class="bg-base-200 text-base-content/70">
               <tr>
                 <th class="text-left px-4 py-2">Description</th>
                 <th class="text-right px-4 py-2">Qty</th>
@@ -101,11 +101,11 @@ function statusBadge(s) {
               </tr>
             </thead>
             <tbody>
-              <tr v-for="item in invoice.items" :key="item.id" class="border-b border-border last:border-b-0">
-                <td class="px-4 py-2 text-foreground">{{ item.description }}</td>
-                <td class="px-4 py-2 text-right text-foreground">{{ item.quantity }}</td>
-                <td class="px-4 py-2 text-right text-foreground">{{ item.unit_price }}</td>
-                <td class="px-4 py-2 text-right text-foreground font-medium">{{ item.line_total }}</td>
+              <tr v-for="item in invoice.items" :key="item.id" class="border-b border-base-300 last:border-b-0">
+                <td class="px-4 py-2 text-base-content">{{ item.description }}</td>
+                <td class="px-4 py-2 text-right text-base-content">{{ item.quantity }}</td>
+                <td class="px-4 py-2 text-right text-base-content">{{ item.unit_price }}</td>
+                <td class="px-4 py-2 text-right text-base-content font-medium">{{ item.line_total }}</td>
               </tr>
             </tbody>
           </table>
@@ -116,7 +116,7 @@ function statusBadge(s) {
             <div class="flex justify-between"><span>Subtotal</span><span>{{ invoice.subtotal }}</span></div>
             <div class="flex justify-between"><span>Discount</span><span>-{{ invoice.discount_amount }}</span></div>
             <div class="flex justify-between"><span>Tax</span><span>{{ invoice.tax_amount }}</span></div>
-            <div class="flex justify-between font-semibold border-t border-border pt-1 mt-1">
+            <div class="flex justify-between font-semibold border-t border-base-300 pt-1 mt-1">
               <span>Total</span><span>{{ invoice.total }}</span>
             </div>
             <div class="flex justify-between text-success-600"><span>Paid</span><span>{{ invoice.paid_amount }}</span></div>
@@ -132,10 +132,10 @@ function statusBadge(s) {
       </UiCard>
 
       <UiCard title="Payments">
-        <div v-if="invoice.payments.length === 0" class="text-sm text-muted-foreground">No payments recorded yet.</div>
+        <div v-if="invoice.payments.length === 0" class="text-sm text-base-content/70">No payments recorded yet.</div>
         <div v-else class="overflow-x-auto">
           <table class="w-full text-sm">
-            <thead class="bg-surface-muted text-muted-foreground">
+            <thead class="bg-base-200 text-base-content/70">
               <tr>
                 <th class="text-left px-4 py-2">Date</th>
                 <th class="text-right px-4 py-2">Amount</th>
@@ -146,14 +146,14 @@ function statusBadge(s) {
               </tr>
             </thead>
             <tbody>
-              <tr v-for="p in invoice.payments" :key="p.id" class="border-b border-border last:border-b-0">
+              <tr v-for="p in invoice.payments" :key="p.id" class="border-b border-base-300 last:border-b-0">
                 <td class="px-4 py-2">{{ p.payment_date }}</td>
                 <td class="px-4 py-2 text-right font-medium">{{ p.amount }}</td>
                 <td class="px-4 py-2">{{ p.method_label }}</td>
-                <td class="px-4 py-2 text-muted-foreground">{{ p.reference ?? '—' }}</td>
+                <td class="px-4 py-2 text-base-content/70">{{ p.reference ?? '—' }}</td>
                 <td class="px-4 py-2">{{ p.receiver ?? '—' }}</td>
                 <td class="px-4 py-2 text-right">
-                  <Link :href="`/billing/payments/${p.id}/receipt`" class="text-primary-600 hover:underline">Receipt</Link>
+                  <Link :href="`/billing/payments/${p.id}/receipt`" class="text-primary hover:underline">Receipt</Link>
                 </td>
               </tr>
             </tbody>

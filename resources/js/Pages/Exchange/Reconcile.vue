@@ -50,7 +50,7 @@ function variance() {
   <AuthenticatedLayout>
     <UiCard title="Reconcile drawer">
       <template #header>
-        <h3 class="text-base font-semibold text-foreground">Reconcile cash drawer</h3>
+        <h3 class="text-base font-semibold text-base-content">Reconcile cash drawer</h3>
       </template>
 
       <div class="grid grid-cols-2 gap-3 mb-4">
@@ -69,18 +69,18 @@ function variance() {
         />
       </div>
 
-      <div v-if="selected" class="bg-surface-muted rounded-md p-4 mb-4">
+      <div v-if="selected" class="bg-base-200 rounded-md p-4 mb-4">
         <div class="grid grid-cols-3 gap-3 text-sm">
           <div>
-            <div class="text-muted-foreground text-xs">Expected</div>
-            <div class="text-foreground font-medium">{{ selected.balance }}</div>
+            <div class="text-base-content/70 text-xs">Expected</div>
+            <div class="text-base-content font-medium">{{ selected.balance }}</div>
           </div>
           <div>
-            <div class="text-muted-foreground text-xs">Last reconciled</div>
-            <div class="text-foreground">{{ formatDate(selected.last_reconciled_at) }}</div>
+            <div class="text-base-content/70 text-xs">Last reconciled</div>
+            <div class="text-base-content">{{ formatDate(selected.last_reconciled_at) }}</div>
           </div>
           <div>
-            <div class="text-muted-foreground text-xs">Variance</div>
+            <div class="text-base-content/70 text-xs">Variance</div>
             <div>
               <UiBadge v-if="variance() === null" variant="neutral">—</UiBadge>
               <UiBadge v-else :variant="(variance() ?? 0) === 0 ? 'success' : ((variance() ?? 0) > 0 ? 'success' : 'danger')">
@@ -101,7 +101,7 @@ function variance() {
       <UiCard title="All drawers">
         <div class="overflow-x-auto">
           <table class="w-full text-sm">
-            <thead class="bg-surface-muted text-muted-foreground">
+            <thead class="bg-base-200 text-base-content/70">
               <tr>
                 <th class="text-left px-4 py-2">Currency</th>
                 <th class="text-right px-4 py-2">Balance</th>
@@ -111,12 +111,12 @@ function variance() {
               </tr>
             </thead>
             <tbody>
-              <tr v-for="d in drawers" :key="d.currency_code" class="border-b border-border last:border-b-0">
-                <td class="px-4 py-2 text-foreground font-mono text-xs">{{ d.currency?.symbol }} {{ d.currency_code }}</td>
-                <td class="px-4 py-2 text-right text-foreground">{{ d.balance }}</td>
-                <td class="px-4 py-2 text-muted-foreground text-xs">{{ formatDate(d.last_reconciled_at) }}</td>
-                <td class="px-4 py-2 text-right text-foreground">{{ d.last_reconciled_balance ?? '—' }}</td>
-                <td class="px-4 py-2 text-right text-muted-foreground">{{ d.recent_movements }}</td>
+              <tr v-for="d in drawers" :key="d.currency_code" class="border-b border-base-300 last:border-b-0">
+                <td class="px-4 py-2 text-base-content font-mono text-xs">{{ d.currency?.symbol }} {{ d.currency_code }}</td>
+                <td class="px-4 py-2 text-right text-base-content">{{ d.balance }}</td>
+                <td class="px-4 py-2 text-base-content/70 text-xs">{{ formatDate(d.last_reconciled_at) }}</td>
+                <td class="px-4 py-2 text-right text-base-content">{{ d.last_reconciled_balance ?? '—' }}</td>
+                <td class="px-4 py-2 text-right text-base-content/70">{{ d.recent_movements }}</td>
               </tr>
             </tbody>
           </table>

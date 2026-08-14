@@ -64,7 +64,7 @@ function submit() {
           <UiField>
             <label class="flex items-center gap-2">
               <UiCheckbox v-model="form.is_active" :binary="true" />
-              <span class="text-sm text-foreground">Active</span>
+              <span class="text-sm text-base-content">Active</span>
             </label>
           </UiField>
           <div class="flex justify-end gap-2 pt-2">

@@ -1,24 +1,37 @@
 <script setup>
-import ConfirmDialog from 'primevue/confirmdialog'
+// DaisyUI confirmation dialog. Driven by useConfirm().require() in pages;
+// reads shared state from useConfirmDialog() composable.
+import { useConfirmDialog } from '@/Composables/useConfirm.js'
+
+const state = useConfirmDialog()
+
+function accept() {
+  const cb = state.value.accept
+  state.value.open = false
+  if (typeof cb === 'function') cb()
+}
+
+function reject() {
+  const cb = state.value.reject
+  state.value.open = false
+  if (typeof cb === 'function') cb()
+}
 </script>
 
 <template>
-  <ConfirmDialog
-    :pt="{
-      root: { class: 'fixed inset-0 z-50 flex items-center justify-center p-4' },
-      mask: { class: 'fixed inset-0 bg-black/50' },
-      container: { class: 'bg-surface border border-border rounded-lg shadow-xl w-full max-w-md' },
-      header: { class: 'px-4 py-3 border-b border-border' },
-      title: { class: 'text-lg font-semibold text-foreground' },
-      content: { class: 'p-4 text-foreground' },
-      footer: { class: 'px-4 py-3 border-t border-border flex justify-end gap-2' },
-      acceptButton: {
-        class: 'h-10 px-4 rounded-md bg-primary-600 text-white font-medium hover:bg-primary-700',
-      },
-      rejectButton: {
-        class:
-          'h-10 px-4 rounded-md bg-surface-muted text-foreground border border-border hover:bg-surface-muted/70',
-      },
-    }"
-  />
+  <div v-if="state.open" class="modal modal-open" role="dialog">
+    <div class="modal-box">
+      <h3 class="font-semibold text-lg">{{ state.header }}</h3>
+      <p class="py-4">{{ state.message }}</p>
+      <div class="modal-action">
+        <button type="button" class="btn" :class="state.rejectClass" @click="reject">
+          {{ state.rejectLabel }}
+        </button>
+        <button type="button" class="btn" :class="state.acceptClass" @click="accept">
+          {{ state.acceptLabel }}
+        </button>
+      </div>
+    </div>
+    <div class="modal-backdrop" @click="reject" />
+  </div>
 </template>

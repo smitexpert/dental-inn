@@ -6,8 +6,6 @@ import { createInertiaApp } from '@inertiajs/vue3'
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers'
 import { ZiggyVue } from 'ziggy-js'
 
-import installPrimeVue from './plugins/primevue.js'
-
 const appName = import.meta.env.VITE_APP_NAME || 'Dental'
 
 createInertiaApp({
@@ -17,8 +15,7 @@ createInertiaApp({
     return createApp({ render: () => h(App, props) })
       .use(plugin)
       .use(ZiggyVue)
-      .use(installPrimeVue)
       .mount(el)
   },
-  progress: { color: '#0284c7' },
+  progress: { color: '#0ea5e9' },
 })

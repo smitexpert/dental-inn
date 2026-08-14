@@ -98,9 +98,9 @@ watch(() => form.value.type, (t) => {
           :error="errors.amount"
         />
 
-        <div v-if="sourceDrawer" class="text-xs text-muted-foreground self-end">
+        <div v-if="sourceDrawer" class="text-xs text-base-content/70 self-end">
           Current balance:
-          <span class="font-medium text-foreground">
+          <span class="font-medium text-base-content">
             {{ findCurrency(form.currency_code)?.symbol }}{{ Number(sourceDrawer.balance).toFixed(4) }}
           </span>
         </div>

@@ -13,12 +13,12 @@ defineProps({
         <Link
           v-if="item.href && i < items.length - 1"
           :href="item.href"
-          class="text-muted-foreground hover:text-foreground"
+          class="text-base-content/70 hover:text-base-content"
         >
           {{ item.label }}
         </Link>
-        <span v-else class="text-foreground font-medium">{{ item.label }}</span>
-        <span v-if="i < items.length - 1" class="text-muted-foreground">/</span>
+        <span v-else class="text-base-content font-medium">{{ item.label }}</span>
+        <span v-if="i < items.length - 1" class="text-base-content/70">/</span>
       </li>
     </ol>
   </nav>

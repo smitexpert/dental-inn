@@ -1,6 +1,5 @@
 <script setup>
-import DataTable from 'primevue/datatable'
-import Column from 'primevue/column'
+import { computed, useSlots } from 'vue'
 
 defineProps({
   value: { type: Array, required: true },
@@ -9,41 +8,58 @@ defineProps({
   loading: { type: Boolean, default: false },
   striped: { type: Boolean, default: true },
   selectionMode: { type: String, default: null },
-  vModel: { type: [Array, Object], default: undefined },
 })
-defineEmits(['update:selection', 'row-click', 'sort', 'page'])
 
-const pt = {
-  root: { class: 'bg-surface border border-border rounded-lg overflow-hidden' },
-  table: { class: 'w-full text-sm' },
-  thead: { class: 'bg-surface-muted text-muted-foreground' },
-  headerCell: { class: 'px-4 py-2 text-left font-medium border-b border-border' },
-  bodyRow: ({ context }) => [
-    'border-b border-border last:border-b-0',
-    context.selected ? 'bg-primary-50' : 'hover:bg-surface-muted',
-    context.striped && context.even ? 'bg-surface-muted/50' : '',
-  ],
-  bodyCell: { class: 'px-4 py-2 text-foreground' },
-  paginator: { class: 'flex items-center justify-between px-4 py-2 border-t border-border bg-surface' },
-  pageButton: ({ context }) => [
-    'h-8 px-2 rounded text-sm',
-    context.active ? 'bg-primary-600 text-white' : 'text-foreground hover:bg-surface-muted',
-  ],
-}
+const emit = defineEmits(['row-click', 'sort', 'page'])
+const slots = useSlots()
+
+const columns = computed(() => {
+  const nodes = slots.default?.() ?? []
+  const cols = []
+  for (const n of nodes) {
+    if (n.type?.__name === 'Column' || n.type?.name === 'Column' || (typeof n.type === 'object' && n.props?.field)) {
+      cols.push({ field: n.props.field, header: n.props.header ?? n.props.field, sortable: n.props.sortable })
+    }
+    // walk children for Fragment-wrapped Columns
+    if (n.children && Array.isArray(n.children)) {
+      for (const c of n.children) {
+        if (typeof c === 'object' && c?.props?.field) {
+          cols.push({ field: c.props.field, header: c.props.header ?? c.props.field, sortable: c.props.sortable })
+        }
+      }
+    }
+  }
+  return cols
+})
 </script>
 
 <template>
-  <DataTable
-    :value="value"
-    :paginator="paginator"
-    :rows="rows"
-    :loading="loading"
-    :selection-mode="selectionMode"
-    :pt="pt"
-    @row-click="(e) => $emit('row-click', e)"
-    @page="(e) => $emit('page', e)"
-    @sort="(e) => $emit('sort', e)"
-  >
-    <slot />
-  </DataTable>
+  <div class="card bg-base-100 border border-base-300 overflow-hidden">
+    <table class="table w-full" :class="striped ? 'table-zebra' : ''">
+      <thead>
+        <tr>
+          <th v-for="col in columns" :key="col.field">{{ col.header }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-if="loading">
+          <td :colspan="columns.length" class="text-center py-8">
+            <span class="loading loading-spinner loading-md" />
+          </td>
+        </tr>
+        <tr v-else-if="value.length === 0">
+          <td :colspan="columns.length" class="text-center text-base-content/60 py-8">No records found.</td>
+        </tr>
+        <tr
+          v-for="(row, i) in value"
+          v-else
+          :key="i"
+          class="hover:bg-base-200 cursor-pointer"
+          @click="$emit('row-click', { data: row, index: i })"
+        >
+          <td v-for="col in columns" :key="col.field">{{ row[col.field] }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </template>
