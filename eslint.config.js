@@ -33,6 +33,18 @@ export default [
     rules: {
       'vue/multi-word-component-names': 'off',
       'no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+      'no-restricted-imports': ['error', {
+        paths: [
+          { name: 'primevue', message: 'PrimeVue is removed. Use the DaisyUI kit in resources/js/Components/ui/.' },
+          { name: '@primevue/themes', message: 'PrimeVue themes are removed.' },
+          { name: '@primeuix/themes', message: 'PrimeVue themes are removed.' },
+        ],
+        patterns: [
+          { group: ['primevue/*'], message: 'PrimeVue is removed. Use the DaisyUI kit.' },
+          { group: ['@primevue/*'], message: 'PrimeVue is removed.' },
+          { group: ['@primeuix/*'], message: 'PrimeVue themes are removed.' },
+        ],
+      }],
     },
   },
   {
