@@ -13,7 +13,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
-use RuntimeException;
 
 /**
  * High-level notification facade.
@@ -54,9 +53,13 @@ class NotificationService
             ->first();
 
         if ($template === null) {
-            throw new RuntimeException(
-                "Active notification template '{$templateKey}' for channel '{$channel->value}' (locale {$locale}) was not found."
-            );
+            Log::warning('notification.template_missing', [
+                'template_key' => $templateKey,
+                'channel' => $channel->value,
+                'locale' => $locale,
+            ]);
+
+            return [];
         }
 
         $rendered = $this->renderTemplate($template, $variables);
