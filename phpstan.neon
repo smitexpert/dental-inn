@@ -1,0 +1,17 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+    paths:
+        - app/
+    level: 6
+    ignoreErrors:
+        # FormRequest rules() return type array<string, ...> — acceptable at this level
+        - '#Method App\\Http\\Requests\\.*::rules\(\) return type has no value type specified in iterable type array\.#'
+        # Resources return array<string, mixed> — acceptable at this level
+        - '#Method App\\Http\\Resources\\.* return type has no value type specified in iterable type array\.#'
+        # Repository contracts and Eloquent implementations use array $data / $filters — typed in phase sub-projects
+        - '#Method App\\Repositories\\.* has parameter \$data with no value type specified in iterable type array\.#'
+        - '#Method App\\Repositories\\.* has parameter \$filters with no value type specified in iterable type array\.#'
+        - '#Method App\\Repositories\\Contracts\\UserRepository::paginate\(\) return type with generic interface Illuminate\\Contracts\\Pagination\\LengthAwarePaginator does not specify its types: TKey, TValue#'
+        - '#Method App\\Repositories\\Eloquent\\UserEloquentRepository::paginate\(\) return type with generic interface Illuminate\\Contracts\\Pagination\\LengthAwarePaginator does not specify its types: TKey, TValue#'
