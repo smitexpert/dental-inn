@@ -8,18 +8,30 @@ import UiInput from '@/Components/ui/Input.vue'
 import UiSelect from '@/Components/ui/Select.vue'
 import UiButton from '@/Components/ui/Button.vue'
 import UiTextarea from '@/Components/ui/Textarea.vue'
+import PatientQuickAddDialog from '@/Components/PatientQuickAddDialog.vue'
+import { ref } from 'vue'
 
 const props = defineProps({ appointment: Object, doctors: Array })
 
 const form = useForm({
   doctor_id: props.appointment.doctor_id,
-  patient_name: props.appointment.patient_name ?? '',
-  patient_phone: props.appointment.patient_phone ?? '',
   patient_id: props.appointment.patient_id,
   scheduled_at: props.appointment.scheduled_at ? props.appointment.scheduled_at.slice(0, 16) : '',
   duration_minutes: props.appointment.duration_minutes ?? 30,
   notes: props.appointment.notes ?? '',
 })
+
+const selectedPatient = ref(props.appointment.patient ?? null)
+const pickerOpen = ref(false)
+
+function onPatientSelected(p) {
+  selectedPatient.value = p
+  form.patient_id = p.id
+}
+function onPatientCreated(p) {
+  selectedPatient.value = p
+  form.patient_id = p.id
+}
 
 function submit() {
   form.patch(`/appointments/${props.appointment.id}`)
@@ -42,20 +54,36 @@ function submit() {
             <UiField label="Duration (minutes)" :error="form.errors.duration_minutes" required>
               <UiInput v-model="form.duration_minutes" type="number" min="5" max="480" required />
             </UiField>
-            <UiField label="Patient name" :error="form.errors.patient_name" required>
-              <UiInput v-model="form.patient_name" required />
-            </UiField>
-            <UiField label="Patient phone" :error="form.errors.patient_phone" required>
-              <UiInput v-model="form.patient_phone" type="tel" required />
-            </UiField>
-            <UiField label="Scheduled at" :error="form.errors.scheduled_at" required>
-              <input
-                v-model="form.scheduled_at"
-                type="datetime-local"
-                class="h-10 w-full rounded-md border border-border bg-surface px-3 text-sm"
-              />
-            </UiField>
           </div>
+
+          <UiField label="Patient" :error="form.errors.patient_id" required>
+            <div v-if="selectedPatient" class="flex items-center justify-between gap-2 rounded-md border border-border bg-surface-muted px-3 py-2">
+              <div>
+                <div class="text-sm font-medium text-foreground">{{ selectedPatient.name }}</div>
+                <div class="text-xs text-muted-foreground font-mono">{{ selectedPatient.patient_code }} · {{ selectedPatient.phone || 'no phone' }}</div>
+              </div>
+              <button type="button" class="text-xs text-primary-600 hover:underline" @click="pickerOpen = true">
+                Change
+              </button>
+            </div>
+            <button
+              v-else
+              type="button"
+              class="h-10 w-full rounded-md border border-dashed border-border bg-surface px-3 text-sm text-muted-foreground hover:bg-surface-muted"
+              @click="pickerOpen = true"
+            >
+              Select or create a patient
+            </button>
+          </UiField>
+
+          <UiField label="Scheduled at" :error="form.errors.scheduled_at" required>
+            <input
+              v-model="form.scheduled_at"
+              type="datetime-local"
+              class="h-10 w-full rounded-md border border-border bg-surface px-3 text-sm"
+            />
+          </UiField>
+
           <UiField label="Notes" :error="form.errors.notes">
             <UiTextarea v-model="form.notes" rows="3" />
           </UiField>
@@ -65,10 +93,16 @@ function submit() {
               class="h-10 px-4 inline-flex items-center rounded-md bg-surface-muted text-foreground border border-border text-sm"
               >Cancel</Link
             >
-            <UiButton type="submit" :loading="form.processing">Save</UiButton>
+            <UiButton type="submit" :loading="form.processing" :disabled="!form.patient_id">Save</UiButton>
           </div>
         </UiForm>
       </UiCard>
     </div>
+
+    <PatientQuickAddDialog
+      v-model="pickerOpen"
+      @selected="onPatientSelected"
+      @created="onPatientCreated"
+    />
   </AuthenticatedLayout>
 </template>

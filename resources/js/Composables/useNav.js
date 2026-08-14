@@ -15,7 +15,7 @@ export function useNav() {
     { label: 'Dashboard', href: '/dashboard', icon: 'home', permission: 'view-dashboard' },
     { label: 'Appointments', href: '/appointments', icon: 'calendar', permission: 'view-appointments' },
     { label: 'Doctors', href: '/doctors', icon: 'stethoscope', permission: 'view-doctors' },
-    { label: 'Patients', href: '#', icon: 'users', comingSoon: true, permission: 'view-dashboard' },
+    { label: 'Patients', href: '/patients', icon: 'users', permission: 'view-patients' },
     { label: 'Billing', href: '#', icon: 'receipt', comingSoon: true, permission: 'view-dashboard' },
     { label: 'Inventory', href: '#', icon: 'package', comingSoon: true, permission: 'view-dashboard' },
     { label: 'Exchange', href: '#', icon: 'arrows', comingSoon: true, permission: 'view-dashboard' },

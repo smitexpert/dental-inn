@@ -35,4 +35,12 @@ describe('useNav', () => {
     const items = useNav().value
     expect(items.find((i) => i.href === '/appointments')).toBeFalsy()
   })
+
+  it('includes patients link with view-patients permission and no comingSoon', () => {
+    window.__testPerms = ['view-patients']
+    const items = useNav().value
+    const patients = items.find((i) => i.href === '/patients')
+    expect(patients).toBeTruthy()
+    expect(patients.comingSoon).toBeFalsy()
+  })
 })

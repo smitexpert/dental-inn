@@ -63,8 +63,14 @@ function destroy() {
       <UiCard>
         <div class="flex items-start justify-between gap-4">
           <div>
-            <h2 class="text-xl font-semibold text-foreground">{{ appointment.patient_name }}</h2>
-            <p class="text-sm text-muted-foreground">{{ appointment.patient_phone }}</p>
+            <Link v-if="appointment.patient" :href="`/patients/${appointment.patient.id}`" class="hover:underline">
+              <h2 class="text-xl font-semibold text-foreground">{{ appointment.patient.name }}</h2>
+              <p class="text-sm text-muted-foreground font-mono">{{ appointment.patient.patient_code }}</p>
+            </Link>
+            <p class="text-sm text-muted-foreground mt-1">
+              {{ appointment.patient?.phone || '—' }}
+              <span v-if="appointment.patient?.email"> · {{ appointment.patient.email }}</span>
+            </p>
           </div>
           <div class="flex items-center gap-2">
             <UiBadge :variant="statusVariant(appointment.status)">{{ appointment.status_label }}</UiBadge>
