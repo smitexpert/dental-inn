@@ -7,7 +7,7 @@ import { ref, reactive } from 'vue'
 // setup bindings, so we wire the stub in both places.
 const installRouteStub = () => {
   const stub = vi.fn((name) => `/stub/${name}`)
-  global.route = stub
+  globalThis.route = stub
   if (typeof window !== 'undefined') window.route = stub
   return stub
 }
@@ -57,7 +57,7 @@ const mountOptions = (extraProps = {}) => ({
     },
     config: {
       globalProperties: {
-        route: global.route,
+        route: globalThis.route,
       },
     },
   },
@@ -90,7 +90,7 @@ describe('Bank/Accounts/Create', () => {
     const wrapper = mount(CreateAccount, mountOptions())
     const form = wrapper.find('form')
     await form.trigger('submit.prevent')
-    expect(global.route).toHaveBeenCalledWith('bank.accounts.store')
+    expect(globalThis.route).toHaveBeenCalledWith('bank.accounts.store')
   })
 
   it('shows an error message when validation fails', async () => {
