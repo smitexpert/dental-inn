@@ -11,8 +11,8 @@ use App\Models\LedgerEntry;
 use App\Models\Payment;
 use App\Models\User;
 use Database\Seeders\ChartOfAccountsSeeder;
-use Database\Seeders\CurrencySeeder;
 use Database\Seeders\RoleSeeder;
+use Database\Seeders\SystemAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -26,7 +26,7 @@ class PaymentControllerTest extends TestCase
         $this->seed(RoleSeeder::class);
         $this->seed([
             ChartOfAccountsSeeder::class,
-            CurrencySeeder::class,
+            SystemAccountsSeeder::class,
         ]);
     }
 
