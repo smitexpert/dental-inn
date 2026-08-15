@@ -5,13 +5,14 @@ declare(strict_types=1);
 namespace Database\Seeders;
 
 use App\Models\BankAccount;
+use App\Settings\ClinicSettings;
 use Illuminate\Database\Seeder;
 
 class SystemAccountsSeeder extends Seeder
 {
     public function run(): void
     {
-        $currency = (string) settings('clinic.currency_code', 'BDT');
+        $currency = (string) (app(ClinicSettings::class)->currency_code ?? 'BDT');
 
         $this->upsertSystem('Main Cash', $currency);
         $this->upsertSystem('External Adjustment', $currency);

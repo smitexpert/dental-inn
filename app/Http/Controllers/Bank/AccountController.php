@@ -10,6 +10,7 @@ use App\Http\Requests\Bank\UpdateBankAccountRequest;
 use App\Models\BankAccount;
 use App\Repositories\Contracts\BankAccountRepository;
 use App\Services\BankAccountService;
+use App\Settings\ClinicSettings;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -35,8 +36,10 @@ class AccountController extends Controller
 
     public function create(): Response
     {
+        $currency = app(ClinicSettings::class)->currency_code ?? 'BDT';
+
         return Inertia::render('Bank/Accounts/Create', [
-            'currency' => (string) settings('clinic.currency_code', 'BDT'),
+            'currency' => $currency,
         ]);
     }
 
@@ -53,9 +56,11 @@ class AccountController extends Controller
 
     public function edit(BankAccount $account): Response
     {
+        $currency = app(ClinicSettings::class)->currency_code ?? 'BDT';
+
         return Inertia::render('Bank/Accounts/Edit', [
             'account' => $account,
-            'currency' => (string) settings('clinic.currency_code', 'BDT'),
+            'currency' => $currency,
         ]);
     }
 

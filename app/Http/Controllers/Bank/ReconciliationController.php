@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Bank\ReconcileAccountRequest;
 use App\Repositories\Contracts\BankAccountRepository;
 use App\Services\ReconciliationService;
+use App\Settings\ClinicSettings;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -35,9 +36,11 @@ class ReconciliationController extends Controller
             ];
         })->values();
 
+        $currency = app(ClinicSettings::class)->currency_code ?? 'BDT';
+
         return Inertia::render('Bank/Reconcile', [
             'accounts' => $rows,
-            'currency' => (string) settings('clinic.currency_code', 'BDT'),
+            'currency' => $currency,
         ]);
     }
 

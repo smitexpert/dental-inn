@@ -10,6 +10,7 @@ use App\Models\Transfer;
 use App\Repositories\Contracts\BankAccountRepository;
 use App\Repositories\Contracts\TransferRepository;
 use App\Services\TransferService;
+use App\Settings\ClinicSettings;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -41,6 +42,8 @@ class TransferController extends Controller
 
     public function create(): Response
     {
+        $currency = app(ClinicSettings::class)->currency_code ?? 'BDT';
+
         return Inertia::render('Bank/Transfers/Create', [
             'accounts' => $this->accounts->allActive()->map(fn ($a) => [
                 'id' => $a->id,
@@ -48,7 +51,7 @@ class TransferController extends Controller
                 'type' => $a->type,
                 'balance' => (string) $a->balance,
             ])->values(),
-            'currency' => (string) settings('clinic.currency_code', 'BDT'),
+            'currency' => $currency,
         ]);
     }
 

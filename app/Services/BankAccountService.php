@@ -11,6 +11,7 @@ use App\Models\CashMovement;
 use App\Repositories\Contracts\BankAccountRepository;
 use App\Repositories\Contracts\CashMovementRepository;
 use App\Repositories\Contracts\TransferRepository;
+use App\Settings\ClinicSettings;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -43,7 +44,7 @@ class BankAccountService
         }
 
         $data['currency_code'] = $data['currency_code']
-            ?? (string) settings('clinic.currency_code', 'BDT');
+            ?? (string) (app(ClinicSettings::class)->currency_code ?? 'BDT');
         $data['opening_balance'] = (string) ($data['opening_balance'] ?? 0);
         $data['balance'] = $data['opening_balance'];
         $data['is_system'] = false;
