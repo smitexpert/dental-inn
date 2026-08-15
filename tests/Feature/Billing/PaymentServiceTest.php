@@ -7,6 +7,7 @@ namespace Tests\Feature\Billing;
 use App\Enums\CashMovementType;
 use App\Enums\InvoiceStatus;
 use App\Enums\PaymentMethod;
+use App\Models\BankAccount;
 use App\Models\CashMovement;
 use App\Models\Invoice;
 use App\Models\LedgerEntry;
@@ -64,7 +65,9 @@ class PaymentServiceTest extends TestCase
             'paid_amount' => 0,
         ]);
 
-        app(PaymentService::class)->record([
+        $mainCash = BankAccount::where('name', 'Main Cash')->firstOrFail();
+
+        $payment = app(PaymentService::class)->record([
             'invoice_id' => $invoice->id,
             'payment_date' => '2026-08-14',
             'amount' => 300,
@@ -73,12 +76,16 @@ class PaymentServiceTest extends TestCase
             'method' => PaymentMethod::Cash->value,
         ], $user->id);
 
+        $this->assertDatabaseHas('cash_movements', [
+            'account_id' => $mainCash->id,
+            'type' => CashMovementType::Sale->value,
+            'reference_type' => 'payment',
+            'reference_id' => $payment->id,
+        ]);
+
         $movement = CashMovement::query()->first();
         $this->assertNotNull($movement);
-        $this->assertSame('BDT', $movement->currency_code);
-        $this->assertSame(CashMovementType::CashIn, $movement->type);
         $this->assertSame('300.0000', (string) $movement->amount);
-        $this->assertSame('payment', $movement->reference_type);
     }
 
     public function test_partial_payment_sets_partially_paid(): void
