@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Enums\CashMovementType;
+use App\Models\BankAccount;
 use App\Models\CashMovement;
-use App\Models\Currency;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 /**
  * @extends Factory<CashMovement>
@@ -20,27 +21,26 @@ class CashMovementFactory extends Factory
     public function definition(): array
     {
         return [
-            'currency_code' => Currency::factory()->bdt(),
+            'account_id' => BankAccount::factory(),
             'type' => CashMovementType::CashIn,
-            'amount' => '100.0000',
-            'exchange_rate_id' => null,
-            'counter_currency_code' => null,
-            'counter_amount' => null,
-            'reason' => 'Factory deposit',
-            'reference_type' => null,
-            'reference_id' => null,
+            'amount' => 100,
+            'reason' => 'Factory row',
             'performed_by' => User::factory(),
-            'exchange_group_id' => null,
             'created_at' => now(),
         ];
     }
 
-    public function cashOut(): static
+    public function transfer(string $groupId, int $fromId, int $toId, string $amount, CashMovementType $type): self
     {
-        return $this->state(fn (): array => [
-            'type' => CashMovementType::CashOut,
-            'amount' => '-50.0000',
-            'reason' => 'Factory withdrawal',
+        $counter = $type === CashMovementType::TransferIn ? $fromId : $toId;
+
+        return $this->state(fn () => [
+            'type' => $type,
+            'amount' => $type === CashMovementType::TransferIn ? $amount : '-'.$amount,
+            'counter_account_id' => $counter,
+            'counter_amount' => $amount,
+            'transfer_group_id' => $groupId,
+            'reason' => null,
         ]);
     }
 }

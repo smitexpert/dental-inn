@@ -18,21 +18,19 @@ use Spatie\Activitylog\Support\LogOptions;
 
 /**
  * @property int $id
- * @property string $currency_code
+ * @property int $account_id
  * @property CashMovementType $type
  * @property string $amount
- * @property ?int $exchange_rate_id
- * @property ?string $counter_currency_code
+ * @property ?int $counter_account_id
  * @property ?string $counter_amount
+ * @property ?string $transfer_group_id
  * @property ?string $reason
  * @property ?string $reference_type
  * @property ?int $reference_id
  * @property int $performed_by
- * @property ?string $exchange_group_id
  * @property ?Carbon $created_at
- * @property-read Currency $currency
- * @property-read ?Currency $counterCurrency
- * @property-read ?ExchangeRate $exchangeRate
+ * @property-read BankAccount $account
+ * @property-read ?BankAccount $counterAccount
  * @property-read User $performer
  * @property-read ?Model $reference
  */
@@ -44,17 +42,16 @@ class CashMovement extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'currency_code',
+        'account_id',
         'type',
         'amount',
-        'exchange_rate_id',
-        'counter_currency_code',
+        'counter_account_id',
         'counter_amount',
+        'transfer_group_id',
         'reason',
         'reference_type',
         'reference_id',
         'performed_by',
-        'exchange_group_id',
         'created_at',
     ];
 
@@ -75,22 +72,16 @@ class CashMovement extends Model
         });
     }
 
-    /** @return BelongsTo<Currency, $this> */
-    public function currency(): BelongsTo
+    /** @return BelongsTo<BankAccount, $this> */
+    public function account(): BelongsTo
     {
-        return $this->belongsTo(Currency::class, 'currency_code');
+        return $this->belongsTo(BankAccount::class, 'account_id');
     }
 
-    /** @return BelongsTo<Currency, $this> */
-    public function counterCurrency(): BelongsTo
+    /** @return BelongsTo<BankAccount, $this> */
+    public function counterAccount(): BelongsTo
     {
-        return $this->belongsTo(Currency::class, 'counter_currency_code');
-    }
-
-    /** @return BelongsTo<ExchangeRate, $this> */
-    public function exchangeRate(): BelongsTo
-    {
-        return $this->belongsTo(ExchangeRate::class);
+        return $this->belongsTo(BankAccount::class, 'counter_account_id');
     }
 
     /** @return BelongsTo<User, $this> */
@@ -110,7 +101,7 @@ class CashMovement extends Model
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-            ->logOnly(['type', 'amount', 'reason', 'currency_code'])
+            ->logOnly(['type', 'amount', 'reason'])
             ->dontLogEmptyChanges();
     }
 
@@ -118,9 +109,9 @@ class CashMovement extends Model
      * @param  Builder<CashMovement>  $query
      * @return Builder<CashMovement>
      */
-    public function scopeForCurrency(Builder $query, string $code): Builder
+    public function scopeForAccount(Builder $query, int $accountId): Builder
     {
-        return $query->where('currency_code', $code);
+        return $query->where('account_id', $accountId);
     }
 
     /**
@@ -130,5 +121,14 @@ class CashMovement extends Model
     public function scopeOfType(Builder $query, CashMovementType $type): Builder
     {
         return $query->where('type', $type->value);
+    }
+
+    /**
+     * @param  Builder<CashMovement>  $query
+     * @return Builder<CashMovement>
+     */
+    public function scopeForGroup(Builder $query, string $groupId): Builder
+    {
+        return $query->where('transfer_group_id', $groupId);
     }
 }
