@@ -26,7 +26,7 @@ class RecordPaymentRequest extends FormRequest
             'invoice_id' => ['required', 'integer', 'exists:invoices,id'],
             'payment_date' => ['required', 'date'],
             'amount' => ['required', 'numeric', 'min:0.01'],
-            'currency_code' => ['required', 'string', 'size:3'],
+            'currency_code' => ['nullable', 'string', 'size:3'],
             'exchange_rate' => ['nullable', 'numeric', 'min:0'],
             'method' => ['required', Rule::in($methods)],
             'reference' => ['nullable', 'string', 'max:255'],

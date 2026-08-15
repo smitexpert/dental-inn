@@ -7,11 +7,10 @@ namespace App\Http\Controllers;
 use App\Enums\AppointmentStatus;
 use App\Enums\InvoiceStatus;
 use App\Models\Appointment;
-use App\Models\CashDrawer;
+use App\Models\BankAccount;
 use App\Models\Invoice;
 use App\Models\NotificationLog;
 use App\Repositories\Contracts\ProductRepository;
-use App\Services\ExchangeRateService;
 use App\Settings\ClinicSettings;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -20,7 +19,6 @@ class DashboardController extends Controller
 {
     public function __construct(
         private readonly ProductRepository $products,
-        private readonly ExchangeRateService $rates,
     ) {}
 
     public function index(): Response
@@ -58,6 +56,11 @@ class DashboardController extends Controller
             ->where('created_at', '>=', now()->startOfDay())
             ->count();
 
+        $cashBalance = (float) BankAccount::query()
+            ->whereIn('type', ['cash', 'bank'])
+            ->where('is_active', true)
+            ->sum('balance');
+
         return Inertia::render('Dashboard', [
             'stats' => [
                 'todays_appointments' => [
@@ -87,8 +90,8 @@ class DashboardController extends Controller
                     'hint' => 'Across all patients',
                 ],
                 'cash_balance' => [
-                    'value' => $this->cashBalanceInBase(),
-                    'label' => 'Cash drawer',
+                    'value' => number_format($cashBalance, 2, '.', ''),
+                    'label' => 'Cash & bank',
                     'hint' => sprintf('Total in %s', app(ClinicSettings::class)->currency_code),
                 ],
                 'notifications_today' => [
@@ -98,26 +101,5 @@ class DashboardController extends Controller
                 ],
             ],
         ]);
-    }
-
-    private function cashBalanceInBase(): string
-    {
-        $base = app(ClinicSettings::class)->currency_code;
-        $drawers = CashDrawer::query()->with('currency')->get();
-        $total = 0.0;
-
-        foreach ($drawers as $drawer) {
-            $code = (string) $drawer->currency_code;
-            $balance = (float) $drawer->balance;
-            if ($balance == 0.0) {
-                continue;
-            }
-
-            $rate = $this->rates->getRateOrNull($code, $base);
-            $multiplier = $rate !== null ? (float) $rate->rate : 0.0;
-            $total += $balance * $multiplier;
-        }
-
-        return number_format($total, 2, '.', '');
     }
 }

@@ -11,6 +11,7 @@ use App\Models\Payment;
 use App\Repositories\Contracts\InvoiceRepository;
 use App\Repositories\Contracts\PaymentRepository;
 use App\Services\PaymentService;
+use App\Settings\ClinicSettings;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -43,8 +44,12 @@ class PaymentController extends Controller
 
     public function store(RecordPaymentRequest $request): RedirectResponse
     {
+        $data = $request->validated();
+        $data['currency_code'] = $data['currency_code'] ?? app(ClinicSettings::class)->currency_code;
+        $data['exchange_rate'] = $data['exchange_rate'] ?? 1.0;
+
         try {
-            $payment = $this->service->record($request->validated(), $request->user()->id);
+            $payment = $this->service->record($data, $request->user()->id);
         } catch (RuntimeException $e) {
             return back()->withErrors(['amount' => $e->getMessage()]);
         }

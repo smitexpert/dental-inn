@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Enums\CashMovementType;
 use App\Enums\InvoiceStatus;
 use App\Enums\PaymentMethod;
-use App\Models\CashDrawer;
 use App\Models\Invoice;
 use App\Models\Payment;
 use Illuminate\Support\Facades\DB;
@@ -23,7 +23,7 @@ class PaymentService
 {
     public function __construct(
         private readonly LedgerService $ledger,
-        private readonly CashDrawerService $drawerService,
+        private readonly BankAccountService $bankAccounts,
     ) {}
 
     /**
@@ -65,22 +65,19 @@ class PaymentService
 
             $this->ledger->recordPaymentReceived($payment->fresh(), '1000', '1010', $userId);
 
-            // Mirror physical cash into the per-currency drawer. The drawer
-            // exists for every active currency; if the payment currency is
-            // somehow missing, create it on the fly.
+            // Mirror physical cash into the Main Cash system account. The
+            // movement is recorded against the bank_account (single base
+            // currency), not the per-currency drawer.
             if ($payment->method === PaymentMethod::Cash) {
-                $drawer = CashDrawer::query()->firstOrCreate(
-                    ['currency_code' => $payment->currency_code],
-                    ['balance' => '0.0000'],
-                );
+                $mainCash = $this->bankAccounts->findMainCash();
 
-                $this->drawerService->cashIn(
-                    $payment->currency_code,
+                $this->bankAccounts->recordMovement(
+                    $mainCash,
+                    CashMovementType::Sale,
                     (string) $payment->amount,
                     sprintf('Cash payment for invoice %s', $invoice->invoice_number),
                     $payment,
                     $userId,
-                    'payment',
                 );
             }
 
