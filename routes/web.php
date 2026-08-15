@@ -16,7 +16,7 @@ require __DIR__.'/treatment-records.php';
 require __DIR__.'/inventory.php';
 require __DIR__.'/billing.php';
 require __DIR__.'/reports.php';
-require __DIR__.'/exchange.php';
+require __DIR__.'/bank.php';
 require __DIR__.'/notifications.php';
 
 Route::middleware(['auth', 'active'])->group(function () {
