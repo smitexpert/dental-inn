@@ -18,7 +18,7 @@ export function useNav() {
   )
 
   const all = [
-    { label: 'Dashboard', href: '/dashboard', icon: 'home', permission: 'view-dashboard' },
+    { label: 'Dashboard', href: '/dashboard', icon: 'layout-dashboard', permission: 'view-dashboard' },
     { label: 'Appointments', href: '/appointments', icon: 'calendar', permission: 'view-appointments' },
     { label: 'Doctors', href: '/doctors', icon: 'stethoscope', permission: 'view-doctors' },
     { label: 'Patients', href: '/patients', icon: 'users', permission: 'view-patients' },
@@ -48,21 +48,21 @@ export function useNav() {
       ],
     },
     {
-      label: 'Exchange',
-      href: '/exchange',
+      label: 'Bank & Cash',
+      href: '/bank',
       icon: 'wallet',
-      permission: 'view-exchange-rates',
+      permission: 'view-accounts',
       children: [
-        { label: 'Dashboard', href: '/exchange', permission: 'view-exchange-rates' },
-        { label: 'Rates', href: '/exchange/rates', permission: 'view-exchange-rates' },
-        { label: 'Movements', href: '/exchange/movements', permission: 'view-cash-movements' },
-        { label: 'Reconcile', href: '/exchange/reconcile', permission: 'reconcile-cash-drawer' },
+        { label: 'Dashboard', href: '/bank', permission: 'view-accounts' },
+        { label: 'Accounts', href: '/bank/accounts', permission: 'view-accounts' },
+        { label: 'Transfers', href: '/bank/transfers', permission: 'view-transfers' },
+        { label: 'Reconcile', href: '/bank/reconcile', permission: 'reconcile-accounts' },
       ],
     },
     {
       label: 'Reports',
       href: '/reports/ledger',
-      icon: 'chart',
+      icon: 'chart-column',
       permission: 'view-reports',
       children: [
         { label: 'Ledger', href: '/reports/ledger', permission: 'view-reports' },
