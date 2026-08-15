@@ -5,20 +5,19 @@ declare(strict_types=1);
 namespace App\Enums;
 
 /**
- * Type of cash movement recorded against a CashDrawer.
+ * Type of cash movement recorded against a bank_account.
  *
  * Sign convention:
- *   - `*_in` / `sale` / `refund` → amount is positive.
- *   - `*_out` / `expense`       → amount is stored as a negative number.
- *   - `adjustment`              → sign reflects direction (positive for
- *     cash found, negative for cash missing).
+ *   - Inflows (`cash_in`, `transfer_in`, `sale`, `refund`) → amount is positive.
+ *   - Outflows (`cash_out`, `transfer_out`, `expense`)    → amount is negative.
+ *   - `adjustment`                                        → sign reflects direction.
  */
 enum CashMovementType: string
 {
     case CashIn = 'cash_in';
     case CashOut = 'cash_out';
-    case ExchangeIn = 'exchange_in';
-    case ExchangeOut = 'exchange_out';
+    case TransferIn = 'transfer_in';
+    case TransferOut = 'transfer_out';
     case Adjustment = 'adjustment';
     case Sale = 'sale';
     case Expense = 'expense';
@@ -29,8 +28,8 @@ enum CashMovementType: string
         return match ($this) {
             self::CashIn => 'Cash in',
             self::CashOut => 'Cash out',
-            self::ExchangeIn => 'Exchange in',
-            self::ExchangeOut => 'Exchange out',
+            self::TransferIn => 'Transfer in',
+            self::TransferOut => 'Transfer out',
             self::Adjustment => 'Adjustment',
             self::Sale => 'Sale',
             self::Expense => 'Expense',
@@ -41,8 +40,8 @@ enum CashMovementType: string
     public function color(): string
     {
         return match ($this) {
-            self::CashIn, self::ExchangeIn, self::Sale, self::Refund => 'success',
-            self::CashOut, self::ExchangeOut, self::Expense => 'danger',
+            self::CashIn, self::TransferIn, self::Sale, self::Refund => 'success',
+            self::CashOut, self::TransferOut, self::Expense => 'danger',
             self::Adjustment => 'warning',
         };
     }
@@ -51,7 +50,7 @@ enum CashMovementType: string
     {
         return in_array($this, [
             self::CashIn,
-            self::ExchangeIn,
+            self::TransferIn,
             self::Sale,
             self::Refund,
         ], true);
@@ -61,13 +60,13 @@ enum CashMovementType: string
     {
         return in_array($this, [
             self::CashOut,
-            self::ExchangeOut,
+            self::TransferOut,
             self::Expense,
         ], true);
     }
 
-    public function isExchange(): bool
+    public function isTransfer(): bool
     {
-        return $this === self::ExchangeIn || $this === self::ExchangeOut;
+        return $this === self::TransferIn || $this === self::TransferOut;
     }
 }
