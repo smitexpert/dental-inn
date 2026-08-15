@@ -51,6 +51,7 @@ class RoleSeeder extends Seeder
             'view-notification-logs',
             'send-notifications',
             'manage-notification-settings',
+            'manage-roles',
         ];
 
         foreach ($permissions as $p) {

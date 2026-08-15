@@ -84,6 +84,7 @@ export function useNav() {
     },
     { label: 'Settings', href: '/settings', icon: 'cog', permission: 'manage-settings' },
     { label: 'Users', href: '/admin/users', icon: 'shield', permission: 'manage-users' },
+    { label: 'Roles', href: '/admin/roles', icon: 'key-round', permission: 'manage-roles' },
   ]
 
   return computed(() =>
