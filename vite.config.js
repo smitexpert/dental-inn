@@ -2,6 +2,7 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import laravel from 'laravel-vite-plugin'
 import tailwindcss from '@tailwindcss/vite'
+import Components from 'unplugin-vue-components/vite'
 import path from 'node:path'
 
 export default defineConfig({
@@ -12,6 +13,8 @@ export default defineConfig({
       refresh: true,
     }),
     tailwindcss(),
+    // Auto-import any Vue components dropped under `resources/js/Components`.
+    Components({ dts: false }),
   ],
   resolve: {
     alias: {

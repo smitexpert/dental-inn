@@ -2,6 +2,7 @@
 import { Link } from '@inertiajs/vue3'
 import { computed, ref, watch } from 'vue'
 import Badge from '@/Components/ui/Badge.vue'
+import NavIcon from './NavIcon.vue'
 
 const props = defineProps({
   href: { type: String, required: true },
@@ -30,6 +31,14 @@ const classes = computed(() => [
       ? 'bg-primary/10 text-primary font-medium'
       : 'text-base-content hover:bg-base-200',
 ])
+
+// Hide text, badges, and chevrons in the icon-only (collapsed) state.
+const labelClass = 'flex-1 truncate text-left is-drawer-close:hidden'
+const metaClass = 'is-drawer-close:hidden'
+
+// `icon` arrives from `useNav.js` as a short name (e.g. 'calendar-clock')
+// and is passed straight through to NavIcon.
+const iconName = computed(() => props.icon ?? '')
 </script>
 
 <template>
@@ -40,12 +49,15 @@ const classes = computed(() => [
       :aria-expanded="open"
       @click="open = !open"
     >
-      <span v-if="icon" :class="icon" class="w-4 h-4 shrink-0" />
-      <span class="flex-1 truncate text-left">{{ label }}</span>
-      <Badge v-if="badge" variant="warning">{{ badge }}</Badge>
-      <span class="text-xs">{{ open ? '▾' : '▸' }}</span>
+      <NavIcon v-if="icon" :name="iconName" />
+      <span :class="labelClass">{{ label }}</span>
+      <Badge v-if="badge" variant="warning" :class="metaClass">{{ badge }}</Badge>
+      <span :class="['text-xs', metaClass]">{{ open ? '▾' : '▸' }}</span>
     </button>
-    <ul v-if="open" class="ml-4 mt-0.5 space-y-0.5 border-l border-base-300 pl-2">
+    <ul
+      v-if="open"
+      class="ml-4 mt-0.5 space-y-0.5 border-l border-base-300 pl-2 is-drawer-close:hidden"
+    >
       <li v-for="child in children" :key="child.href">
         <Link
           :href="child.href"
@@ -62,13 +74,13 @@ const classes = computed(() => [
     </ul>
   </div>
   <Link v-else-if="!comingSoon" :href="href" :class="classes">
-    <span v-if="icon" :class="icon" class="w-4 h-4 shrink-0" />
-    <span class="flex-1 truncate">{{ label }}</span>
-    <Badge v-if="badge" variant="warning">{{ badge }}</Badge>
+    <NavIcon v-if="icon" :name="iconName" />
+    <span :class="labelClass">{{ label }}</span>
+    <Badge v-if="badge" variant="warning" :class="metaClass">{{ badge }}</Badge>
   </Link>
   <span v-else :class="classes">
-    <span v-if="icon" :class="icon" class="w-4 h-4 shrink-0" />
-    <span class="flex-1 truncate">{{ label }}</span>
-    <Badge variant="neutral">Soon</Badge>
+    <NavIcon v-if="icon" :name="iconName" />
+    <span :class="labelClass">{{ label }}</span>
+    <Badge variant="neutral" :class="metaClass">Soon</Badge>
   </span>
 </template>
