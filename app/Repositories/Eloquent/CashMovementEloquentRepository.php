@@ -15,11 +15,10 @@ class CashMovementEloquentRepository implements CashMovementRepository
 {
     public function paginate(int $perPage = 25, array $filters = []): LengthAwarePaginator
     {
-        $q = CashMovement::query()
-            ->with(['currency', 'counterCurrency', 'performer', 'exchangeRate']);
+        $q = CashMovement::query()->with(['account', 'counterAccount', 'performer']);
 
-        if (! empty($filters['currency_code'])) {
-            $q->where('currency_code', strtoupper((string) $filters['currency_code']));
+        if (! empty($filters['account_id'])) {
+            $q->where('account_id', (int) $filters['account_id']);
         }
 
         if (! empty($filters['type'])) {
@@ -50,47 +49,18 @@ class CashMovementEloquentRepository implements CashMovementRepository
         return CashMovement::query()->findOrFail($id);
     }
 
-    public function sumForCurrencySince(string $code, Carbon $since): string
+    public function sumForAccountSince(int $accountId, Carbon $since): string
     {
         $sum = CashMovement::query()
-            ->forCurrency(strtoupper($code))
+            ->forAccount($accountId)
             ->where('created_at', '>=', $since)
             ->sum('amount');
 
         return (string) $sum;
     }
 
-    /**
-     * @return array<string, string> ISO date => signed total
-     */
-    public function dailyNetForCurrency(string $code, int $days = 7): array
-    {
-        $code = strtoupper($code);
-        $since = now()->subDays($days - 1)->startOfDay();
-
-        $rows = CashMovement::query()
-            ->forCurrency($code)
-            ->where('created_at', '>=', $since)
-            ->selectRaw('date(created_at) as d, sum(amount) as total')
-            ->groupBy('d')
-            ->pluck('total', 'd')
-            ->all();
-
-        $out = [];
-        for ($i = $days - 1; $i >= 0; $i--) {
-            $day = now()->subDays($i)->toDateString();
-            $out[$day] = (string) ($rows[$day] ?? '0');
-        }
-
-        return $out;
-    }
-
     public function create(array $data): CashMovement
     {
-        $data['currency_code'] = strtoupper((string) $data['currency_code']);
-        if (isset($data['counter_currency_code']) && $data['counter_currency_code'] !== null) {
-            $data['counter_currency_code'] = strtoupper((string) $data['counter_currency_code']);
-        }
         $data['created_at'] = $data['created_at'] ?? now();
 
         $movement = new CashMovement;
@@ -100,11 +70,11 @@ class CashMovementEloquentRepository implements CashMovementRepository
         return $movement;
     }
 
-    public function countByType(CashMovementType $type, ?string $currency = null): int
+    public function countByType(CashMovementType $type, ?int $accountId = null): int
     {
         $q = CashMovement::query()->ofType($type);
-        if ($currency) {
-            $q->forCurrency($currency);
+        if ($accountId) {
+            $q->forAccount($accountId);
         }
 
         return $q->count();

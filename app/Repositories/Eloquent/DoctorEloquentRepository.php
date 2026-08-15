@@ -31,9 +31,12 @@ class DoctorEloquentRepository implements DoctorRepository
             $q->where('specialization', $filters['specialization']);
         }
 
-        return $q->orderBy(
-            User::query()->select('name')->whereColumn('users.id', 'doctors.user_id'),
-        )->paginate($perPage)->withQueryString();
+        return $q
+            ->orderBy(
+                User::query()->select('name')->whereColumn('users.id', 'doctors.user_id'),
+            )
+            ->paginate($perPage)
+            ->withQueryString();
     }
 
     /**

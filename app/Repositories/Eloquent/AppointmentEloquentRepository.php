@@ -13,19 +13,40 @@ use App\Repositories\Contracts\AppointmentRepository;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 
 class AppointmentEloquentRepository implements AppointmentRepository
 {
+    /**
+     * SQL fragment that produces the end time of an existing appointment
+     * given its `scheduled_at` and `duration_minutes` columns. Each
+     * supported driver has a different syntax, so we branch on the
+     * connection's driver name.
+     *
+     * Public + static so other code paths (e.g. AvailableSlotsController)
+     * can build the same overlap predicate without duplicating the
+     * SQLite-vs-MySQL-vs-Postgres branching.
+     *
+     * Used to test whether an existing appointment's interval
+     * [scheduled_at, scheduled_at + duration_minutes] overlaps a
+     * candidate window.
+     */
+    public static function endTimeSql(): string
+    {
+        return match (DB::connection()->getDriverName()) {
+            'mysql', 'mariadb' => 'DATE_ADD(scheduled_at, INTERVAL duration_minutes MINUTE)',
+            'pgsql' => "(scheduled_at + (duration_minutes || ' minutes')::interval)",
+            default => "datetime(scheduled_at, '+' || duration_minutes || ' minutes')",
+        };
+    }
+
     public function between(Carbon $start, Carbon $end, ?Doctor $doctor = null): Collection
     {
         $q = Appointment::query()
             ->with(['doctor.user', 'patient'])
             ->where('scheduled_at', '<', $end)
-            ->whereRaw(
-                'datetime(scheduled_at, \'+\' || duration_minutes || \' minutes\') > ?',
-                [$start->format('Y-m-d H:i:s')],
-            );
+            ->whereRaw(self::endTimeSql().' > ?', [$start->format('Y-m-d H:i:s')]);
 
         if ($doctor) {
             $q->where('doctor_id', $doctor->id);
@@ -119,10 +140,7 @@ class AppointmentEloquentRepository implements AppointmentRepository
                 AppointmentStatus::NoShow->value,
             ])
             ->where('scheduled_at', '<', $end)
-            ->whereRaw(
-                'datetime(scheduled_at, \'+\' || duration_minutes || \' minutes\') > ?',
-                [$start->format('Y-m-d H:i:s')],
-            );
+            ->whereRaw(self::endTimeSql().' > ?', [$start->format('Y-m-d H:i:s')]);
 
         if ($ignoreId !== null) {
             $q->where('id', '!=', $ignoreId);
