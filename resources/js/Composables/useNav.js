@@ -18,14 +18,14 @@ export function useNav() {
   )
 
   const all = [
-    { label: 'Dashboard', href: '/dashboard', icon: 'layout-dashboard', permission: 'view-dashboard' },
-    { label: 'Appointments', href: '/appointments', icon: 'calendar', permission: 'view-appointments' },
-    { label: 'Doctors', href: '/doctors', icon: 'stethoscope', permission: 'view-doctors' },
-    { label: 'Patients', href: '/patients', icon: 'users', permission: 'view-patients' },
+    { label: 'Dashboard', href: '/dashboard', icon: 'gauge', permission: 'view-dashboard' },
+    { label: 'Appointments', href: '/appointments', icon: 'calendar-clock', permission: 'view-appointments' },
+    { label: 'Doctors', href: '/doctors', icon: 'user-round', permission: 'view-doctors' },
+    { label: 'Patients', href: '/patients', icon: 'users-round', permission: 'view-patients' },
     {
       label: 'Inventory',
       href: '/inventory/products',
-      icon: 'package',
+      icon: 'boxes',
       permission: 'view-products',
       badge: () => lowStockCount.value,
       children: [
@@ -38,7 +38,7 @@ export function useNav() {
     {
       label: 'Billing',
       href: '/billing/invoices',
-      icon: 'receipt',
+      icon: 'receipt-text',
       permission: 'view-invoices',
       children: [
         { label: 'Invoices', href: '/billing/invoices', permission: 'view-invoices' },
@@ -50,7 +50,7 @@ export function useNav() {
     {
       label: 'Bank & Cash',
       href: '/bank',
-      icon: 'wallet',
+      icon: 'banknote',
       permission: 'view-accounts',
       children: [
         { label: 'Dashboard', href: '/bank', permission: 'view-accounts' },
@@ -62,7 +62,7 @@ export function useNav() {
     {
       label: 'Reports',
       href: '/reports/ledger',
-      icon: 'chart-column',
+      icon: 'line-chart',
       permission: 'view-reports',
       children: [
         { label: 'Ledger', href: '/reports/ledger', permission: 'view-reports' },
@@ -74,7 +74,7 @@ export function useNav() {
     {
       label: 'Notifications',
       href: '/notifications/templates',
-      icon: 'bell',
+      icon: 'bell-ring',
       permission: 'view-notification-logs',
       children: [
         { label: 'Templates', href: '/notifications/templates', permission: 'manage-notification-templates' },
@@ -82,9 +82,9 @@ export function useNav() {
         { label: 'Manual send', href: '/notifications/send', permission: 'send-notifications' },
       ],
     },
-    { label: 'Settings', href: '/settings', icon: 'cog', permission: 'manage-settings' },
-    { label: 'Users', href: '/admin/users', icon: 'shield', permission: 'manage-users' },
-    { label: 'Roles', href: '/admin/roles', icon: 'key-round', permission: 'manage-roles' },
+    { label: 'Settings', href: '/settings', icon: 'settings', permission: 'manage-settings' },
+    { label: 'Users', href: '/admin/users', icon: 'user-cog', permission: 'manage-users' },
+    { label: 'Roles', href: '/admin/roles', icon: 'key', permission: 'manage-roles' },
   ]
 
   return computed(() =>
