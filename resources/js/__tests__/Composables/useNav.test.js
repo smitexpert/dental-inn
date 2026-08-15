@@ -69,4 +69,23 @@ describe('useNav', () => {
     const exchange = items.find((i) => i.label === 'Exchange')
     expect(exchange.children.find((c) => c.label === 'Reconcile')).toBeFalsy()
   })
+
+  it('exposes Bank & Cash group when user has view-accounts', () => {
+    window.__testPerms = ['view-accounts', 'view-transfers', 'reconcile-accounts']
+    const items = useNav().value
+    const bank = items.find((i) => i.label === 'Bank & Cash')
+    expect(bank).toBeTruthy()
+    expect(bank.href).toBe('/bank')
+    const labels = bank.children.map((c) => c.label)
+    expect(labels).toContain('Dashboard')
+    expect(labels).toContain('Accounts')
+    expect(labels).toContain('Transfers')
+    expect(labels).toContain('Reconcile')
+  })
+
+  it('hides Bank & Cash group without view-accounts', () => {
+    window.__testPerms = ['view-dashboard']
+    const items = useNav().value
+    expect(items.find((i) => i.label === 'Bank & Cash')).toBeFalsy()
+  })
 })
