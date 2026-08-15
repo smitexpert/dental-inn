@@ -15,11 +15,10 @@ class DatabaseSeeder extends Seeder
             SettingsSeeder::class,
             StockLocationSeeder::class,
             UserSeeder::class,
+            DoctorSeeder::class,
             ChartOfAccountsSeeder::class,
             ExpenseCategorySeeder::class,
-            CurrencySeeder::class,
-            ExchangeRateSeeder::class,
-            CashDrawerSeeder::class,
+            SystemAccountsSeeder::class,
             NotificationTemplateSeeder::class,
         ]);
     }
