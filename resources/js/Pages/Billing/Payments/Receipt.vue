@@ -31,6 +31,9 @@ const breadcrumbs = [
         eyebrow="Receipt"
       >
         <template #actions>
+          <Link :href="`/billing/payments/${payment.id}/receipt/print`">
+            <Button variant="outline" icon="printer">Print</Button>
+          </Link>
           <Link href="/billing/payments">
             <Button variant="outline" icon="arrow-right">Back to payments</Button>
           </Link>

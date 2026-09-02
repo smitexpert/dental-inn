@@ -24,6 +24,7 @@ class PaymentController extends Controller
         private readonly PaymentRepository $payments,
         private readonly InvoiceRepository $invoices,
         private readonly PaymentService $service,
+        private readonly ClinicSettings $settings,
     ) {}
 
     public function index(): Response
@@ -84,29 +85,60 @@ class PaymentController extends Controller
         $payment->load(['invoice.patient', 'receiver']);
 
         return Inertia::render('Billing/Payments/Receipt', [
-            'payment' => [
-                'id' => $payment->id,
-                'payment_date' => $payment->payment_date->toDateString(),
-                'amount' => (string) $payment->amount,
-                'currency_code' => $payment->currency_code,
-                'method' => $payment->method->value,
-                'method_label' => $payment->method->label(),
-                'reference' => $payment->reference,
-                'notes' => $payment->notes,
-                'receiver' => $payment->receiver?->name,
-                'invoice' => $payment->invoice ? [
-                    'id' => $payment->invoice->id,
-                    'invoice_number' => $payment->invoice->invoice_number,
-                    'patient' => $payment->invoice->patient ? [
-                        'patient_code' => $payment->invoice->patient->patient_code,
-                        'name' => $payment->invoice->patient->name,
-                    ] : null,
-                    'total' => (string) $payment->invoice->total,
-                    'paid_amount' => (string) $payment->invoice->paid_amount,
-                    'balance_due' => $payment->invoice->balance_due,
-                    'show_url' => route('billing.invoices.show', $payment->invoice),
-                ] : null,
+            'payment' => $this->serializePayment($payment),
+        ]);
+    }
+
+    /**
+     * Dedicated printable A4 view for a payment receipt. Reuses the
+     * same serializer as receipt() and pulls currency settings from
+     * ClinicSettings so the printed page matches the rest of the app.
+     * Intentionally has no letterhead or page chrome — the clinic's
+     * stationery already carries the letterhead, and the print page
+     * must not duplicate it.
+     */
+    public function print(Payment $payment): Response
+    {
+        $payment->load(['invoice.patient', 'receiver']);
+
+        return Inertia::render('Billing/Payments/Print', [
+            'payment' => $this->serializePayment($payment),
+            'currency' => [
+                'symbol' => $this->settings->currency_symbol,
+                'code' => $this->settings->currency_code,
+                'decimals' => $this->settings->currency_decimals,
+                'position' => $this->settings->currency_position,
             ],
         ]);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function serializePayment(Payment $payment): array
+    {
+        return [
+            'id' => $payment->id,
+            'payment_date' => $payment->payment_date->toDateString(),
+            'amount' => (string) $payment->amount,
+            'currency_code' => $payment->currency_code,
+            'method' => $payment->method->value,
+            'method_label' => $payment->method->label(),
+            'reference' => $payment->reference,
+            'notes' => $payment->notes,
+            'receiver' => $payment->receiver?->name,
+            'invoice' => $payment->invoice ? [
+                'id' => $payment->invoice->id,
+                'invoice_number' => $payment->invoice->invoice_number,
+                'patient' => $payment->invoice->patient ? [
+                    'patient_code' => $payment->invoice->patient->patient_code,
+                    'name' => $payment->invoice->patient->name,
+                ] : null,
+                'total' => (string) $payment->invoice->total,
+                'paid_amount' => (string) $payment->invoice->paid_amount,
+                'balance_due' => $payment->invoice->balance_due,
+                'show_url' => route('billing.invoices.show', $payment->invoice),
+            ] : null,
+        ];
     }
 }

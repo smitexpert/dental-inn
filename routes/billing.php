@@ -46,6 +46,7 @@ Route::middleware(['auth', 'active', 'permission:view-payments'])
     ->prefix('billing/payments')->name('billing.payments.')->group(function (): void {
         Route::get('/', [PaymentController::class, 'index'])->name('index');
         Route::get('/{payment}/receipt', [PaymentController::class, 'receipt'])->name('receipt');
+        Route::get('/{payment}/receipt/print', [PaymentController::class, 'print'])->name('receipt.print');
     });
 
 Route::middleware(['auth', 'active', 'permission:manage-payments'])
