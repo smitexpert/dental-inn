@@ -298,6 +298,10 @@ onMounted(() => {
   padding-bottom: 1rem;
   border-bottom: 2px solid #111827;
 }
+.sheet-title {
+  flex: 1 1 auto;
+  min-width: 0;
+}
 .sheet-title h1 {
   margin: 0;
   font-size: 22pt;
@@ -317,7 +321,8 @@ onMounted(() => {
   gap: 0.25rem;
   text-align: right;
   font-size: 10pt;
-  min-width: 78mm;
+  flex: 0 0 auto;
+  white-space: nowrap;
 }
 .date-row {
   display: flex;
