@@ -47,7 +47,7 @@ function submit() {
 
 const breadcrumbs = [
   { label: 'Chart of accounts', href: '/billing/accounts' },
-  { label: `${account.code} — ${account.name}`, href: `/billing/accounts/${account.id}` },
+  { label: `${props.account.code} — ${props.account.name}`, href: `/billing/accounts/${props.account.id}` },
   { label: 'Edit' },
 ]
 </script>
@@ -59,7 +59,7 @@ const breadcrumbs = [
       <Breadcrumbs :items="breadcrumbs" />
 
       <PageHeader
-        :title="`Edit ${account.code} — ${account.name}`"
+        :title="`Edit ${props.account.code} — ${props.account.name}`"
         subtitle="Update account code, name, type, or parent."
         icon="banknote"
         eyebrow="Edit account"
@@ -92,7 +92,7 @@ const breadcrumbs = [
         </Card>
 
         <div class="flex items-center justify-end gap-2 pt-2">
-          <Link :href="`/billing/accounts/${account.id}`">
+          <Link :href="`/billing/accounts/${props.account.id}`">
             <Button variant="outline">Cancel</Button>
           </Link>
           <Button type="submit" :loading="form.processing" icon-right="check">Save changes</Button>

@@ -81,7 +81,7 @@ describe('Bank/Accounts/Create', () => {
     expect(wrapper.text()).toContain('Branch')
     expect(wrapper.text()).toContain('Account number')
 
-    const inputs = wrapper.findAll('input.input-bordered')
+    const inputs = wrapper.findAll('input.input-shell')
     // name + bank_name + account_name + branch + account_number + opening_balance
     expect(inputs.length).toBeGreaterThanOrEqual(5)
   })

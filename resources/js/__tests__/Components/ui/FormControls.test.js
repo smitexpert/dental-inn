@@ -31,9 +31,10 @@ describe('UiSwitch', () => {
   it('renders toggle class', () => {
     const on = mount(Switch, { props: { modelValue: true } })
     const off = mount(Switch, { props: { modelValue: false } })
-    expect(on.html()).toContain('toggle')
-    expect(on.html()).toContain('toggle-primary')
-    expect(off.html()).toContain('toggle')
+    expect(on.find('[role="switch"]').attributes('aria-checked')).toBe('true')
+    expect(off.find('[role="switch"]').attributes('aria-checked')).toBe('false')
+    expect(on.html()).toContain('bg-primary')
+    expect(off.html()).toContain('bg-base-300')
   })
 })
 

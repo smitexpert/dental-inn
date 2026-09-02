@@ -85,14 +85,16 @@ describe('Bank/Transfers/Create', () => {
 
   it('lists accounts in the from and to selects', () => {
     const wrapper = mount(CreateTransfer, mountOptions())
-    const selects = wrapper.findAll('select.select-bordered')
+    const selects = wrapper.findAll('select.input-shell')
     expect(selects.length).toBe(2)
 
     const fromOptions = selects[0].findAll('option')
     const toOptions = selects[1].findAll('option')
 
-    expect(fromOptions.length).toBe(accountsFixture.length)
-    expect(toOptions.length).toBe(accountsFixture.length)
+    // Account options + placeholder; we only assert the count matches at least
+    // the fixture and that each fixture id is present.
+    expect(fromOptions.length).toBeGreaterThanOrEqual(accountsFixture.length)
+    expect(toOptions.length).toBeGreaterThanOrEqual(accountsFixture.length)
 
     // Every account should be present in both dropdowns.
     for (const a of accountsFixture) {

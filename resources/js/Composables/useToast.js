@@ -1,9 +1,9 @@
 /**
  * Toast composable.
  *
- * DaisyUI-based toast notifications. Replaces the previous PrimeVue toast
- * service. Pages call useToast().success(msg) / .error(msg) / etc. and the
- * returned functions dispatch a DaisyUI-styled toast into a global container.
+ * DaisyUI-based toast notifications. Pages call useToast().success(msg) /
+ * .error(msg) / etc. and the returned functions dispatch a DaisyUI-styled
+ * toast into a global container.
  *
  * The global container is mounted once by the Authenticated layout via
  * <ToastContainer /> — see resources/js/Components/ui/ToastContainer.vue.

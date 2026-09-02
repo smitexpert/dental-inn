@@ -21,8 +21,8 @@ describe('PatientQuickAddDialog', () => {
     })
     await flushPromises()
     const html = wrapper.html()
-    // PrimeVue's dialog root class is `p-dialog`; DaisyUI uses `modal` and
-    // `modal-box`. After the migration no `p-*` selectors should remain.
+    // The old PrimeVue dialog used `p-dialog`; the DaisyUI replacement uses
+    // `modal` and `modal-box`. No `p-*` selectors should remain.
     expect(html).not.toMatch(/\bp-[a-z]+/)
   })
 

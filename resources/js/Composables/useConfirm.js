@@ -1,9 +1,8 @@
 /**
  * Confirm composable.
  *
- * DaisyUI-based confirmation dialog. Replaces the previous PrimeVue
- * ConfirmationService. Pages call useConfirm().require({ message, header,
- * accept, reject, ... }) and the returned dialog renders via
+ * DaisyUI-based confirmation dialog. Pages call useConfirm().require({
+ * message, header, accept, reject, ... }) and the returned dialog renders via
  * <ConfirmDialog /> mounted in the Authenticated layout.
  */
 

@@ -6,7 +6,7 @@ describe('UiInput', () => {
   it('renders base input classes', () => {
     const wrapper = mount(Input, { props: { modelValue: '' } })
     expect(wrapper.html()).toContain('input')
-    expect(wrapper.html()).toContain('input-bordered')
+    expect(wrapper.html()).toContain('input-shell')
   })
 
   it('emits update:modelValue on input', async () => {
@@ -17,6 +17,6 @@ describe('UiInput', () => {
 
   it('applies error border when invalid', () => {
     const wrapper = mount(Input, { props: { modelValue: '', invalid: true } })
-    expect(wrapper.html()).toContain('input-error')
+    expect(wrapper.html()).toContain('input-shell-error')
   })
 })
