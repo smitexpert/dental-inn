@@ -1,11 +1,14 @@
 <script setup>
 import { Head, Link, router } from '@inertiajs/vue3'
-import AuthenticatedLayout from '@/Layouts/Authenticated.vue'
-import UiCard from '@/Components/ui/Card.vue'
-import UiButton from '@/Components/ui/Button.vue'
-import UiSelect from '@/Components/ui/Select.vue'
-import UiBadge from '@/Components/ui/Badge.vue'
 import { ref, computed, watch, onMounted } from 'vue'
+import AuthenticatedLayout from '@/Layouts/Authenticated.vue'
+import PageHeader from '@/Components/ui/PageHeader.vue'
+import Card from '@/Components/ui/Card.vue'
+import Button from '@/Components/ui/Button.vue'
+import Select from '@/Components/ui/Select.vue'
+import Badge from '@/Components/ui/Badge.vue'
+import EmptyState from '@/Components/ui/EmptyState.vue'
+import Icon from '@/Components/ui/Icon.vue'
 
 const props = defineProps({ doctors: Array, buffer_minutes: Number })
 
@@ -14,7 +17,24 @@ const doctorFilter = ref(null)
 const currentDate = ref(new Date())
 
 const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+const monthNames = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December',
+]
+
+const todayDate = () => {
+  const d = new Date()
+  d.setHours(0, 0, 0, 0)
+  return d
+}
+
+const isSameDay = (a, b) => {
+  return (
+    a.getFullYear() === b.getFullYear() &&
+    a.getMonth() === b.getMonth() &&
+    a.getDate() === b.getDate()
+  )
+}
 
 const weekStart = computed(() => {
   const d = new Date(currentDate.value)
@@ -39,7 +59,7 @@ const dayDate = computed(() => {
   return d
 })
 
-const rangeStart = computed(() => view.value === 'week' ? weekStart.value : dayDate.value)
+const rangeStart = computed(() => (view.value === 'week' ? weekStart.value : dayDate.value))
 const rangeEnd = computed(() => {
   const end = new Date(rangeStart.value)
   end.setDate(end.getDate() + (view.value === 'week' ? 7 : 1))
@@ -79,7 +99,7 @@ function next() {
   d.setDate(d.getDate() + (view.value === 'week' ? 7 : 1))
   currentDate.value = d
 }
-function today() {
+function jumpToToday() {
   currentDate.value = new Date()
 }
 
@@ -103,6 +123,17 @@ function timeLabel(iso) {
   return new Date(iso).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
 }
 
+function statusVariant(s) {
+  return {
+    scheduled: 'info',
+    confirmed: 'primary',
+    checked_in: 'warning',
+    completed: 'success',
+    cancelled: 'danger',
+    no_show: 'danger',
+  }[s] || 'neutral'
+}
+
 function rangeLabel() {
   if (view.value === 'day') {
     return `${dayNames[dayDate.value.getDay()]}, ${monthNames[dayDate.value.getMonth()]} ${dayDate.value.getDate()}, ${dayDate.value.getFullYear()}`
@@ -117,79 +148,134 @@ function rangeLabel() {
 <template>
   <Head title="Calendar" />
   <AuthenticatedLayout>
-    <div class="space-y-4">
-      <div class="flex items-center justify-between gap-2">
-        <div class="flex gap-2">
-          <Link href="/appointments"><UiButton variant="secondary">List</UiButton></Link>
-          <Link href="/appointments/calendar"><UiButton variant="primary">Calendar</UiButton></Link>
-        </div>
-        <Link href="/appointments/create"><UiButton>New appointment</UiButton></Link>
-      </div>
-      <UiCard>
-        <div class="flex items-center justify-between gap-3">
-          <div class="flex items-center gap-2">
-            <UiButton variant="secondary" @click="prev">‹</UiButton>
-            <UiButton variant="secondary" @click="today">Today</UiButton>
-            <UiButton variant="secondary" @click="next">›</UiButton>
-            <span class="text-base font-medium text-base-content ml-3">{{ rangeLabel() }}</span>
+    <div class="space-y-5">
+      <PageHeader
+        title="Appointments"
+        subtitle="Browse visits by week or day, filter by doctor."
+        icon="calendar-clock"
+        eyebrow="Schedule"
+      >
+        <template #actions>
+          <Link href="/appointments">
+            <Button variant="outline" icon="list">List</Button>
+          </Link>
+          <Link href="/appointments/create">
+            <Button icon="plus">New appointment</Button>
+          </Link>
+        </template>
+      </PageHeader>
+
+      <Card>
+        <div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+          <div class="flex items-center gap-2 flex-wrap">
+            <Button variant="outline" icon-only icon="chevron-left" @click="prev" aria-label="Previous" />
+            <Button variant="outline" size="sm" @click="jumpToToday">Today</Button>
+            <Button variant="outline" icon-only icon="chevron-right" @click="next" aria-label="Next" />
+            <h2 class="text-base font-semibold text-base-content ml-2">
+              {{ rangeLabel() }}
+            </h2>
           </div>
-          <div class="flex items-center gap-2">
-            <UiSelect
+          <div class="flex flex-wrap items-center gap-2">
+            <Select
               v-model="doctorFilter"
               :options="[{ label: 'All doctors', value: null }, ...doctors.map((d) => ({ label: d.name, value: d.id }))]"
             />
-            <UiSelect
+            <Select
               v-model="view"
               :options="[{ label: 'Week', value: 'week' }, { label: 'Day', value: 'day' }]"
             />
           </div>
         </div>
 
-        <div v-if="view === 'week'" class="mt-4 grid grid-cols-7 gap-2">
-          <div v-for="d in weekDays" :key="d.toISOString()" class="border border-base-300 rounded-md bg-base-100 min-h-32 p-2">
-            <div class="text-xs font-medium text-base-content/70">{{ dayNames[d.getDay()] }}</div>
-            <div class="text-lg font-semibold text-base-content">{{ d.getDate() }}</div>
-            <div class="mt-2 space-y-1">
+        <div v-if="view === 'week'" class="mt-5 grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-2">
+          <div
+            v-for="d in weekDays"
+            :key="d.toISOString()"
+            class="rounded-lg border border-(--color-line) bg-base-100 min-h-36 p-2.5 flex flex-col transition-colors"
+            :class="isSameDay(d, todayDate()) ? 'border-primary/40 bg-primary/[0.03]' : ''"
+          >
+            <div class="flex items-center justify-between">
+              <div>
+                <div class="text-[10px] font-semibold uppercase tracking-wider text-(--color-subtle)">
+                  {{ dayNames[d.getDay()] }}
+                </div>
+                <div
+                  class="text-lg font-semibold leading-tight"
+                  :class="isSameDay(d, todayDate()) ? 'text-primary' : 'text-base-content'"
+                >
+                  {{ d.getDate() }}
+                </div>
+              </div>
+              <Badge v-if="apptsFor(d).length > 0" variant="neutral" size="sm">
+                {{ apptsFor(d).length }}
+              </Badge>
+            </div>
+            <div class="mt-2 space-y-1.5 flex-1">
               <Link
                 v-for="a in apptsFor(d)"
                 :key="a.id"
                 :href="`/appointments/${a.id}`"
-                class="block text-xs p-1 rounded border-l-2 hover:bg-base-200"
+                class="block text-xs p-1.5 rounded-md border-l-2 transition-all duration-150 hover:bg-base-200"
                 :style="{ borderColor: a.doctor_color }"
               >
-                <div class="flex justify-between">
-                  <span class="text-base-content">{{ timeLabel(a.scheduled_at) }}</span>
-                  <span class="text-base-content/70">{{ a.duration_minutes }}m</span>
+                <div class="flex justify-between gap-1">
+                  <span class="font-medium text-base-content">{{ timeLabel(a.scheduled_at) }}</span>
+                  <span class="text-(--color-muted)">{{ a.duration_minutes }}m</span>
                 </div>
-                <div class="text-base-content truncate">{{ a.patient_name }}</div>
-                <div class="text-base-content/70 truncate">{{ a.doctor_name }}</div>
+                <div class="text-base-content truncate font-medium mt-0.5">{{ a.patient_name }}</div>
+                <div class="text-(--color-muted) truncate">{{ a.doctor_name }}</div>
               </Link>
+              <p v-if="apptsFor(d).length === 0" class="text-[11px] text-(--color-subtle) text-center py-2">
+                —
+              </p>
             </div>
           </div>
         </div>
 
-        <div v-else class="mt-4">
-          <div class="space-y-2">
+        <div v-else class="mt-5">
+          <div v-if="apptsFor(dayDate).length === 0">
+            <EmptyState
+              icon="calendar"
+              title="No appointments today"
+              description="Schedule one to fill this day."
+            >
+              <template #action>
+                <Link href="/appointments/create">
+                  <Button icon="plus">New appointment</Button>
+                </Link>
+              </template>
+            </EmptyState>
+          </div>
+          <div v-else class="space-y-2">
             <Link
               v-for="a in apptsFor(dayDate)"
               :key="a.id"
               :href="`/appointments/${a.id}`"
-              class="block border border-base-300 rounded-md p-3 bg-base-100 hover:bg-base-200"
+              class="block rounded-lg border border-(--color-line) p-3 bg-base-100 transition-all duration-150 hover:shadow-(--shadow-card) hover:border-primary/40"
               :style="{ borderLeftWidth: '4px', borderLeftColor: a.doctor_color }"
             >
-              <div class="flex items-center justify-between">
-                <div class="font-medium text-base-content">{{ timeLabel(a.scheduled_at) }} ({{ a.duration_minutes }} min)</div>
-                <UiBadge variant="secondary">{{ a.status_label }}</UiBadge>
+              <div class="flex items-center justify-between gap-2">
+                <div class="font-medium text-base-content">
+                  {{ timeLabel(a.scheduled_at) }} · {{ a.duration_minutes }} min
+                </div>
+                <Badge :variant="statusVariant(a.status)" dot>{{ a.status_label }}</Badge>
               </div>
-              <div class="text-sm text-base-content mt-1">{{ a.patient_name }} · {{ a.patient_phone }}</div>
-              <div class="text-xs text-base-content/70">{{ a.doctor_name }}</div>
+              <div class="text-sm text-base-content mt-1">{{ a.patient_name }}</div>
+              <div class="text-xs text-(--color-muted) mt-0.5 flex items-center gap-2">
+                <span class="inline-flex items-center gap-1.5">
+                  <span
+                    class="h-2 w-2 rounded-full"
+                    :style="{ backgroundColor: a.doctor_color }"
+                  />
+                  {{ a.doctor_name }}
+                </span>
+                <span v-if="a.patient_phone">·</span>
+                <span v-if="a.patient_phone">{{ a.patient_phone }}</span>
+              </div>
             </Link>
-            <div v-if="apptsFor(dayDate).length === 0" class="text-center text-base-content/70 py-6">
-              No appointments on this day.
-            </div>
           </div>
         </div>
-      </UiCard>
+      </Card>
     </div>
   </AuthenticatedLayout>
 </template>

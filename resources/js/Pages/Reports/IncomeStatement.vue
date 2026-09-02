@@ -51,7 +51,7 @@ watch([dateFrom, dateTo], () => {
       </UiCard>
 
       <UiCard title="Revenue">
-        <table class="w-full text-sm">
+        <table class="app-table">
           <tbody>
             <tr v-for="acc in props.revenue_accounts" :key="acc.id" class="border-b border-base-300/40">
               <td class="py-2">
@@ -69,7 +69,7 @@ watch([dateFrom, dateTo], () => {
       </UiCard>
 
       <UiCard title="Expenses">
-        <table class="w-full text-sm">
+        <table class="app-table">
           <tbody>
             <tr v-for="acc in props.expense_accounts" :key="acc.id" class="border-b border-base-300/40">
               <td class="py-2">

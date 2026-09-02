@@ -1,14 +1,29 @@
 <script setup>
-import { Head, Link, router } from '@inertiajs/vue3'
+import { Head, Link, router, usePage } from '@inertiajs/vue3'
 import AuthenticatedLayout from '@/Layouts/Authenticated.vue'
-import UiCard from '@/Components/ui/Card.vue'
-import UiButton from '@/Components/ui/Button.vue'
-import UiBadge from '@/Components/ui/Badge.vue'
-import UiInput from '@/Components/ui/Input.vue'
-import UiSelect from '@/Components/ui/Select.vue'
-import { ref, watch } from 'vue'
+import PageHeader from '@/Components/ui/PageHeader.vue'
+import FilterBar from '@/Components/ui/FilterBar.vue'
+import Card from '@/Components/ui/Card.vue'
+import Button from '@/Components/ui/Button.vue'
+import Badge from '@/Components/ui/Badge.vue'
+import Input from '@/Components/ui/Input.vue'
+import Select from '@/Components/ui/Select.vue'
+import EmptyState from '@/Components/ui/EmptyState.vue'
+import Pagination from '@/Components/ui/Pagination.vue'
+import Avatar from '@/Components/ui/Avatar.vue'
+import Icon from '@/Components/ui/Icon.vue'
+import { useConfirm } from '@/Composables/useConfirm.js'
+import { ref, watch, computed } from 'vue'
 
-const props = defineProps({ users: Object, roles: Array, filters: Object })
+const props = defineProps({
+  users: { type: Object, required: true },
+  roles: { type: Array, required: true },
+  filters: { type: Object, required: true },
+})
+
+const confirm = useConfirm()
+const page = usePage()
+const currentUserId = computed(() => page.props.auth?.user?.id)
 
 const q = ref(props.filters.q ?? '')
 const role = ref(props.filters.role ?? null)
@@ -17,106 +32,191 @@ let t
 function applyFilters() {
   clearTimeout(t)
   t = setTimeout(() => {
-    router.get('/admin/users', { q: q.value, role: role.value }, { preserveState: true, replace: true })
+    router.get(
+      '/admin/users',
+      { q: q.value, role: role.value },
+      { preserveState: true, replace: true },
+    )
   }, 300)
 }
 watch([q, role], applyFilters)
 
 function toggleActive(user) {
-  if (confirm(`Toggle active status for ${user.name}?`)) {
-    router.post(`/admin/users/${user.id}/toggle-active`)
-  }
+  confirm.require({
+    header: user.is_active ? 'Deactivate user?' : 'Reactivate user?',
+    message: `${user.name}'s access will be ${user.is_active ? 'disabled' : 'enabled'}.`,
+    acceptLabel: user.is_active ? 'Deactivate' : 'Reactivate',
+    accept: () => router.post(`/admin/users/${user.id}/toggle-active`),
+  })
 }
+
 function destroyUser(user) {
-  if (confirm(`Permanently delete ${user.name}?`)) {
-    router.delete(`/admin/users/${user.id}`)
-  }
+  confirm.require({
+    header: 'Delete user?',
+    message: `${user.name} will be permanently removed. This cannot be undone.`,
+    acceptLabel: 'Delete',
+    acceptClass: 'btn-error',
+    accept: () => router.delete(`/admin/users/${user.id}`),
+  })
+}
+
+function goPage(n) {
+  router.get(
+    `/admin/users?page=${n}`,
+    { q: q.value, role: role.value },
+    { preserveState: true },
+  )
+}
+
+// Normalise a role entry — supports both `{ name: 'admin' }` (Spatie model
+// serialised) and the simple `'admin'` string shape returned by UserResource.
+function roleLabel(r) {
+  if (r == null) return ''
+  return typeof r === 'string' ? r : (r.name ?? '')
 }
 </script>
 
 <template>
   <Head title="Users" />
   <AuthenticatedLayout>
-    <UiCard title="Users">
-      <template #header>
-        <div class="flex items-center justify-between gap-3">
-          <h3 class="text-base font-semibold text-base-content">Users</h3>
-          <Link href="/admin/users/create"><UiButton>New user</UiButton></Link>
+    <div class="space-y-5">
+      <PageHeader
+        title="Users"
+        subtitle="Manage staff accounts, roles and access."
+        icon="users-round"
+        eyebrow="Admin"
+      >
+        <template #actions>
+          <Link href="/admin/roles">
+            <Button variant="outline" icon="shield">Roles</Button>
+          </Link>
+          <Link href="/admin/users/create">
+            <Button icon="plus">New user</Button>
+          </Link>
+        </template>
+      </PageHeader>
+
+      <FilterBar title="Search">
+        <template #aside>
+          <Badge variant="primary">
+            {{ users.total }} {{ users.total === 1 ? 'user' : 'users' }}
+          </Badge>
+        </template>
+        <div class="md:col-span-2">
+          <Input v-model="q" placeholder="Search by name or email" prefix-icon="search" />
         </div>
-      </template>
-      <div class="grid grid-cols-2 gap-3 mb-4">
-        <UiInput v-model="q" placeholder="Search by name or email" />
-        <UiSelect
+        <Select
           v-model="role"
           :options="[{ label: 'All roles', value: null }, ...roles.map((r) => ({ label: r, value: r }))]"
+          placeholder="All roles"
         />
-      </div>
-      <div class="overflow-x-auto">
-        <table class="w-full text-sm">
-          <thead class="bg-base-200 text-base-content/70">
-            <tr>
-              <th class="text-left px-4 py-2">Name</th>
-              <th class="text-left px-4 py-2">Email</th>
-              <th class="text-left px-4 py-2">Role</th>
-              <th class="text-left px-4 py-2">Status</th>
-              <th class="text-right px-4 py-2">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="u in users.data" :key="u.id" class="border-b border-base-300 last:border-b-0">
-              <td class="px-4 py-2 text-base-content">{{ u.name }}</td>
-              <td class="px-4 py-2 text-base-content/70">{{ u.email }}</td>
-              <td class="px-4 py-2">
-                <UiBadge v-for="r in u.roles" :key="r" variant="primary" class="mr-1">{{ r }}</UiBadge>
-              </td>
-              <td class="px-4 py-2">
-                <UiBadge :variant="u.is_active ? 'success' : 'danger'">{{
-                  u.is_active ? 'Active' : 'Inactive'
-                }}</UiBadge>
-              </td>
-              <td class="px-4 py-2 text-right">
-                <Link
-                  :href="`/admin/users/${u.id}/edit`"
-                  class="text-primary hover:text-primary mr-3 text-sm"
-                  >Edit</Link
-                >
-                <button
-                  v-if="u.id !== $page.props.auth.user.id"
-                  @click="toggleActive(u)"
-                  class="text-base-content/70 hover:text-base-content mr-3 text-sm"
-                >
-                  Toggle
-                </button>
-                <button
-                  v-if="u.id !== $page.props.auth.user.id"
-                  @click="destroyUser(u)"
-                  class="text-error hover:text-error/80 text-sm"
-                >
-                  Delete
-                </button>
-              </td>
-            </tr>
-            <tr v-if="users.data.length === 0">
-              <td colspan="5" class="text-center text-base-content/70 py-6">No users found.</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div
-        v-if="users.last_page > 1"
-        class="mt-3 flex items-center justify-between text-sm text-base-content/70"
-      >
-        <span>Page {{ users.current_page }} of {{ users.last_page }}</span>
-        <div class="flex gap-1">
-          <template v-for="link in users.links" :key="link.label">
-            <Link
-              v-if="link.url"
-              :href="link.url"
-              class="px-2 py-1 rounded hover:bg-base-200"
-            ><!-- eslint-disable-next-line vue/no-v-text-v-html-on-component --><span v-html="link.label" /></Link>
-          </template>
+      </FilterBar>
+
+      <Card :padded="false">
+        <div v-if="users.data.length === 0">
+          <EmptyState
+            icon="users-round"
+            title="No users found"
+            description="Adjust your filters or add your first staff member."
+          >
+            <template #action>
+              <Link href="/admin/users/create">
+                <Button icon="plus">New user</Button>
+              </Link>
+            </template>
+          </EmptyState>
         </div>
-      </div>
-    </UiCard>
+        <div v-else class="overflow-x-auto">
+          <table class="app-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Roles</th>
+                <th>Status</th>
+                <th class="text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="u in users.data" :key="u.id">
+                <td>
+                  <div class="flex items-center gap-2.5">
+                    <Avatar :name="u.name" size="sm" />
+                    <div class="min-w-0">
+                      <p class="font-medium">{{ u.name }}</p>
+                      <p v-if="u.id === currentUserId" class="text-xs text-primary">
+                        (you)
+                      </p>
+                    </div>
+                  </div>
+                </td>
+                <td class="text-(--color-muted)">{{ u.email }}</td>
+                <td>
+                  <div class="flex flex-wrap gap-1">
+                    <Badge
+                      v-for="r in u.roles"
+                      :key="roleLabel(r)"
+                      variant="primary"
+                    >
+                      {{ roleLabel(r) }}
+                    </Badge>
+                  </div>
+                </td>
+                <td>
+                  <Badge :variant="u.is_active ? 'success' : 'danger'" dot>
+                    {{ u.is_active ? 'Active' : 'Inactive' }}
+                  </Badge>
+                </td>
+                <td class="text-right">
+                  <div class="inline-flex items-center gap-1">
+                    <Link
+                      :href="`/admin/users/${u.id}/edit`"
+                      class="p-1.5 rounded-md text-(--color-muted) hover:bg-base-200 hover:text-primary transition-colors"
+                      :aria-label="`Edit ${u.name}`"
+                      :title="`Edit ${u.name}`"
+                    >
+                      <Icon name="edit" size="sm" />
+                    </Link>
+                    <button
+                      v-if="u.id !== currentUserId"
+                      type="button"
+                      class="p-1.5 rounded-md text-(--color-muted) hover:bg-base-200 hover:text-base-content transition-colors"
+                      :aria-label="u.is_active ? `Deactivate ${u.name}` : `Reactivate ${u.name}`"
+                      :title="u.is_active ? 'Toggle active' : 'Reactivate'"
+                      @click="toggleActive(u)"
+                    >
+                      <Icon
+                        :name="u.is_active ? 'lock' : 'key'"
+                        size="sm"
+                      />
+                    </button>
+                    <button
+                      v-if="u.id !== currentUserId"
+                      type="button"
+                      class="p-1.5 rounded-md text-(--color-muted) hover:bg-error/10 hover:text-error transition-colors"
+                      :aria-label="`Delete ${u.name}`"
+                      :title="`Delete ${u.name}`"
+                      @click="destroyUser(u)"
+                    >
+                      <Icon name="trash" size="sm" />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="px-5 pb-4">
+          <Pagination
+            :current-page="users.current_page"
+            :last-page="users.last_page"
+            :total="users.total"
+            :per-page="users.per_page"
+            @page="goPage"
+          />
+        </div>
+      </Card>
+    </div>
   </AuthenticatedLayout>
 </template>

@@ -90,19 +90,19 @@ function submit() {
           </div>
           <div v-if="requiresSubject && !form.template_key">
             <label class="block text-sm font-medium mb-1 text-base-content">Subject</label>
-            <UiInput v-model="form.subject" :error="form.errors.subject" />
+            <UiInput v-model="form.subject" :invalid="!!form.errors.subject" />
           </div>
           <div v-if="!form.template_key">
             <label class="block text-sm font-medium mb-1 text-base-content">Body</label>
-            <UiTextarea v-model="form.body" rows="5" :error="form.errors.body" required />
+            <UiTextarea v-model="form.body" rows="5" :invalid="!!form.errors.body" required />
           </div>
           <div>
             <label class="block text-sm font-medium mb-1 text-base-content">Recipients</label>
-            <UiTextarea v-model="form.recipients" rows="3" placeholder="One per line, or comma-separated" :error="form.errors.recipients" required />
+            <UiTextarea v-model="form.recipients" rows="3" placeholder="One per line, or comma-separated" :invalid="!!form.errors.recipients" required />
           </div>
           <div v-if="form.template_key">
             <label class="block text-sm font-medium mb-1 text-base-content">Template variables (JSON)</label>
-            <UiTextarea v-model="form.variables" rows="3" placeholder='{"patient_name": "Alice"}' :error="form.errors.variables" />
+            <UiTextarea v-model="form.variables" rows="3" placeholder='{"patient_name": "Alice"}' :invalid="!!form.errors.variables" />
           </div>
           <div class="flex items-center justify-end gap-2 pt-3 border-t border-base-300">
             <UiButton type="submit" :loading="form.processing">Send</UiButton>

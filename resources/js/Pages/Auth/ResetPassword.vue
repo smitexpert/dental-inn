@@ -1,6 +1,9 @@
 <script setup>
 import { Head, Link, useForm } from '@inertiajs/vue3'
 import AuthLayout from '@/Layouts/Auth.vue'
+import Field from '@/Components/ui/Form/Field.vue'
+import Input from '@/Components/ui/Input.vue'
+import Button from '@/Components/ui/Button.vue'
 
 const props = defineProps({
   email: { type: String, default: '' },
@@ -15,60 +18,69 @@ const form = useForm({
 })
 
 function submit() {
-  form.post('/reset-password', { onSuccess: () => form.reset('password', 'password_confirmation') })
+  form.post('/reset-password', {
+    onSuccess: () => form.reset('password', 'password_confirmation'),
+  })
 }
 </script>
 
 <template>
   <Head title="Reset password" />
   <AuthLayout>
-    <h1 class="text-xl font-semibold text-base-content mb-1">Set a new password</h1>
-    <p class="text-sm text-base-content/70 mb-6">Enter a new password for your account.</p>
+    <div class="mb-6">
+      <h1 class="text-xl font-semibold text-base-content">Set a new password</h1>
+      <p class="text-sm text-(--color-muted) mt-1">
+        Enter a new password for your account.
+      </p>
+    </div>
 
     <form @submit.prevent="submit" class="space-y-4">
-      <div>
-        <label for="email" class="block text-sm font-medium text-base-content mb-1">Email</label>
-        <input
+      <Field label="Email" html-for="email" required :error="form.errors.email">
+        <Input
           id="email"
           v-model="form.email"
           type="email"
           required
-          class="w-full h-10 px-3 rounded-md border border-base-300 bg-base-100 text-base-content focus:outline-none focus:ring-2 focus:ring-primary"
+          autocomplete="email"
+          placeholder="you@clinic.com"
+          prefix-icon="mail"
+          :invalid="!!form.errors.email"
         />
-        <p v-if="form.errors.email" class="mt-1 text-sm text-error">{{ form.errors.email }}</p>
-      </div>
-      <div>
-        <label for="password" class="block text-sm font-medium text-base-content mb-1">New password</label>
-        <input
+      </Field>
+
+      <Field label="New password" html-for="password" required :error="form.errors.password" description="Use at least 8 characters.">
+        <Input
           id="password"
           v-model="form.password"
           type="password"
           required
-          class="w-full h-10 px-3 rounded-md border border-base-300 bg-base-100 text-base-content focus:outline-none focus:ring-2 focus:ring-primary"
+          autocomplete="new-password"
+          placeholder="••••••••"
+          prefix-icon="lock"
+          :invalid="!!form.errors.password"
         />
-        <p v-if="form.errors.password" class="mt-1 text-sm text-error">{{ form.errors.password }}</p>
-      </div>
-      <div>
-        <label for="password_confirmation" class="block text-sm font-medium text-base-content mb-1"
-          >Confirm password</label
-        >
-        <input
+      </Field>
+
+      <Field label="Confirm password" html-for="password_confirmation" required>
+        <Input
           id="password_confirmation"
           v-model="form.password_confirmation"
           type="password"
           required
-          class="w-full h-10 px-3 rounded-md border border-base-300 bg-base-100 text-base-content focus:outline-none focus:ring-2 focus:ring-primary"
+          autocomplete="new-password"
+          placeholder="••••••••"
+          prefix-icon="lock"
         />
-      </div>
-      <button
-        type="submit"
-        :disabled="form.processing"
-        class="w-full h-10 rounded-md bg-primary text-white font-medium hover:bg-primary disabled:opacity-50"
-      >
+      </Field>
+
+      <Button type="submit" block :loading="form.processing">
         {{ form.processing ? 'Saving…' : 'Reset password' }}
-      </button>
-      <p class="text-sm text-base-content/70 text-center">
-        <Link href="/login" class="text-primary hover:text-primary">Back to sign in</Link>
+      </Button>
+
+      <p class="text-sm text-(--color-muted) text-center">
+        <Link href="/login" class="text-primary hover:underline font-medium">
+          Back to sign in
+        </Link>
       </p>
     </form>
   </AuthLayout>

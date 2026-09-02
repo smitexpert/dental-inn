@@ -33,7 +33,7 @@ function fmt(iso) {
 }
 
 function variantFor(s) {
-  return { sent: 'success', failed: 'danger', skipped: 'warning' }[s] || 'secondary'
+  return { sent: 'success', failed: 'danger', skipped: 'warning' }[s] || 'neutral'
 }
 </script>
 
@@ -61,7 +61,7 @@ function variantFor(s) {
           <UiInput v-model="recipient" placeholder="Recipient contains…" />
         </div>
         <div class="overflow-x-auto">
-          <table class="w-full text-sm">
+          <table class="app-table">
             <thead class="bg-base-200 text-base-content/70">
               <tr>
                 <th class="text-left px-4 py-2">When</th>
@@ -79,7 +79,7 @@ function variantFor(s) {
                 class="border-b border-base-300 last:border-b-0"
               >
                 <td class="px-4 py-2 text-base-content">{{ fmt(l.created_at) }}</td>
-                <td class="px-4 py-2"><UiBadge variant="secondary">{{ l.channel }}</UiBadge></td>
+                <td class="px-4 py-2"><UiBadge variant="neutral">{{ l.channel }}</UiBadge></td>
                 <td class="px-4 py-2 text-base-content font-mono text-xs">{{ l.recipient }}</td>
                 <td class="px-4 py-2 text-base-content/70">{{ l.subject || '—' }}</td>
                 <td class="px-4 py-2"><UiBadge :variant="variantFor(l.status)">{{ l.status }}</UiBadge></td>

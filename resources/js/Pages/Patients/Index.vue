@@ -1,12 +1,15 @@
 <script setup>
 import { Head, Link, router } from '@inertiajs/vue3'
-import AuthenticatedLayout from '@/Layouts/Authenticated.vue'
-import UiCard from '@/Components/ui/Card.vue'
-import UiButton from '@/Components/ui/Button.vue'
-import UiBadge from '@/Components/ui/Badge.vue'
-import UiInput from '@/Components/ui/Input.vue'
-import UiSelect from '@/Components/ui/Select.vue'
 import { ref, watch } from 'vue'
+import AuthenticatedLayout from '@/Layouts/Authenticated.vue'
+import PageHeader from '@/Components/ui/PageHeader.vue'
+import FilterBar from '@/Components/ui/FilterBar.vue'
+import Card from '@/Components/ui/Card.vue'
+import Button from '@/Components/ui/Button.vue'
+import Badge from '@/Components/ui/Badge.vue'
+import EmptyState from '@/Components/ui/EmptyState.vue'
+import Pagination from '@/Components/ui/Pagination.vue'
+import Icon from '@/Components/ui/Icon.vue'
 
 const props = defineProps({ patients: Object, filters: Object })
 
@@ -31,74 +34,137 @@ function applyFilters() {
   }, 300)
 }
 watch([q, isActive], applyFilters)
+
+function goPage(n) {
+  router.get(
+    `/patients?page=${n}`,
+    { q: q.value, is_active: isActive.value },
+    { preserveState: true },
+  )
+}
 </script>
 
 <template>
   <Head title="Patients" />
   <AuthenticatedLayout>
-    <UiCard title="Patients">
-      <template #header>
-        <div class="flex items-center justify-between gap-3">
-          <h3 class="text-base font-semibold text-base-content">Patients</h3>
-          <Link href="/patients/create"><UiButton>New patient</UiButton></Link>
-        </div>
-      </template>
-      <div class="grid grid-cols-3 gap-3 mb-4">
-        <UiInput v-model="q" placeholder="Search by name, phone, email, or code" />
-        <UiSelect
-          v-model="isActive"
-          :options="[
-            { label: 'All', value: '' },
-            { label: 'Active only', value: '1' },
-            { label: 'Inactive only', value: '0' },
-          ]"
-        />
-      </div>
-      <div class="overflow-x-auto">
-        <table class="w-full text-sm">
-          <thead class="bg-base-200 text-base-content/70">
-            <tr>
-              <th class="text-left px-4 py-2">Code</th>
-              <th class="text-left px-4 py-2">Name</th>
-              <th class="text-left px-4 py-2">Phone</th>
-              <th class="text-left px-4 py-2">Email</th>
-              <th class="text-left px-4 py-2">Age</th>
-              <th class="text-right px-4 py-2">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="p in patients.data" :key="p.id" class="border-b border-base-300 last:border-b-0">
-              <td class="px-4 py-2 text-base-content/70 font-mono text-xs">{{ p.patient_code }}</td>
-              <td class="px-4 py-2 text-base-content font-medium">{{ p.name }}</td>
-              <td class="px-4 py-2 text-base-content/70">{{ p.phone || '—' }}</td>
-              <td class="px-4 py-2 text-base-content/70">{{ p.email || '—' }}</td>
-              <td class="px-4 py-2 text-base-content/70">{{ p.age ?? '—' }}</td>
-              <td class="px-4 py-2 text-right">
-                <Link :href="`/patients/${p.id}`" class="text-primary hover:text-primary mr-3 text-sm">View</Link>
-                <Link :href="`/patients/${p.id}/edit`" class="text-primary hover:text-primary text-sm">Edit</Link>
-              </td>
-            </tr>
-            <tr v-if="patients.data.length === 0">
-              <td colspan="6" class="text-center text-base-content/70 py-6">No patients found.</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div
-        v-if="patients.last_page > 1"
-        class="mt-3 flex items-center justify-between text-sm text-base-content/70"
+    <div class="space-y-5">
+      <PageHeader
+        title="Patients"
+        subtitle="Manage patient records, contact details and history."
+        icon="users-round"
+        eyebrow="Records"
       >
-        <span>Page {{ patients.current_page }} of {{ patients.last_page }}</span>
-        <div class="flex gap-1">
-          <template v-for="link in patients.links" :key="link.label">
-            <Link
-              v-if="link.url"
-              :href="link.url"
-              class="px-2 py-1 rounded hover:bg-base-200"
-              ><!-- eslint-disable-next-line vue/no-v-text-v-html-on-component --><span v-html="link.label" /></Link>
-          </template>
+        <template #actions>
+          <Link href="/patients/create"><Button icon="plus">New patient</Button></Link>
+        </template>
+      </PageHeader>
+
+      <FilterBar title="Search">
+        <template #aside>
+          <Badge variant="primary">
+            {{ patients.total }} {{ patients.total === 1 ? 'patient' : 'patients' }}
+          </Badge>
+        </template>
+        <div class="md:col-span-2">
+          <div class="relative">
+            <span
+              class="absolute left-3 top-1/2 -translate-y-1/2 text-(--color-muted) pointer-events-none"
+            >
+              <Icon name="search" size="sm" />
+            </span>
+            <input
+              v-model="q"
+              type="search"
+              placeholder="Search by name, phone, email, or code"
+              class="input-shell h-10 pl-9"
+            />
+          </div>
         </div>
-      </div>
-    </UiCard>
+        <select
+          v-model="isActive"
+          class="input-shell h-10"
+          @change="applyFilters"
+        >
+          <option value="">All patients</option>
+          <option value="1">Active only</option>
+          <option value="0">Inactive only</option>
+        </select>
+      </FilterBar>
+
+      <Card :padded="false">
+        <div class="overflow-x-auto">
+          <table class="app-table">
+            <thead>
+              <tr>
+                <th class="w-32">Code</th>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>Email</th>
+                <th class="w-16">Age</th>
+                <th class="w-40">Status</th>
+                <th class="w-32 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="p in patients.data" :key="p.id">
+                <td class="text-(--color-muted) font-mono text-xs">{{ p.patient_code }}</td>
+                <td>
+                  <div class="font-medium">{{ p.name }}</div>
+                </td>
+                <td class="text-(--color-muted)">{{ p.phone || '—' }}</td>
+                <td class="text-(--color-muted)">{{ p.email || '—' }}</td>
+                <td class="text-(--color-muted)">{{ p.age ?? '—' }}</td>
+                <td>
+                  <Badge :variant="p.is_active ? 'success' : 'warning'" dot>
+                    {{ p.is_active ? 'Active' : 'Inactive' }}
+                  </Badge>
+                </td>
+                <td class="text-right">
+                  <div class="inline-flex items-center gap-1">
+                    <Link
+                      :href="`/patients/${p.id}`"
+                      class="p-1.5 rounded-md text-(--color-muted) hover:bg-base-200 hover:text-primary transition-colors"
+                      :aria-label="`View ${p.name}`"
+                      :title="`View ${p.name}`"
+                    >
+                      <Icon name="eye" size="sm" />
+                    </Link>
+                    <Link
+                      :href="`/patients/${p.id}/edit`"
+                      class="p-1.5 rounded-md text-(--color-muted) hover:bg-base-200 hover:text-primary transition-colors"
+                      :aria-label="`Edit ${p.name}`"
+                      :title="`Edit ${p.name}`"
+                    >
+                      <Icon name="edit" size="sm" />
+                    </Link>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <EmptyState
+            v-if="patients.data.length === 0"
+            icon="users-round"
+            title="No patients found"
+            description="Add your first patient to start managing records and appointments."
+          >
+            <template #action>
+              <Link href="/patients/create"><Button icon="plus">New patient</Button></Link>
+            </template>
+          </EmptyState>
+        </div>
+
+        <div class="px-5 pb-4">
+          <Pagination
+            :current-page="patients.current_page"
+            :last-page="patients.last_page"
+            :total="patients.total"
+            :per-page="patients.per_page"
+            @page="goPage"
+          />
+        </div>
+      </Card>
+    </div>
   </AuthenticatedLayout>
 </template>

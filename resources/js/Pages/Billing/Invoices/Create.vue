@@ -1,15 +1,18 @@
 <script setup>
 import { Head, Link, useForm } from '@inertiajs/vue3'
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
 import AuthenticatedLayout from '@/Layouts/Authenticated.vue'
-import UiCard from '@/Components/ui/Card.vue'
-import UiForm from '@/Components/ui/Form/Form.vue'
-import UiField from '@/Components/ui/Form/Field.vue'
-import UiInput from '@/Components/ui/Input.vue'
-import UiSelect from '@/Components/ui/Select.vue'
-import UiButton from '@/Components/ui/Button.vue'
-import UiFormError from '@/Components/ui/Form/FormError.vue'
-import UiFormActions from '@/Components/ui/Form/FormActions.vue'
+import PageHeader from '@/Components/ui/PageHeader.vue'
+import Breadcrumbs from '@/Components/ui/Breadcrumbs.vue'
+import Card from '@/Components/ui/Card.vue'
+import Form from '@/Components/ui/Form/Form.vue'
+import Field from '@/Components/ui/Form/Field.vue'
+import Input from '@/Components/ui/Input.vue'
+import Select from '@/Components/ui/Select.vue'
+import Textarea from '@/Components/ui/Textarea.vue'
+import Button from '@/Components/ui/Button.vue'
+import FormError from '@/Components/ui/Form/FormError.vue'
+import Icon from '@/Components/ui/Icon.vue'
 
 const props = defineProps({ invoice_number: String })
 
@@ -30,18 +33,15 @@ const form = useForm({
 const subtotal = computed(() =>
   form.items.reduce((sum, r) => sum + Number(r.quantity || 0) * Number(r.unit_price || 0), 0),
 )
-
 const discountAmount = computed(() => {
   if (form.discount_type === 'percentage') return subtotal.value * (Number(form.discount_value) / 100)
   if (form.discount_type === 'fixed') return Math.min(Number(form.discount_value), subtotal.value)
   return 0
 })
-
 const taxAmount = computed(() => {
   const taxable = Math.max(0, subtotal.value - discountAmount.value)
   return taxable * (Number(form.tax_rate) / 100)
 })
-
 const total = computed(() => subtotal.value - discountAmount.value + taxAmount.value)
 
 function addItem() {
@@ -54,87 +54,146 @@ function removeItem(i) {
 function submit() {
   form.post('/billing/invoices')
 }
+
+const breadcrumbs = [
+  { label: 'Invoices', href: '/billing/invoices' },
+  { label: 'New invoice' },
+]
 </script>
 
 <template>
   <Head title="New invoice" />
   <AuthenticatedLayout>
-    <UiCard title="New invoice">
-      <template #header>
-        <div class="flex items-center justify-between gap-3">
-          <div>
-            <h3 class="text-base font-semibold text-base-content">New invoice</h3>
-            <p class="text-xs text-base-content/70 font-mono">Next number: {{ invoice_number }}</p>
+    <div class="max-w-4xl space-y-5">
+      <Breadcrumbs :items="breadcrumbs" />
+
+      <PageHeader
+        title="New invoice"
+        :subtitle="`Invoice number ${invoice_number} will be assigned on save.`"
+        icon="receipt-text"
+        eyebrow="Create"
+      />
+
+      <Form :processing="form.processing" @submit="submit" class="space-y-5">
+        <FormError :errors="form.errors" />
+
+        <Card title="Invoice details">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Field label="Invoice date" required :error="form.errors.invoice_date" html-for="inv-date">
+              <Input id="inv-date" v-model="form.invoice_date" type="date" />
+            </Field>
+            <Field label="Due date" required :error="form.errors.due_date" html-for="inv-due">
+              <Input id="inv-due" v-model="form.due_date" type="date" />
+            </Field>
           </div>
-          <Link href="/billing/invoices"><UiButton variant="ghost">Back</UiButton></Link>
-        </div>
-      </template>
+        </Card>
 
-      <UiForm @submit="submit">
-        <UiFormError :errors="form.errors" />
-        <div class="grid grid-cols-2 gap-4">
-          <UiField label="Invoice date" required :error="form.errors.invoice_date">
-            <UiInput v-model="form.invoice_date" type="date" />
-          </UiField>
-          <UiField label="Due date" required :error="form.errors.due_date">
-            <UiInput v-model="form.due_date" type="date" />
-          </UiField>
-        </div>
-        <div class="grid grid-cols-3 gap-4">
-          <UiField label="Tax rate %" :error="form.errors.tax_rate">
-            <UiInput v-model="form.tax_rate" type="number" min="0" max="100" step="0.01" />
-          </UiField>
-          <UiField label="Discount type" :error="form.errors.discount_type">
-            <UiSelect
-              v-model="form.discount_type"
-              :options="[
-                { label: 'No discount', value: 'none' },
-                { label: 'Percentage', value: 'percentage' },
-                { label: 'Fixed amount', value: 'fixed' },
-              ]"
-            />
-          </UiField>
-          <UiField label="Discount value" :error="form.errors.discount_value">
-            <UiInput v-model="form.discount_value" type="number" min="0" step="0.01" />
-          </UiField>
-        </div>
+        <Card title="Adjustments">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <Field label="Tax rate %" :error="form.errors.tax_rate" html-for="inv-tax">
+              <Input id="inv-tax" v-model="form.tax_rate" type="number" min="0" max="100" step="0.01" />
+            </Field>
+            <Field label="Discount type" :error="form.errors.discount_type" html-for="inv-dtype">
+              <Select
+                id="inv-dtype"
+                v-model="form.discount_type"
+                :options="[
+                  { label: 'No discount', value: 'none' },
+                  { label: 'Percentage', value: 'percentage' },
+                  { label: 'Fixed amount', value: 'fixed' },
+                ]"
+              />
+            </Field>
+            <Field label="Discount value" :error="form.errors.discount_value" html-for="inv-dval">
+              <Input id="inv-dval" v-model="form.discount_value" type="number" min="0" step="0.01" />
+            </Field>
+          </div>
+        </Card>
 
-        <div class="mt-4">
-          <h4 class="text-sm font-medium text-base-content mb-2">Line items</h4>
-          <div class="space-y-2">
-            <div v-for="(item, idx) in form.items" :key="idx" class="grid grid-cols-12 gap-2 items-end">
-              <UiField class="col-span-6" label="Description" required :error="form.errors[`items.${idx}.description`]">
-                <UiInput v-model="item.description" />
-              </UiField>
-              <UiField class="col-span-2" label="Qty" required :error="form.errors[`items.${idx}.quantity`]">
-                <UiInput v-model="item.quantity" type="number" min="0.01" step="0.01" />
-              </UiField>
-              <UiField class="col-span-3" label="Unit price" required :error="form.errors[`items.${idx}.unit_price`]">
-                <UiInput v-model="item.unit_price" type="number" min="0" step="0.01" />
-              </UiField>
-              <div class="col-span-1">
-                <UiButton type="button" variant="ghost" @click="removeItem(idx)" :disabled="form.items.length === 1">×</UiButton>
+        <Card title="Line items" :padded="false">
+          <div class="px-5 pt-5 pb-2">
+            <div class="grid grid-cols-12 gap-2 text-xs font-semibold uppercase tracking-wide text-(--color-muted) mb-2">
+              <div class="col-span-6">Description</div>
+              <div class="col-span-2 text-right">Qty</div>
+              <div class="col-span-3 text-right">Unit price</div>
+              <div class="col-span-1"></div>
+            </div>
+            <div class="space-y-3">
+              <div
+                v-for="(item, idx) in form.items"
+                :key="idx"
+                class="grid grid-cols-12 gap-2 items-end"
+              >
+                <div class="col-span-6">
+                  <Field :error="form.errors[`items.${idx}.description`]" required>
+                    <Input v-model="item.description" placeholder="Service or product description" />
+                  </Field>
+                </div>
+                <div class="col-span-2">
+                  <Field :error="form.errors[`items.${idx}.quantity`]" required>
+                    <Input v-model="item.quantity" type="number" min="0.01" step="0.01" />
+                  </Field>
+                </div>
+                <div class="col-span-3">
+                  <Field :error="form.errors[`items.${idx}.unit_price`]" required>
+                    <Input v-model="item.unit_price" type="number" min="0" step="0.01" />
+                  </Field>
+                </div>
+                <div class="col-span-1 flex justify-end">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    icon="trash"
+                    icon-only
+                    @click="removeItem(idx)"
+                    :disabled="form.items.length === 1"
+                    aria-label="Remove line"
+                  />
+                </div>
               </div>
             </div>
+            <div class="mt-3">
+              <Button type="button" variant="outline" icon="plus" @click="addItem">Add line</Button>
+            </div>
           </div>
-          <UiButton type="button" variant="secondary" class="mt-2" @click="addItem">+ Add line</UiButton>
-        </div>
 
-        <div class="mt-4 bg-base-200 p-4 rounded-md text-sm space-y-1">
-          <div class="flex justify-between"><span>Subtotal</span><span>{{ subtotal.toFixed(2) }}</span></div>
-          <div class="flex justify-between"><span>Discount</span><span>-{{ discountAmount.toFixed(2) }}</span></div>
-          <div class="flex justify-between"><span>Tax</span><span>{{ taxAmount.toFixed(2) }}</span></div>
-          <div class="flex justify-between font-semibold border-t border-base-300 pt-1 mt-1">
-            <span>Total</span><span>{{ total.toFixed(2) }}</span>
+          <div class="mx-5 my-4 border-t border-(--color-line)"></div>
+
+          <div class="px-5 pb-5">
+            <dl class="ml-auto max-w-sm space-y-1.5 text-sm">
+              <div class="flex justify-between text-(--color-muted)">
+                <dt>Subtotal</dt>
+                <dd class="tabular-nums text-base-content">{{ subtotal.toFixed(2) }}</dd>
+              </div>
+              <div class="flex justify-between text-(--color-muted)">
+                <dt>Discount</dt>
+                <dd class="tabular-nums text-base-content">-{{ discountAmount.toFixed(2) }}</dd>
+              </div>
+              <div class="flex justify-between text-(--color-muted)">
+                <dt>Tax</dt>
+                <dd class="tabular-nums text-base-content">{{ taxAmount.toFixed(2) }}</dd>
+              </div>
+              <div class="flex justify-between font-semibold border-t border-(--color-line) pt-2 mt-1">
+                <dt>Total</dt>
+                <dd class="tabular-nums">{{ total.toFixed(2) }}</dd>
+              </div>
+            </dl>
           </div>
+        </Card>
+
+        <Card title="Notes">
+          <Field label="Internal notes" :error="form.errors.notes" html-for="inv-notes" hint="Optional. Visible to staff only.">
+            <Textarea id="inv-notes" v-model="form.notes" :rows="3" placeholder="Any context for this invoice…" />
+          </Field>
+        </Card>
+
+        <div class="flex items-center justify-end gap-2 pt-2">
+          <Link href="/billing/invoices">
+            <Button variant="outline">Cancel</Button>
+          </Link>
+          <Button type="submit" :loading="form.processing" icon-right="check">Save as draft</Button>
         </div>
-
-        <UiField label="Notes" :error="form.errors.notes">
-          <UiInput v-model="form.notes" />
-        </UiField>
-
-        <UiFormActions :processing="form.processing" submit-label="Save as draft" :show-cancel="true" cancel-href="/billing/invoices" />
-      </UiForm>
-    </UiCard>
+      </Form>
+    </div>
   </AuthenticatedLayout>
 </template>

@@ -63,16 +63,16 @@ function submit() {
             </div>
             <div>
               <label class="block text-sm font-medium mb-1 text-base-content">Locale</label>
-              <UiInput v-model="form.locale" :error="form.errors.locale" required />
+              <UiInput v-model="form.locale" :invalid="!!form.errors.locale" required />
             </div>
           </div>
           <div>
             <label class="block text-sm font-medium mb-1 text-base-content">Subject (email only)</label>
-            <UiInput v-model="form.subject" :error="form.errors.subject" />
+            <UiInput v-model="form.subject" :invalid="!!form.errors.subject" />
           </div>
           <div>
             <label class="block text-sm font-medium mb-1 text-base-content">Body</label>
-            <UiTextarea v-model="form.body" rows="6" :error="form.errors.body" required />
+            <UiTextarea v-model="form.body" rows="6" :invalid="!!form.errors.body" required />
           </div>
           <label class="flex items-center gap-2">
             <input type="checkbox" v-model="form.is_active" class="rounded border-base-300" />

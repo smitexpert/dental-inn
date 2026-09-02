@@ -1,12 +1,14 @@
 <script setup>
-import { Head, useForm, usePage } from '@inertiajs/vue3'
+import { Head, useForm, usePage, Link } from '@inertiajs/vue3'
 import AuthenticatedLayout from '@/Layouts/Authenticated.vue'
-import UiCard from '@/Components/ui/Card.vue'
-import UiForm from '@/Components/ui/Form/Form.vue'
-import UiField from '@/Components/ui/Form/Field.vue'
-import UiInput from '@/Components/ui/Input.vue'
-import UiSelect from '@/Components/ui/Select.vue'
-import UiButton from '@/Components/ui/Button.vue'
+import PageHeader from '@/Components/ui/PageHeader.vue'
+import Card from '@/Components/ui/Card.vue'
+import Form from '@/Components/ui/Form/Form.vue'
+import Field from '@/Components/ui/Form/Field.vue'
+import Input from '@/Components/ui/Input.vue'
+import Select from '@/Components/ui/Select.vue'
+import Button from '@/Components/ui/Button.vue'
+import Breadcrumbs from '@/Components/ui/Breadcrumbs.vue'
 
 const initial = usePage().props.settings
 const form = useForm({
@@ -37,61 +39,82 @@ const form = useForm({
 function submit() {
   form.patch('/settings')
 }
+
+const breadcrumbs = [
+  { label: 'Settings', href: '/settings' },
+  { label: 'Clinic' },
+]
 </script>
 
 <template>
   <Head title="Clinic settings" />
   <AuthenticatedLayout>
-    <div class="max-w-3xl space-y-6">
-      <UiCard title="Clinic information">
-        <UiForm @submit="submit">
-          <div class="grid grid-cols-2 gap-4">
-            <UiField label="Clinic name" :error="form.errors.clinic_name" required>
-              <UiInput v-model="form.clinic_name" required />
-            </UiField>
-            <UiField label="Tagline" :error="form.errors.clinic_tagline">
-              <UiInput v-model="form.clinic_tagline" />
-            </UiField>
-            <UiField label="Phone" :error="form.errors.phone">
-              <UiInput v-model="form.phone" type="tel" />
-            </UiField>
-            <UiField label="Email" :error="form.errors.email">
-              <UiInput v-model="form.email" type="email" />
-            </UiField>
-          </div>
-          <div class="flex justify-end">
-            <UiButton type="submit" :loading="form.processing">Save</UiButton>
-          </div>
-        </UiForm>
-      </UiCard>
+    <div class="max-w-3xl space-y-5">
+      <Breadcrumbs :items="breadcrumbs" />
+      <PageHeader
+        title="Clinic settings"
+        subtitle="Clinic details, address, currency and invoice defaults."
+        icon="building"
+        eyebrow="Settings"
+      />
 
-      <UiCard title="Address">
-        <UiForm @submit="submit">
-          <UiField label="Address line 1"><UiInput v-model="form.address_line_1" /></UiField>
-          <UiField label="Address line 2"><UiInput v-model="form.address_line_2" /></UiField>
-          <div class="grid grid-cols-3 gap-4">
-            <UiField label="City"><UiInput v-model="form.city" /></UiField>
-            <UiField label="State"><UiInput v-model="form.state" /></UiField>
-            <UiField label="Postal code"><UiInput v-model="form.postal_code" /></UiField>
+      <Form :processing="form.processing" @submit="submit">
+        <Card title="Clinic information" subtitle="Public-facing clinic identity.">
+          <div class="space-y-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <Field label="Clinic name" :error="form.errors.clinic_name" required>
+                <Input v-model="form.clinic_name" required />
+              </Field>
+              <Field label="Tagline" :error="form.errors.clinic_tagline">
+                <Input v-model="form.clinic_tagline" />
+              </Field>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <Field label="Phone" :error="form.errors.phone">
+                <Input v-model="form.phone" type="tel" />
+              </Field>
+              <Field label="Email" :error="form.errors.email">
+                <Input v-model="form.email" type="email" />
+              </Field>
+            </div>
           </div>
-          <UiField label="Country (ISO 3166-1 alpha-2)" required>
-            <UiInput v-model="form.country" maxlength="2" required />
-          </UiField>
-          <div class="flex justify-end">
-            <UiButton type="submit" :loading="form.processing">Save</UiButton>
-          </div>
-        </UiForm>
-      </UiCard>
+        </Card>
 
-      <UiCard title="Currency">
-        <UiForm @submit="submit">
-          <div class="grid grid-cols-2 gap-4">
-            <UiField label="Code" required
-              ><UiInput v-model="form.currency_code" maxlength="3" required
-            /></UiField>
-            <UiField label="Symbol" required><UiInput v-model="form.currency_symbol" required /></UiField>
-            <UiField label="Decimals" required>
-              <UiSelect
+        <Card title="Address" subtitle="Where patients and invoices are sent from.">
+          <div class="space-y-4">
+            <Field label="Address line 1">
+              <Input v-model="form.address_line_1" />
+            </Field>
+            <Field label="Address line 2">
+              <Input v-model="form.address_line_2" />
+            </Field>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <Field label="City">
+                <Input v-model="form.city" />
+              </Field>
+              <Field label="State">
+                <Input v-model="form.state" />
+              </Field>
+              <Field label="Postal code">
+                <Input v-model="form.postal_code" />
+              </Field>
+            </div>
+            <Field label="Country (ISO 3166-1 alpha-2)" required>
+              <Input v-model="form.country" maxlength="2" required />
+            </Field>
+          </div>
+        </Card>
+
+        <Card title="Currency" subtitle="How amounts and invoices are formatted.">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Field label="Code" required>
+              <Input v-model="form.currency_code" maxlength="3" required />
+            </Field>
+            <Field label="Symbol" required>
+              <Input v-model="form.currency_symbol" required />
+            </Field>
+            <Field label="Decimals" required>
+              <Select
                 v-model="form.currency_decimals"
                 :options="[
                   { label: '0', value: 0 },
@@ -100,25 +123,61 @@ function submit() {
                   { label: '4', value: 4 },
                 ]"
               />
-            </UiField>
-            <UiField label="Position" required>
-              <UiSelect
+            </Field>
+            <Field label="Position" required>
+              <Select
                 v-model="form.currency_position"
                 :options="[
                   { label: 'Before (৳100)', value: 'before' },
                   { label: 'After (100৳)', value: 'after' },
                 ]"
               />
-            </UiField>
-            <UiField label="Default tax rate (%)" :error="form.errors.default_tax_rate">
-              <UiInput v-model="form.default_tax_rate" type="number" step="0.01" min="0" max="100" />
-            </UiField>
+            </Field>
+            <Field label="Default tax rate (%)" :error="form.errors.default_tax_rate">
+              <Input v-model="form.default_tax_rate" type="number" step="0.01" min="0" max="100" />
+            </Field>
+            <Field label="Timezone">
+              <Input v-model="form.timezone" placeholder="e.g. Asia/Dhaka" />
+            </Field>
           </div>
-          <div class="flex justify-end">
-            <UiButton type="submit" :loading="form.processing">Save</UiButton>
+        </Card>
+
+        <Card title="Invoices & scheduling" subtitle="Numbering and appointment defaults.">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Field label="Invoice prefix" :error="form.errors.invoice_prefix">
+              <Input v-model="form.invoice_prefix" />
+            </Field>
+            <Field label="Next invoice number" :error="form.errors.next_invoice_number">
+              <Input v-model="form.next_invoice_number" type="number" min="1" />
+            </Field>
+            <Field label="Appointment slot (minutes)">
+              <Input v-model="form.appointment_slot_minutes" type="number" min="5" max="240" />
+            </Field>
+            <Field label="Fiscal year start (MM-DD)">
+              <Input v-model="form.fiscal_year_start" placeholder="01-01" />
+            </Field>
+            <Field label="Date format">
+              <Input v-model="form.date_format" placeholder="Y-m-d" />
+            </Field>
+            <Field label="Time format">
+              <Input v-model="form.time_format" placeholder="H:i" />
+            </Field>
           </div>
-        </UiForm>
-      </UiCard>
+        </Card>
+
+        <div class="flex items-center justify-end gap-2 pt-2">
+          <Link href="/settings">
+            <Button variant="outline">Cancel</Button>
+          </Link>
+          <Button
+            type="submit"
+            :loading="form.processing"
+            icon-right="check"
+          >
+            Save settings
+          </Button>
+        </div>
+      </Form>
     </div>
   </AuthenticatedLayout>
 </template>

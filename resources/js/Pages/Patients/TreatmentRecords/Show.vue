@@ -1,33 +1,57 @@
 <script setup>
 import { Head, Link, router } from '@inertiajs/vue3'
 import AuthenticatedLayout from '@/Layouts/Authenticated.vue'
-import UiCard from '@/Components/ui/Card.vue'
-import UiBadge from '@/Components/ui/Badge.vue'
-import UiButton from '@/Components/ui/Button.vue'
+import PageHeader from '@/Components/ui/PageHeader.vue'
+import Card from '@/Components/ui/Card.vue'
+import Badge from '@/Components/ui/Badge.vue'
+import Button from '@/Components/ui/Button.vue'
+import Breadcrumbs from '@/Components/ui/Breadcrumbs.vue'
 import { useCurrentUser } from '@/Composables/useCurrentUser.js'
+import { useConfirm } from '@/Composables/useConfirm.js'
 
 const props = defineProps({
   patient: Object,
   record: Object,
 })
 
+const record = props.record
+
+const patient = props.patient
+
 const { can } = useCurrentUser()
+const confirm = useConfirm()
 
 function fmtDate(s) {
   if (!s) return '—'
   return new Date(s).toLocaleDateString()
 }
 
+function recordClass(s) {
+  if (s === 'completed') return 'success'
+  if (s === 'cancelled') return 'danger'
+  return 'warning'
+}
+
 function complete() {
-  if (confirm('Mark this record as completed?')) {
-    router.post(`/patients/${props.patient.id}/treatment-records/${props.record.id}/complete`)
-  }
+  confirm.require({
+    header: 'Mark record as completed?',
+    message: 'This will close the record and stop the in-progress status.',
+    acceptLabel: 'Mark completed',
+    acceptClass: 'btn-primary',
+    accept: () =>
+      router.post(`/patients/${props.patient.id}/treatment-records/${props.record.id}/complete`),
+  })
 }
 
 function cancel() {
-  if (confirm('Cancel this treatment record?')) {
-    router.post(`/patients/${props.patient.id}/treatment-records/${props.record.id}/cancel`)
-  }
+  confirm.require({
+    header: 'Cancel this record?',
+    message: 'The treatment record will be marked as cancelled.',
+    acceptLabel: 'Cancel record',
+    acceptClass: 'btn-error',
+    accept: () =>
+      router.post(`/patients/${props.patient.id}/treatment-records/${props.record.id}/cancel`),
+  })
 }
 
 const toothEntries = () => {
@@ -35,96 +59,158 @@ const toothEntries = () => {
   if (!tc || typeof tc !== 'object') return []
   return Object.entries(tc)
 }
+
+const STATUS_LABELS = {
+  healthy: 'Healthy',
+  caries: 'Caries',
+  filled: 'Filled',
+  crown: 'Crown',
+  missing: 'Missing',
+  extraction_needed: 'Extraction needed',
+}
+
+const STATUS_TONE = {
+  healthy: 'success',
+  caries: 'danger',
+  filled: 'primary',
+  crown: 'warning',
+  missing: 'neutral',
+  extraction_needed: 'danger',
+}
+
+const breadcrumbs = [
+  { label: 'Patients', href: '/patients' },
+  { label: patient.name, href: `/patients/${patient.id}` },
+  { label: 'Treatment records', href: `/patients/${patient.id}/treatment-records` },
+  { label: fmtDate(record.visited_at) },
+]
 </script>
 
 <template>
   <Head :title="`Record — ${patient.name}`" />
   <AuthenticatedLayout>
-    <div class="space-y-4 max-w-4xl">
-      <div class="flex items-center justify-between">
-        <div>
-          <Link :href="`/patients/${patient.id}`" class="text-sm text-base-content/70 hover:text-primary">
-            {{ patient.name }}
-          </Link>
-          <h2 class="text-xl font-semibold text-base-content mt-1">
-            Treatment record — {{ fmtDate(record.visited_at) }}
-          </h2>
-          <p class="text-xs text-base-content/70 font-mono">{{ patient.patient_code }}</p>
-        </div>
-        <div class="flex gap-2">
+    <div class="space-y-5 max-w-5xl">
+      <Breadcrumbs :items="breadcrumbs" />
+
+      <PageHeader
+        :title="`Record — ${fmtDate(record.visited_at)}`"
+        :subtitle="`${patient.name} · ${patient.patient_code}`"
+        icon="stethoscope"
+        :eyebrow="`Treatment record · ${record.status_label || ''}`"
+      >
+        <template #actions>
+          <Badge :variant="recordClass(record.status)" dot>
+            {{ record.status_label }}
+          </Badge>
           <Link v-if="can('view-treatment-records')" :href="`/patients/${patient.id}/treatment-records`">
-            <UiButton variant="secondary">All records</UiButton>
+            <Button variant="outline" icon="list">All records</Button>
           </Link>
-          <Link v-if="can('manage-treatment-records') && record.is_editable" :href="`/patients/${patient.id}/treatment-records/${record.id}/edit`">
-            <UiButton>Edit</UiButton>
+          <Link
+            v-if="can('manage-treatment-records') && record.is_editable"
+            :href="`/patients/${patient.id}/treatment-records/${record.id}/edit`"
+          >
+            <Button variant="outline" icon="edit">Edit</Button>
           </Link>
-          <UiButton
+          <Button
             v-if="can('manage-treatment-records') && record.status === 'in_progress'"
-            variant="secondary"
+            icon-right="check"
             @click="complete"
           >
             Mark completed
-          </UiButton>
-          <UiButton
+          </Button>
+          <Button
             v-if="can('manage-treatment-records') && record.status !== 'cancelled'"
-            variant="secondary"
+            variant="danger"
+            icon="x"
             @click="cancel"
           >
             Cancel
-          </UiButton>
-        </div>
-      </div>
+          </Button>
+        </template>
+      </PageHeader>
 
-      <UiCard title="Visit details">
-        <div class="grid grid-cols-2 gap-3 text-sm">
-          <div><span class="text-base-content/70">Visit date:</span> {{ fmtDate(record.visited_at) }}</div>
-          <div><span class="text-base-content/70">Doctor:</span>
-            <span v-if="record.doctor_name" class="inline-flex items-center gap-2">
-              <span class="inline-block h-2 w-2 rounded-full" :style="{ backgroundColor: record.doctor_color }" />
-              {{ record.doctor_name }}
-            </span>
-            <span v-else>—</span>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <Card title="Visit details">
+          <dl class="grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
+            <div>
+              <dt class="text-(--color-muted)">Visit date</dt>
+              <dd class="font-medium mt-0.5">{{ fmtDate(record.visited_at) }}</dd>
+            </div>
+            <div>
+              <dt class="text-(--color-muted)">Doctor</dt>
+              <dd class="font-medium mt-0.5">
+                <span v-if="record.doctor_name" class="inline-flex items-center gap-2">
+                  <span
+                    class="h-2.5 w-2.5 rounded-full ring-2 ring-base-100"
+                    :style="{ backgroundColor: record.doctor_color }"
+                  />
+                  {{ record.doctor_name }}
+                </span>
+                <span v-else>—</span>
+              </dd>
+            </div>
+            <div>
+              <dt class="text-(--color-muted)">Status</dt>
+              <dd class="mt-0.5">
+                <Badge :variant="recordClass(record.status)" dot>
+                  {{ record.status_label }}
+                </Badge>
+              </dd>
+            </div>
+            <div>
+              <dt class="text-(--color-muted)">Follow-up</dt>
+              <dd class="font-medium mt-0.5">{{ fmtDate(record.follow_up_date) }}</dd>
+            </div>
+            <div v-if="record.appointment_id" class="col-span-2">
+              <dt class="text-(--color-muted)">Linked appointment</dt>
+              <dd class="mt-0.5">
+                <Link
+                  :href="`/appointments/${record.appointment_id}`"
+                  class="app-link"
+                >
+                  #{{ record.appointment_id }}
+                </Link>
+              </dd>
+            </div>
+          </dl>
+        </Card>
+
+        <Card title="Tooth chart">
+          <div v-if="toothEntries().length === 0" class="text-sm text-(--color-muted) py-4 text-center">
+            No teeth marked.
           </div>
-          <div><span class="text-base-content/70">Status:</span>
-            <UiBadge :variant="record.status === 'completed' ? 'success' : record.status === 'cancelled' ? 'danger' : 'warning'">
-              {{ record.status_label }}
-            </UiBadge>
-          </div>
-          <div><span class="text-base-content/70">Follow-up:</span> {{ fmtDate(record.follow_up_date) }}</div>
-          <div v-if="record.appointment_id" class="col-span-2">
-            <span class="text-base-content/70">Linked appointment:</span>
-            <Link :href="`/appointments/${record.appointment_id}`" class="text-primary hover:underline ml-1">#{{ record.appointment_id }}</Link>
-          </div>
-        </div>
-      </UiCard>
-
-      <UiCard title="Chief complaint">
-        <p class="whitespace-pre-wrap text-sm">{{ record.chief_complaint || '—' }}</p>
-      </UiCard>
-
-      <UiCard title="Diagnosis">
-        <p class="whitespace-pre-wrap text-sm">{{ record.diagnosis || '—' }}</p>
-      </UiCard>
-
-      <UiCard title="Treatment notes">
-        <p class="whitespace-pre-wrap text-sm">{{ record.treatment_notes || '—' }}</p>
-      </UiCard>
-
-      <UiCard title="Tooth chart">
-        <div v-if="toothEntries().length === 0" class="text-sm text-base-content/70">No teeth marked.</div>
-        <div v-else>
-          <div class="flex flex-wrap gap-2">
+          <div v-else class="flex flex-wrap gap-2">
             <div
               v-for="[num, status] in toothEntries()"
               :key="num"
-              class="rounded-md border border-base-300 bg-base-200 px-3 py-2 text-xs"
+              class="rounded-lg border border-(--color-line) bg-base-100 px-3 py-2 text-xs flex flex-col gap-1 min-w-24"
             >
-              <div class="font-mono font-semibold">Tooth {{ num }}</div>
-              <div class="text-base-content/70">{{ status }}</div>
+              <div class="font-mono font-semibold text-base-content">Tooth {{ num }}</div>
+              <Badge :variant="STATUS_TONE[status] || 'neutral'" size="sm">
+                {{ STATUS_LABELS[status] || status }}
+              </Badge>
             </div>
           </div>
-        </div>
-      </UiCard>
+        </Card>
+      </div>
+
+      <Card title="Chief complaint">
+        <p class="whitespace-pre-wrap text-sm text-base-content">
+          {{ record.chief_complaint || '—' }}
+        </p>
+      </Card>
+
+      <Card title="Diagnosis">
+        <p class="whitespace-pre-wrap text-sm text-base-content">
+          {{ record.diagnosis || '—' }}
+        </p>
+      </Card>
+
+      <Card title="Treatment notes">
+        <p class="whitespace-pre-wrap text-sm text-base-content">
+          {{ record.treatment_notes || '—' }}
+        </p>
+      </Card>
     </div>
   </AuthenticatedLayout>
 </template>

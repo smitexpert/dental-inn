@@ -33,10 +33,17 @@ class AppointmentController extends Controller
             request()->integer('per_page', 25),
             request()->only(['q', 'doctor_id', 'status', 'from', 'to']),
         );
-        $page->setCollection(AppointmentResource::collection($page->getCollection())->collection);
 
         return Inertia::render('Appointments/Index', [
-            'appointments' => $page,
+            'appointments' => [
+                'data' => AppointmentResource::collection($page->getCollection())->resolve(),
+                'current_page' => $page->currentPage(),
+                'last_page' => $page->lastPage(),
+                'per_page' => $page->perPage(),
+                'total' => $page->total(),
+                'from' => $page->firstItem(),
+                'to' => $page->lastItem(),
+            ],
             'doctors' => $this->doctors->listActive(),
             'statuses' => AppointmentStatus::cases(),
             'filters' => request()->only(['q', 'doctor_id', 'status', 'from', 'to']),

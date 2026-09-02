@@ -27,10 +27,17 @@ class PatientController extends Controller
             request()->integer('per_page', 25),
             request()->only(['q', 'is_active']),
         );
-        $page->setCollection(PatientResource::collection($page->getCollection())->collection);
 
         return Inertia::render('Patients/Index', [
-            'patients' => $page,
+            'patients' => [
+                'data' => PatientResource::collection($page->getCollection())->resolve(),
+                'current_page' => $page->currentPage(),
+                'last_page' => $page->lastPage(),
+                'per_page' => $page->perPage(),
+                'total' => $page->total(),
+                'from' => $page->firstItem(),
+                'to' => $page->lastItem(),
+            ],
             'filters' => request()->only(['q', 'is_active']),
         ]);
     }

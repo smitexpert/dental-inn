@@ -24,12 +24,17 @@ class DoctorController extends Controller
             request()->integer('per_page', 15),
             request()->only(['q', 'specialization']),
         );
-        $page->setCollection(
-            DoctorResource::collection($page->getCollection())->collection,
-        );
 
         return Inertia::render('Doctors/Index', [
-            'doctors' => $page,
+            'doctors' => [
+                'data' => DoctorResource::collection($page->getCollection())->resolve(),
+                'current_page' => $page->currentPage(),
+                'last_page' => $page->lastPage(),
+                'per_page' => $page->perPage(),
+                'total' => $page->total(),
+                'from' => $page->firstItem(),
+                'to' => $page->lastItem(),
+            ],
             'specializations' => Doctor::query()
                 ->whereNotNull('specialization')
                 ->distinct()

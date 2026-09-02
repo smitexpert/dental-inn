@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreUserRequest;
 use App\Http\Requests\Admin\UpdateUserRequest;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Repositories\Contracts\UserRepository;
 use Illuminate\Http\RedirectResponse;
@@ -20,8 +21,21 @@ class UserController extends Controller
 
     public function index(): Response
     {
+        $page = $this->users->paginate(
+            request()->integer('per_page', 15),
+            request()->only(['q', 'role']),
+        );
+
         return Inertia::render('Admin/Users/Index', [
-            'users' => $this->users->paginate(request()->integer('per_page', 15), request()->only(['q', 'role'])),
+            'users' => [
+                'data' => UserResource::collection($page->getCollection())->resolve(),
+                'current_page' => $page->currentPage(),
+                'last_page' => $page->lastPage(),
+                'per_page' => $page->perPage(),
+                'total' => $page->total(),
+                'from' => $page->firstItem(),
+                'to' => $page->lastItem(),
+            ],
             'roles' => Role::pluck('name'),
             'filters' => request()->only(['q', 'role']),
         ]);

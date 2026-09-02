@@ -1,8 +1,12 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3'
 import AuthenticatedLayout from '@/Layouts/Authenticated.vue'
-import UiCard from '@/Components/ui/Card.vue'
-import UiBadge from '@/Components/ui/Badge.vue'
+import PageHeader from '@/Components/ui/PageHeader.vue'
+import Card from '@/Components/ui/Card.vue'
+import Badge from '@/Components/ui/Badge.vue'
+import Button from '@/Components/ui/Button.vue'
+import EmptyState from '@/Components/ui/EmptyState.vue'
+import Icon from '@/Components/ui/Icon.vue'
 
 const props = defineProps({ products: Object })
 </script>
@@ -10,48 +14,71 @@ const props = defineProps({ products: Object })
 <template>
   <Head title="Inventory — Low stock" />
   <AuthenticatedLayout>
-    <UiCard>
-      <template #header>
-        <div class="flex items-center justify-between gap-3">
-          <h3 class="text-base font-semibold text-base-content">Low stock products</h3>
-          <Link href="/inventory/products" class="text-sm text-primary hover:text-primary">All products →</Link>
+    <div class="space-y-5">
+      <PageHeader
+        title="Low stock"
+        subtitle="Products whose minimum stock across all locations is at or below their reorder level."
+        icon="alert-triangle"
+        eyebrow="Inventory"
+      >
+        <template #actions>
+          <Link href="/inventory/products">
+            <Button variant="outline" icon="boxes">All products</Button>
+          </Link>
+        </template>
+      </PageHeader>
+
+      <Card :padded="false">
+        <div class="overflow-x-auto">
+          <table class="app-table">
+            <thead>
+              <tr>
+                <th class="w-32">SKU</th>
+                <th>Name</th>
+                <th class="w-32 text-right">Min stock</th>
+                <th class="w-28 text-right">Reorder</th>
+                <th class="w-32 text-right">Suggested qty</th>
+                <th class="w-32 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="p in products.data" :key="p.id">
+                <td class="font-mono text-xs text-(--color-muted)">{{ p.sku }}</td>
+                <td>
+                  <Link :href="`/inventory/products/${p.id}`" class="font-medium text-base-content hover:text-primary transition-colors">
+                    {{ p.name }}
+                  </Link>
+                </td>
+                <td class="text-right">
+                  <Badge variant="danger">
+                    {{ p.lowest_quantity }} {{ p.unit?.shortLabel?.() ?? '' }}
+                  </Badge>
+                </td>
+                <td class="text-right text-(--color-muted)">{{ p.reorder_level }}</td>
+                <td class="text-right text-(--color-muted)">{{ p.reorder_quantity }}</td>
+                <td class="text-right">
+                  <div class="inline-flex items-center gap-1">
+                    <Link :href="`/inventory/products/${p.id}`" class="p-1.5 rounded-md text-(--color-muted) hover:bg-base-200 hover:text-primary transition-colors" :aria-label="`View ${p.name}`" :title="`View ${p.name}`">
+                      <Icon name="eye" size="sm" />
+                    </Link>
+                    <a href="#" class="p-1.5 rounded-md text-(--color-muted) hover:bg-base-200 hover:text-primary transition-colors" title="Auto-reorder coming soon" :aria-label="`Create purchase order for ${p.name}`">
+                      <Icon name="send" size="sm" />
+                    </a>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <EmptyState
+            v-if="products.data.length === 0"
+            icon="check-circle"
+            tone="success"
+            title="All stocked up"
+            description="Every product is currently above its reorder threshold."
+          />
         </div>
-      </template>
-      <p class="text-xs text-base-content/70 mb-4">
-        Showing products whose minimum stock across all locations is at or below their reorder level.
-      </p>
-      <table class="w-full text-sm">
-        <thead class="bg-base-200 text-base-content/70">
-          <tr>
-            <th class="text-left px-4 py-2">SKU</th>
-            <th class="text-left px-4 py-2">Name</th>
-            <th class="text-right px-4 py-2">Min stock</th>
-            <th class="text-right px-4 py-2">Reorder</th>
-            <th class="text-right px-4 py-2">Suggested qty</th>
-            <th class="text-right px-4 py-2">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="p in products.data" :key="p.id" class="border-b border-base-300 last:border-b-0">
-            <td class="px-4 py-2 text-base-content/70 font-mono text-xs">{{ p.sku }}</td>
-            <td class="px-4 py-2 text-base-content font-medium">{{ p.name }}</td>
-            <td class="px-4 py-2 text-right">
-              <UiBadge variant="danger">{{ p.lowest_quantity }} {{ p.unit?.shortLabel?.() ?? '' }}</UiBadge>
-            </td>
-            <td class="px-4 py-2 text-right text-base-content/70">{{ p.reorder_level }}</td>
-            <td class="px-4 py-2 text-right text-base-content/70">{{ p.reorder_quantity }}</td>
-            <td class="px-4 py-2 text-right">
-              <Link :href="`/inventory/products/${p.id}`" class="text-primary hover:text-primary mr-3 text-sm">View</Link>
-              <a href="#" class="text-base-content/70 text-sm" title="Auto-reorder coming in sub-project 6">Create PO</a>
-            </td>
-          </tr>
-          <tr v-if="products.data.length === 0">
-            <td colspan="6" class="text-center text-base-content/70 py-6">
-              All products are above their reorder threshold.
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </UiCard>
+      </Card>
+    </div>
   </AuthenticatedLayout>
 </template>

@@ -53,7 +53,7 @@ function destroy(id) {
           />
         </div>
         <div class="overflow-x-auto">
-          <table class="w-full text-sm">
+          <table class="app-table">
             <thead class="bg-base-200 text-base-content/70">
               <tr>
                 <th class="text-left px-4 py-2">Key</th>
@@ -71,11 +71,11 @@ function destroy(id) {
               >
                 <td class="px-4 py-2 text-base-content font-mono">{{ t.key }}</td>
                 <td class="px-4 py-2">
-                  <UiBadge variant="secondary">{{ t.channel }}</UiBadge>
+                  <UiBadge variant="neutral">{{ t.channel }}</UiBadge>
                 </td>
                 <td class="px-4 py-2 text-base-content/70">{{ t.subject || '—' }}</td>
                 <td class="px-4 py-2">
-                  <UiBadge :variant="t.is_active ? 'success' : 'secondary'">
+                  <UiBadge :variant="t.is_active ? 'success' : 'neutral'">
                     {{ t.is_active ? 'Active' : 'Inactive' }}
                   </UiBadge>
                 </td>

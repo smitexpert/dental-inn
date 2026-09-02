@@ -101,7 +101,7 @@ function fmtDateTime(s) {
       <UiCard title="Appointments">
         <div v-if="appointments.length === 0" class="text-sm text-base-content/70">No appointments yet.</div>
         <div v-else class="overflow-x-auto">
-          <table class="w-full text-sm">
+          <table class="app-table">
             <thead class="bg-base-200 text-base-content/70">
               <tr>
                 <th class="text-left px-4 py-2">When</th>

@@ -1,9 +1,14 @@
 <script setup>
-import { Head, Link } from '@inertiajs/vue3'
+import { Head, Link, router } from '@inertiajs/vue3'
 import AuthenticatedLayout from '@/Layouts/Authenticated.vue'
-import UiCard from '@/Components/ui/Card.vue'
-import UiBadge from '@/Components/ui/Badge.vue'
-import UiButton from '@/Components/ui/Button.vue'
+import PageHeader from '@/Components/ui/PageHeader.vue'
+import Card from '@/Components/ui/Card.vue'
+import Badge from '@/Components/ui/Badge.vue'
+import Button from '@/Components/ui/Button.vue'
+import EmptyState from '@/Components/ui/EmptyState.vue'
+import Pagination from '@/Components/ui/Pagination.vue'
+import Breadcrumbs from '@/Components/ui/Breadcrumbs.vue'
+import Icon from '@/Components/ui/Icon.vue'
 import { useCurrentUser } from '@/Composables/useCurrentUser.js'
 
 const props = defineProps({
@@ -11,86 +16,123 @@ const props = defineProps({
   records: Object,
 })
 
+const patient = props.patient
+
 const { can } = useCurrentUser()
 
 function fmtDate(s) {
   if (!s) return '—'
   return new Date(s).toLocaleDateString()
 }
+
+function recordClass(s) {
+  if (s === 'completed') return 'success'
+  if (s === 'cancelled') return 'danger'
+  return 'warning'
+}
+
+function goPage(n) {
+  router.get(`/patients/${patient.id}/treatment-records?page=${n}`, {}, { preserveState: true })
+}
+
+const breadcrumbs = [
+  { label: 'Patients', href: '/patients' },
+  { label: patient.name, href: `/patients/${patient.id}` },
+  { label: 'Treatment records' },
+]
 </script>
 
 <template>
   <Head :title="`Treatment records — ${patient.name}`" />
   <AuthenticatedLayout>
-    <div class="space-y-4 max-w-5xl">
-      <div class="flex items-center justify-between">
-        <div>
-          <Link href="/patients" class="text-sm text-base-content/70 hover:text-primary">Patients</Link>
-          <h2 class="text-xl font-semibold text-base-content mt-1">
-            Treatment records — {{ patient.name }}
-          </h2>
-          <p class="text-sm text-base-content/70 font-mono">{{ patient.patient_code }}</p>
-        </div>
-        <div class="flex gap-2">
-          <Link :href="`/patients/${patient.id}`"><UiButton variant="secondary">Back to profile</UiButton></Link>
-          <Link v-if="can('manage-treatment-records')" :href="`/patients/${patient.id}/treatment-records/create`">
-            <UiButton>New treatment record</UiButton>
-          </Link>
-        </div>
-      </div>
+    <div class="space-y-5 max-w-5xl">
+      <Breadcrumbs :items="breadcrumbs" />
 
-      <UiCard title="Records">
-        <div v-if="records.data.length === 0" class="text-sm text-base-content/70 py-6 text-center">
-          No treatment records for this patient yet.
-        </div>
-        <div v-else class="overflow-x-auto">
-          <table class="w-full text-sm">
-            <thead class="bg-base-200 text-base-content/70">
+      <PageHeader
+        :title="`Treatment records`"
+        :subtitle="`${patient.name} · ${patient.patient_code}`"
+        icon="stethoscope"
+        eyebrow="Clinical history"
+      >
+        <template #actions>
+          <Link :href="`/patients/${patient.id}`">
+            <Button variant="outline" icon="arrow-left">Back to profile</Button>
+          </Link>
+          <Link v-if="can('manage-treatment-records')" :href="`/patients/${patient.id}/treatment-records/create`">
+            <Button icon="plus">New treatment record</Button>
+          </Link>
+        </template>
+      </PageHeader>
+
+      <Card :padded="false">
+        <div class="overflow-x-auto">
+          <table class="app-table">
+            <thead>
               <tr>
-                <th class="text-left px-4 py-2">Date</th>
-                <th class="text-left px-4 py-2">Chief complaint</th>
-                <th class="text-left px-4 py-2">Doctor</th>
-                <th class="text-left px-4 py-2">Status</th>
-                <th class="text-right px-4 py-2">Action</th>
+                <th class="w-32">Date</th>
+                <th>Chief complaint</th>
+                <th>Doctor</th>
+                <th class="w-36">Status</th>
+                <th class="w-24 text-right">Action</th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="r in records.data" :key="r.id" class="border-b border-base-300 last:border-b-0">
-                <td class="px-4 py-2">{{ fmtDate(r.visited_at) }}</td>
-                <td class="px-4 py-2 text-base-content font-medium">{{ r.chief_complaint || '—' }}</td>
-                <td class="px-4 py-2 text-base-content/70">{{ r.doctor_name || '—' }}</td>
-                <td class="px-4 py-2">
-                  <UiBadge :variant="r.status === 'completed' ? 'success' : r.status === 'cancelled' ? 'danger' : 'warning'">
-                    {{ r.status_label }}
-                  </UiBadge>
+              <tr v-for="r in records.data" :key="r.id">
+                <td class="text-(--color-muted)">{{ fmtDate(r.visited_at) }}</td>
+                <td class="font-medium">{{ r.chief_complaint || '—' }}</td>
+                <td>
+                  <span v-if="r.doctor_name" class="inline-flex items-center gap-2">
+                    <span
+                      class="h-2.5 w-2.5 rounded-full ring-2 ring-base-100"
+                      :style="{ backgroundColor: r.doctor_color }"
+                    />
+                    {{ r.doctor_name }}
+                  </span>
+                  <span v-else class="text-(--color-muted)">—</span>
                 </td>
-                <td class="px-4 py-2 text-right">
+                <td>
+                  <Badge :variant="recordClass(r.status)" dot>
+                    {{ r.status_label }}
+                  </Badge>
+                </td>
+                <td class="text-right">
                   <Link
                     :href="`/patients/${patient.id}/treatment-records/${r.id}`"
-                    class="text-primary hover:text-primary text-sm"
-                    >View</Link
+                    class="p-1.5 rounded-md text-(--color-muted) hover:bg-base-200 hover:text-primary transition-colors inline-flex"
+                    :aria-label="`View record`"
+                    title="View"
                   >
+                    <Icon name="eye" size="sm" />
+                  </Link>
                 </td>
               </tr>
             </tbody>
           </table>
-        </div>
-        <div
-          v-if="records.last_page > 1"
-          class="mt-3 flex items-center justify-between text-sm text-base-content/70"
-        >
-          <span>Page {{ records.current_page }} of {{ records.last_page }}</span>
-          <div class="flex gap-1">
-            <template v-for="link in records.links" :key="link.label">
-              <Link
-                v-if="link.url"
-                :href="link.url"
-                class="px-2 py-1 rounded hover:bg-base-200"
-                ><!-- eslint-disable-next-line vue/no-v-text-v-html-on-component --><span v-html="link.label" /></Link>
+
+          <EmptyState
+            v-if="records.data.length === 0"
+            icon="stethoscope"
+            title="No treatment records yet"
+            description="Record clinical visits, diagnoses, and treatment plans."
+          >
+            <template #action>
+              <Link v-if="can('manage-treatment-records')" :href="`/patients/${patient.id}/treatment-records/create`">
+                <Button icon="plus">New record</Button>
+              </Link>
             </template>
-          </div>
+          </EmptyState>
         </div>
-      </UiCard>
+
+        <div class="px-5 pb-4">
+          <Pagination
+            :current-page="records.current_page"
+            :last-page="records.last_page"
+            :total="records.total"
+            :per-page="records.per_page"
+            @page="goPage"
+          />
+        </div>
+      </Card>
     </div>
   </AuthenticatedLayout>
 </template>

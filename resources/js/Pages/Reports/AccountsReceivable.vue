@@ -52,7 +52,7 @@ watch(asOf, () => {
       </div>
 
       <UiCard title="Outstanding invoices">
-        <table class="w-full text-sm">
+        <table class="app-table">
           <thead class="border-b border-base-300 text-left text-base-content/70">
             <tr>
               <th class="py-2 pr-3">Invoice</th>
@@ -78,7 +78,7 @@ watch(asOf, () => {
               </td>
               <td class="py-2 pr-3 whitespace-nowrap">{{ row.invoice_date }}</td>
               <td class="py-2 pr-3 whitespace-nowrap">{{ row.due_date }}</td>
-              <td class="py-2 pr-3"><UiBadge variant="secondary">{{ row.status }}</UiBadge></td>
+              <td class="py-2 pr-3"><UiBadge variant="neutral">{{ row.status }}</UiBadge></td>
               <td class="py-2 pr-3 text-right tabular-nums">{{ format(row.total) }}</td>
               <td class="py-2 pr-3 text-right tabular-nums">{{ format(row.paid_amount) }}</td>
               <td class="py-2 pr-3 text-right tabular-nums font-semibold">{{ format(row.balance) }}</td>

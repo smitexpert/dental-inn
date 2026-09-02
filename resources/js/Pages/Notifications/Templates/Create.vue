@@ -32,7 +32,7 @@ function submit() {
           <div class="grid grid-cols-2 gap-3">
             <div>
               <label class="block text-sm font-medium mb-1 text-base-content">Key</label>
-              <UiInput v-model="form.key" placeholder="e.g. appt-confirmation-sms" :error="form.errors.key" required />
+              <UiInput v-model="form.key" placeholder="e.g. appt-confirmation-sms" :invalid="!!form.errors.key" required />
             </div>
             <div>
               <label class="block text-sm font-medium mb-1 text-base-content">Channel</label>
@@ -45,11 +45,11 @@ function submit() {
           </div>
           <div>
             <label class="block text-sm font-medium mb-1 text-base-content">Subject (email only)</label>
-            <UiInput v-model="form.subject" :error="form.errors.subject" />
+            <UiInput v-model="form.subject" :invalid="!!form.errors.subject" />
           </div>
           <div>
             <label class="block text-sm font-medium mb-1 text-base-content">Body</label>
-            <UiTextarea v-model="form.body" rows="6" :error="form.errors.body" required />
+            <UiTextarea v-model="form.body" rows="6" :invalid="!!form.errors.body" required />
             <p class="mt-1 text-xs text-base-content/70">
               Use double-curly-brace placeholders like <code>{{ '{' }} {{ '{' }} key {{ '}' }} {{ '}' }}</code>. Undefined variables cause send to fail with a warning.
             </p>
@@ -57,7 +57,7 @@ function submit() {
           <div class="grid grid-cols-2 gap-3">
             <div>
               <label class="block text-sm font-medium mb-1 text-base-content">Locale</label>
-              <UiInput v-model="form.locale" :error="form.errors.locale" required />
+              <UiInput v-model="form.locale" :invalid="!!form.errors.locale" required />
             </div>
             <label class="flex items-center gap-2 mt-7">
               <input type="checkbox" v-model="form.is_active" class="rounded border-base-300" />

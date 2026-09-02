@@ -1,7 +1,13 @@
 <script setup>
+/**
+ * Textarea
+ * --------
+ * Multi-line text input with `.input-shell` styling and a min-height that
+ * prevents collapse for short content.
+ */
 defineProps({
   modelValue: { type: String, default: '' },
-  rows: { type: Number, default: 4 },
+  rows: { type: Number, default: 3 },
   placeholder: { type: String, default: '' },
   disabled: { type: Boolean, default: false },
   invalid: { type: Boolean, default: false },
@@ -16,8 +22,7 @@ defineEmits(['update:modelValue'])
     :value="modelValue"
     :placeholder="placeholder"
     :disabled="disabled"
-    class="textarea textarea-bordered w-full"
-    :class="invalid ? 'textarea-error' : ''"
+    :class="['input-shell min-h-20 resize-y w-full', invalid ? 'input-shell-error' : '']"
     @input="$emit('update:modelValue', $event.target.value)"
   />
 </template>

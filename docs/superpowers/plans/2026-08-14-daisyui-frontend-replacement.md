@@ -1,6 +1,6 @@
 # DaisyUI Frontend Replacement Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Replace the PrimeVue-based UI with a DaisyUI-only design system, delivered as 11 independently shippable vertical slices. End state: no PrimeVue in the codebase; `corporate` (light) + `business` (dark) DaisyUI themes; all 40+ pages and 15+ UI components migrated.
 
@@ -90,11 +90,11 @@ Each domain slice replaces PrimeVue imports/tags in the listed pages with the ne
 **Files:**
 - Modify: `package.json`
 
-- [ ] **Step 1: Add DaisyUI 5 dependency**
+- [x] **Step 1: Add DaisyUI 5 dependency**
 
 Edit `package.json` `dependencies` block. Add `"daisyui": "^5.0.0"` to `dependencies`. Remove the three PrimeVue entries (`@primeuix/themes`, `@primevue/themes`, `primevue`) entirely. Final `dependencies` block should list: `@inertiajs/vue3`, `daisyui`, `@vueuse/core`, `date-fns`, `date-fns-tz`, `vue`, `ziggy-js`. Keep all `devDependencies` and `optionalDependencies` unchanged.
 
-- [ ] **Step 2: Install + verify lockfile**
+- [x] **Step 2: Install + verify lockfile**
 
 Run: `npm install`
 Expected: completes without errors; `package-lock.json` regenerated.
@@ -102,7 +102,7 @@ Expected: completes without errors; `package-lock.json` regenerated.
 Run: `grep -E '"(primevue|@primevue|@primeuix)"' package-lock.json`
 Expected: no matches.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add package.json package-lock.json
@@ -114,7 +114,7 @@ git commit -m "build(deps): add daisyUI 5, remove primevue and themes"
 **Files:**
 - Modify: `resources/css/app.css`
 
-- [ ] **Step 1: Replace the file contents**
+- [x] **Step 1: Replace the file contents**
 
 Replace the entire file with:
 
@@ -130,7 +130,7 @@ Notes:
 - `business --prefersdark` automatically applies `business` when `prefers-color-scheme: dark` is set, and the `theme-controller` swap on `<html data-theme="...">` overrides it.
 - Existing `--color-primary-*` tokens, `--color-surface`, radii, and font in the old file are dropped — DaisyUI's `corporate`/`business` themes provide them. If `Instrument Sans` must be retained, load it via `@import url('https://fonts.bunny.net/css?family=instrument-sans:400,500,600&display=swap');` in the same file (DaisyUI themes don't bundle fonts). Bunny CDN respects the project's `.npmrc` and avoids Google Fonts.
 
-- [ ] **Step 2: Commit**
+- [x] **Step 2: Commit**
 
 ```bash
 git add resources/css/app.css
@@ -143,18 +143,18 @@ git commit -m "feat(css): switch to daisyUI themes corporate/business, drop prim
 - Delete: `resources/css/primevue-overrides.css`
 - Delete: `resources/js/plugins/primevue.js`
 
-- [ ] **Step 1: Delete files**
+- [x] **Step 1: Delete files**
 
 ```bash
 rm resources/css/primevue-overrides.css resources/js/plugins/primevue.js
 ```
 
-- [ ] **Step 2: Verify no other references**
+- [x] **Step 2: Verify no other references**
 
 Run: `grep -RIn "primevue-overrides\|plugins/primevue" resources/`
 Expected: no matches. (If any match: stop and fix the caller before proceeding.)
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add -u resources/css/primevue-overrides.css resources/js/plugins/primevue.js
@@ -166,7 +166,7 @@ git commit -m "chore: drop primevue overrides css and primevue plugin installer"
 **Files:**
 - Modify: `resources/js/app.js`
 
-- [ ] **Step 1: Remove the import and `.use(installPrimeVue)`**
+- [x] **Step 1: Remove the import and `.use(installPrimeVue)`**
 
 Replace the file with:
 
@@ -194,12 +194,12 @@ createInertiaApp({
 })
 ```
 
-- [ ] **Step 2: Verify build still succeeds**
+- [x] **Step 2: Verify build still succeeds**
 
 Run: `npm run build`
 Expected: succeeds. Pages still import PrimeVue directly today — that's fine, they will be migrated slice-by-slice. Build only verifies the entry chain is valid.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add resources/js/app.js
@@ -211,7 +211,7 @@ git commit -m "refactor(app): remove primevue plugin registration"
 **Files:**
 - Modify: `eslint.config.js`
 
-- [ ] **Step 1: Add `no-restricted-imports` rule**
+- [x] **Step 1: Add `no-restricted-imports` rule**
 
 Locate the rule block in `eslint.config.js` (currently under `rules: { ... }`). Add this entry:
 
@@ -248,12 +248,12 @@ Locate the rule block in `eslint.config.js` (currently under `rules: { ... }`). 
 }],
 ```
 
-- [ ] **Step 2: Run lint — expect failures in pages/components that still import PrimeVue**
+- [x] **Step 2: Run lint — expect failures in pages/components that still import PrimeVue**
 
 Run: `npm run lint`
 Expected: many errors (every page using PrimeVue imports). That's fine — slices 1–10 will fix them.
 
-- [ ] **Step 3: Commit the rule (without fixing all the failures yet)**
+- [x] **Step 3: Commit the rule (without fixing all the failures yet)**
 
 ```bash
 git add eslint.config.js
@@ -265,7 +265,7 @@ git commit -m "chore(eslint): forbid primevue imports in resources/js"
 **Files:**
 - Create: `resources/js/Components/AppShell.vue`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `resources/js/__tests__/Components/AppShell.spec.ts`:
 
@@ -295,12 +295,12 @@ describe('AppShell', () => {
 })
 ```
 
-- [ ] **Step 2: Run test, expect failure**
+- [x] **Step 2: Run test, expect failure**
 
 Run: `npm test -- AppShell`
 Expected: FAIL (component doesn't exist).
 
-- [ ] **Step 3: Implement `AppShell.vue`**
+- [x] **Step 3: Implement `AppShell.vue`**
 
 ```vue
 <script setup lang="ts">
@@ -321,12 +321,12 @@ defineProps<{ theme?: 'corporate' | 'business' }>()
 </template>
 ```
 
-- [ ] **Step 4: Run test, expect pass**
+- [x] **Step 4: Run test, expect pass**
 
 Run: `npm test -- AppShell`
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add resources/js/Components/AppShell.vue resources/js/__tests__/Components/AppShell.spec.ts
@@ -338,7 +338,7 @@ git commit -m "feat(ui): add AppShell drawer+navbar chrome component"
 **Files:**
 - Modify: `resources/js/Layouts/Authenticated.vue`
 
-- [ ] **Step 1: Replace the file**
+- [x] **Step 1: Replace the file**
 
 ```vue
 <script setup lang="ts">
@@ -360,7 +360,7 @@ import TopBar from '@/Components/layout/TopBar.vue'
 </template>
 ```
 
-- [ ] **Step 2: Add snapshot test**
+- [x] **Step 2: Add snapshot test**
 
 Create `resources/js/__tests__/Components/layout/AuthenticatedLayout.spec.ts`:
 
@@ -386,12 +386,12 @@ describe('Authenticated layout', () => {
 })
 ```
 
-- [ ] **Step 3: Run test, expect pass (stub-based)**
+- [x] **Step 3: Run test, expect pass (stub-based)**
 
 Run: `npm test -- AuthenticatedLayout`
 Expected: PASS.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add resources/js/Layouts/Authenticated.vue resources/js/__tests__/Components/layout/AuthenticatedLayout.spec.ts
@@ -403,7 +403,7 @@ git commit -m "refactor(layout): rewrite Authenticated layout with daisyUI drawe
 **Files:**
 - Modify: `resources/js/Layouts/Auth.vue`
 
-- [ ] **Step 1: Replace the file**
+- [x] **Step 1: Replace the file**
 
 ```vue
 <script setup lang="ts">
@@ -421,7 +421,7 @@ onMounted(() => {
 </template>
 ```
 
-- [ ] **Step 2: Commit**
+- [x] **Step 2: Commit**
 
 ```bash
 git add resources/js/Layouts/Auth.vue
@@ -433,7 +433,7 @@ git commit -m "refactor(layout): rewrite Auth layout with daisyUI base"
 **Files:**
 - Modify: `resources/js/Components/layout/Sidebar.vue`
 
-- [ ] **Step 1: Replace the file**
+- [x] **Step 1: Replace the file**
 
 Inspect current `Sidebar.vue` first to preserve the navigation items list (links + permissions). Keep the existing data structure; only swap markup. Final markup uses DaisyUI `menu`:
 
@@ -472,7 +472,7 @@ const visible = computed(() =>
 
 > **Important:** the executor must copy the actual items array and permission checks from the current `Sidebar.vue` rather than using the placeholder shown here. The plan provides the markup pattern, not the data.
 
-- [ ] **Step 2: Commit**
+- [x] **Step 2: Commit**
 
 ```bash
 git add resources/js/Components/layout/Sidebar.vue
@@ -487,7 +487,7 @@ git commit -m "refactor(sidebar): rewrite with daisyUI menu primitives"
 - Modify: `resources/js/Components/layout/UserMenu.vue`
 - Modify: `resources/js/Components/layout/ColorModeToggle.vue`
 
-- [ ] **Step 1: Rewrite `SidebarItem.vue`**
+- [x] **Step 1: Rewrite `SidebarItem.vue`**
 
 Use DaisyUI `menu` item pattern. Active route highlighted via `menu-active`. Preserve existing prop shape (the parent passes an `item` object).
 
@@ -509,7 +509,7 @@ const active = computed(() => route().current(props.item.route + '*'))
 </template>
 ```
 
-- [ ] **Step 2: Rewrite `TopBar.vue`**
+- [x] **Step 2: Rewrite `TopBar.vue`**
 
 Use DaisyUI `navbar`. Preserve breadcrumbs slot and user menu slot. Include the drawer toggle button visible only on mobile (`lg:hidden`).
 
@@ -536,7 +536,7 @@ import UserMenu from './UserMenu.vue'
 </template>
 ```
 
-- [ ] **Step 3: Rewrite `UserMenu.vue`**
+- [x] **Step 3: Rewrite `UserMenu.vue`**
 
 Use DaisyUI `dropdown` + `menu`. Preserve existing logout action.
 
@@ -570,7 +570,7 @@ const logout = () => router.post(route('logout'))
 </template>
 ```
 
-- [ ] **Step 4: Rewrite `ColorModeToggle.vue`**
+- [x] **Step 4: Rewrite `ColorModeToggle.vue`**
 
 Use DaisyUI `theme-controller` swap. The component toggles `data-theme` between `corporate` and `business` on `<html>`.
 
@@ -601,16 +601,16 @@ const toggle = () => {
 </template>
 ```
 
-- [ ] **Step 5: Add snapshot tests for `TopBar` and `UserMenu`**
+- [x] **Step 5: Add snapshot tests for `TopBar` and `UserMenu`**
 
 Create `resources/js/__tests__/Components/layout/TopBar.spec.ts` and `resources/js/__tests__/Components/layout/UserMenu.spec.ts`. Stub `UserMenu` in TopBar test, stub `usePage` in UserMenu test (return a fixed auth user). Assert they render without error.
 
-- [ ] **Step 6: Run new tests**
+- [x] **Step 6: Run new tests**
 
 Run: `npm test -- layout/`
 Expected: PASS.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add resources/js/Components/layout resources/js/__tests__/Components/layout
@@ -622,20 +622,20 @@ git commit -m "refactor(layout): rewrite sidebar/topbar/user-menu/color-toggle w
 **Files:**
 - Modify: `resources/js/Components/ToothChartPicker.vue`
 
-- [ ] **Step 1: Inspect current component**
+- [x] **Step 1: Inspect current component**
 
 Read the current `ToothChartPicker.vue`. Preserve all logic (which teeth are selected, click handlers, emit shape). Swap tooth buttons to `btn btn-sm` with `btn-active` when selected, `btn-outline` otherwise.
 
-- [ ] **Step 2: Rewrite markup around existing logic**
+- [x] **Step 2: Rewrite markup around existing logic**
 
 The component is SVG + button grid; keep SVG paths but restyle each tooth as `<button class="btn btn-sm" :class="selected ? 'btn-primary' : 'btn-outline'">`. Preserve prop and emit signatures exactly.
 
-- [ ] **Step 3: Run app build**
+- [x] **Step 3: Run app build**
 
 Run: `npm run build`
 Expected: succeeds.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add resources/js/Components/ToothChartPicker.vue
@@ -648,7 +648,7 @@ git commit -m "refactor(components): restyle ToothChartPicker with daisyUI butto
 - Create: `resources/js/Components/ui/Button.vue`
 - Create: `resources/js/__tests__/Components/ui/Button.spec.ts`
 
-- [ ] **Step 1: Write failing test**
+- [x] **Step 1: Write failing test**
 
 ```ts
 import { describe, it, expect } from 'vitest'
@@ -677,12 +677,12 @@ describe('Button', () => {
 })
 ```
 
-- [ ] **Step 2: Run test, expect fail**
+- [x] **Step 2: Run test, expect fail**
 
 Run: `npm test -- Button.spec`
 Expected: FAIL.
 
-- [ ] **Step 3: Implement**
+- [x] **Step 3: Implement**
 
 ```vue
 <script setup lang="ts">
@@ -727,12 +727,12 @@ defineEmits<{ click: [event: MouseEvent] }>()
 </template>
 ```
 
-- [ ] **Step 4: Run test, expect pass**
+- [x] **Step 4: Run test, expect pass**
 
 Run: `npm test -- Button.spec`
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add resources/js/Components/ui/Button.vue resources/js/__tests__/Components/ui/Button.spec.ts
@@ -745,7 +745,7 @@ git commit -m "feat(ui): add Button component with daisyUI variants"
 - Create: `resources/js/Components/ui/Input.vue`
 - Create: `resources/js/__tests__/Components/ui/Input.spec.ts`
 
-- [ ] **Step 1: Write failing test (same prop API as old wrapper)**
+- [x] **Step 1: Write failing test (same prop API as old wrapper)**
 
 ```ts
 import { describe, it, expect } from 'vitest'
@@ -782,12 +782,12 @@ describe('Input', () => {
 })
 ```
 
-- [ ] **Step 2: Run, expect fail**
+- [x] **Step 2: Run, expect fail**
 
 Run: `npm test -- Input.spec`
 Expected: FAIL.
 
-- [ ] **Step 3: Implement** (preserve old wrapper's prop API exactly: `modelValue`, `type`, `placeholder`, `disabled`, `readonly`, `invalid`, `autofocus`, `autocomplete`; emits: `update:modelValue`, `blur`, `focus`)
+- [x] **Step 3: Implement** (preserve old wrapper's prop API exactly: `modelValue`, `type`, `placeholder`, `disabled`, `readonly`, `invalid`, `autofocus`, `autocomplete`; emits: `update:modelValue`, `blur`, `focus`)
 
 ```vue
 <script setup lang="ts">
@@ -830,12 +830,12 @@ defineEmits<{
 </template>
 ```
 
-- [ ] **Step 4: Run, expect pass**
+- [x] **Step 4: Run, expect pass**
 
 Run: `npm test -- Input.spec`
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add resources/js/Components/ui/Input.vue resources/js/__tests__/Components/ui/Input.spec.ts
@@ -854,7 +854,7 @@ git commit -m "feat(ui): add Input component preserving legacy prop API"
 - Create: `resources/js/__tests__/Components/ui/Checkbox.spec.ts`
 - Create: `resources/js/__tests__/Components/ui/Switch.spec.ts`
 
-- [ ] **Step 1: Write failing test for `Select.vue`**
+- [x] **Step 1: Write failing test for `Select.vue`**
 
 ```ts
 import { describe, it, expect } from 'vitest'
@@ -888,7 +888,7 @@ describe('Select', () => {
 })
 ```
 
-- [ ] **Step 2: Implement `Select.vue`**
+- [x] **Step 2: Implement `Select.vue`**
 
 ```vue
 <script setup lang="ts" generic="T">
@@ -920,7 +920,7 @@ defineEmits<{ 'update:modelValue': [value: T | null] }>()
 </template>
 ```
 
-- [ ] **Step 3: Write failing test for `Textarea.vue`**
+- [x] **Step 3: Write failing test for `Textarea.vue`**
 
 ```ts
 import { describe, it, expect } from 'vitest'
@@ -945,7 +945,7 @@ describe('Textarea', () => {
 })
 ```
 
-- [ ] **Step 4: Implement `Textarea.vue`**
+- [x] **Step 4: Implement `Textarea.vue`**
 
 ```vue
 <script setup lang="ts">
@@ -976,7 +976,7 @@ defineEmits<{ 'update:modelValue': [value: string] }>()
 </template>
 ```
 
-- [ ] **Step 5: Write failing test for `Checkbox.vue`**
+- [x] **Step 5: Write failing test for `Checkbox.vue`**
 
 ```ts
 import { describe, it, expect } from 'vitest'
@@ -994,7 +994,7 @@ describe('Checkbox', () => {
 })
 ```
 
-- [ ] **Step 6: Implement `Checkbox.vue`**
+- [x] **Step 6: Implement `Checkbox.vue`**
 
 ```vue
 <script setup lang="ts">
@@ -1016,7 +1016,7 @@ defineEmits<{ 'update:modelValue': [value: boolean] }>()
 </template>
 ```
 
-- [ ] **Step 7: Write failing test for `Switch.vue`**
+- [x] **Step 7: Write failing test for `Switch.vue`**
 
 ```ts
 import { describe, it, expect } from 'vitest'
@@ -1035,7 +1035,7 @@ describe('Switch', () => {
 })
 ```
 
-- [ ] **Step 8: Implement `Switch.vue`**
+- [x] **Step 8: Implement `Switch.vue`**
 
 ```vue
 <script setup lang="ts">
@@ -1054,12 +1054,12 @@ defineEmits<{ 'update:modelValue': [value: boolean] }>()
 </template>
 ```
 
-- [ ] **Step 9: Run all four tests**
+- [x] **Step 9: Run all four tests**
 
 Run: `npm test -- 'Components/ui/(Select|Textarea|Checkbox|Switch).spec'`
 Expected: PASS.
 
-- [ ] **Step 10: Commit**
+- [x] **Step 10: Commit**
 
 ```bash
 git add resources/js/Components/ui resources/js/__tests__/Components/ui
@@ -1072,7 +1072,7 @@ git commit -m "feat(ui): add Select, Textarea, Checkbox, Switch components"
 - Create: `resources/js/Components/ui/Card.vue`
 - Create: `resources/js/__tests__/Components/ui/Card.spec.ts`
 
-- [ ] **Step 1: Write failing test**
+- [x] **Step 1: Write failing test**
 
 ```ts
 import { describe, it, expect } from 'vitest'
@@ -1103,7 +1103,7 @@ describe('Card', () => {
 })
 ```
 
-- [ ] **Step 2: Implement**
+- [x] **Step 2: Implement**
 
 ```vue
 <script setup lang="ts">
@@ -1130,12 +1130,12 @@ withDefaults(defineProps<{ title?: string | null; padded?: boolean }>(), {
 </template>
 ```
 
-- [ ] **Step 3: Run, expect pass**
+- [x] **Step 3: Run, expect pass**
 
 Run: `npm test -- Card.spec`
 Expected: PASS.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add resources/js/Components/ui/Card.vue resources/js/__tests__/Components/ui/Card.spec.ts
@@ -1151,7 +1151,7 @@ git commit -m "feat(ui): add Card component with header/body/footer slots"
 
 The current `DataTable` exposes slots where pages use `<Column field="..." header="...">` children. To keep call sites mechanical, the new `Table.vue` accepts the same child markup as today, but renders each `TableColumn` as a plain `<th>` / `<td>` pair. This is a structural simplification vs. PrimeVue's runtime sorting/paginator — we move sorting into the page (a computed `sorted` ref), and pagination lives in the separate `Pagination.vue` (built in task 0.18).
 
-- [ ] **Step 1: Write failing test for `Table.vue`**
+- [x] **Step 1: Write failing test for `Table.vue`**
 
 ```ts
 import { describe, it, expect } from 'vitest'
@@ -1200,7 +1200,7 @@ describe('Table', () => {
 })
 ```
 
-- [ ] **Step 2: Implement `TableColumn.vue`**
+- [x] **Step 2: Implement `TableColumn.vue`**
 
 The `TableColumn` is rendered as a `<th>` when used inside `Table`'s header slot and as a `<td>` when used inside the body row slot. To keep the API simple, `TableColumn` is a render-only marker; `Table.vue` looks at `column.field` and `column.header` from the slot's props.
 
@@ -1219,7 +1219,7 @@ defineProps<{
 </template>
 ```
 
-- [ ] **Step 3: Implement `Table.vue`**
+- [x] **Step 3: Implement `Table.vue`**
 
 ```vue
 <script setup lang="ts">
@@ -1283,12 +1283,12 @@ const columns = computed(() => {
 </template>
 ```
 
-- [ ] **Step 4: Run, expect pass**
+- [x] **Step 4: Run, expect pass**
 
 Run: `npm test -- Table.spec`
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add resources/js/Components/ui/Table.vue resources/js/Components/ui/TableColumn.vue resources/js/__tests__/Components/ui/Table.spec.ts
@@ -1301,7 +1301,7 @@ git commit -m "feat(ui): add Table + TableColumn, drop datatable runtime in favo
 - Create: `resources/js/Components/ui/Dialog.vue`
 - Create: `resources/js/__tests__/Components/ui/Dialog.spec.ts`
 
-- [ ] **Step 1: Write failing test**
+- [x] **Step 1: Write failing test**
 
 ```ts
 import { describe, it, expect } from 'vitest'
@@ -1332,7 +1332,7 @@ describe('Dialog', () => {
 })
 ```
 
-- [ ] **Step 2: Implement**
+- [x] **Step 2: Implement**
 
 ```vue
 <script setup lang="ts">
@@ -1381,12 +1381,12 @@ onUnmounted(() => {
 </template>
 ```
 
-- [ ] **Step 3: Run, expect pass**
+- [x] **Step 3: Run, expect pass**
 
 Run: `npm test -- Dialog.spec`
 Expected: PASS.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add resources/js/Components/ui/Dialog.vue resources/js/__tests__/Components/ui/Dialog.spec.ts
@@ -1399,7 +1399,7 @@ git commit -m "feat(ui): add Dialog using native <dialog> + showModal()"
 - Create: `resources/js/Components/ui/Pagination.vue`
 - Create: `resources/js/__tests__/Components/ui/Pagination.spec.ts`
 
-- [ ] **Step 1: Write failing test**
+- [x] **Step 1: Write failing test**
 
 ```ts
 import { describe, it, expect } from 'vitest'
@@ -1425,7 +1425,7 @@ describe('Pagination', () => {
 })
 ```
 
-- [ ] **Step 2: Implement**
+- [x] **Step 2: Implement**
 
 ```vue
 <script setup lang="ts">
@@ -1485,12 +1485,12 @@ const go = (n: number) => {
 </template>
 ```
 
-- [ ] **Step 3: Run, expect pass**
+- [x] **Step 3: Run, expect pass**
 
 Run: `npm test -- Pagination.spec`
 Expected: PASS.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add resources/js/Components/ui/Pagination.vue resources/js/__tests__/Components/ui/Pagination.spec.ts
@@ -1503,7 +1503,7 @@ git commit -m "feat(ui): add Pagination with DaisyUI join+btn"
 - Create: `resources/js/Components/ui/Tabs.vue`
 - Create: `resources/js/__tests__/Components/ui/Tabs.spec.ts`
 
-- [ ] **Step 1: Write failing test**
+- [x] **Step 1: Write failing test**
 
 ```ts
 import { describe, it, expect } from 'vitest'
@@ -1542,7 +1542,7 @@ describe('Tabs', () => {
 })
 ```
 
-- [ ] **Step 2: Implement**
+- [x] **Step 2: Implement**
 
 ```vue
 <script setup lang="ts">
@@ -1574,12 +1574,12 @@ const select = (i: number) => emit('update:modelValue', i)
 </template>
 ```
 
-- [ ] **Step 3: Run, expect pass**
+- [x] **Step 3: Run, expect pass**
 
 Run: `npm test -- Tabs.spec`
 Expected: PASS.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add resources/js/Components/ui/Tabs.vue resources/js/__tests__/Components/ui/Tabs.spec.ts
@@ -1592,7 +1592,7 @@ git commit -m "feat(ui): add Tabs component with named-slot panels"
 - Create: `resources/js/Components/ui/DropdownMenu.vue`
 - Create: `resources/js/__tests__/Components/ui/DropdownMenu.spec.ts`
 
-- [ ] **Step 1: Write failing test**
+- [x] **Step 1: Write failing test**
 
 ```ts
 import { describe, it, expect } from 'vitest'
@@ -1626,7 +1626,7 @@ describe('DropdownMenu', () => {
 })
 ```
 
-- [ ] **Step 2: Implement**
+- [x] **Step 2: Implement**
 
 ```vue
 <script setup lang="ts">
@@ -1648,12 +1648,12 @@ const emit = defineEmits<{ select: [value: string] }>()
 </template>
 ```
 
-- [ ] **Step 3: Run, expect pass**
+- [x] **Step 3: Run, expect pass**
 
 Run: `npm test -- DropdownMenu.spec`
 Expected: PASS.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add resources/js/Components/ui/DropdownMenu.vue resources/js/__tests__/Components/ui/DropdownMenu.spec.ts
@@ -1668,7 +1668,7 @@ git commit -m "feat(ui): add DropdownMenu component"
 - Create: `resources/js/__tests__/Components/ui/DatePicker.spec.ts`
 - Create: `resources/js/__tests__/Components/ui/TimePicker.spec.ts`
 
-- [ ] **Step 1: Write failing test for `DatePicker.vue`**
+- [x] **Step 1: Write failing test for `DatePicker.vue`**
 
 ```ts
 import { describe, it, expect } from 'vitest'
@@ -1691,7 +1691,7 @@ describe('DatePicker', () => {
 })
 ```
 
-- [ ] **Step 2: Implement `DatePicker.vue`**
+- [x] **Step 2: Implement `DatePicker.vue`**
 
 ```vue
 <script setup lang="ts">
@@ -1713,7 +1713,7 @@ defineEmits<{ 'update:modelValue': [value: string] }>()
 </template>
 ```
 
-- [ ] **Step 3: Write failing test for `TimePicker.vue`**
+- [x] **Step 3: Write failing test for `TimePicker.vue`**
 
 ```ts
 import { describe, it, expect } from 'vitest'
@@ -1730,7 +1730,7 @@ describe('TimePicker', () => {
 })
 ```
 
-- [ ] **Step 4: Implement `TimePicker.vue`**
+- [x] **Step 4: Implement `TimePicker.vue`**
 
 ```vue
 <script setup lang="ts">
@@ -1751,12 +1751,12 @@ defineEmits<{ 'update:modelValue': [value: string] }>()
 </template>
 ```
 
-- [ ] **Step 5: Run, expect pass**
+- [x] **Step 5: Run, expect pass**
 
 Run: `npm test -- '(DatePicker|TimePicker).spec'`
 Expected: PASS.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add resources/js/Components/ui/DatePicker.vue resources/js/Components/ui/TimePicker.vue resources/js/__tests__/Components/ui/DatePicker.spec.ts resources/js/__tests__/Components/ui/TimePicker.spec.ts
@@ -1773,7 +1773,7 @@ git commit -m "feat(ui): add native DatePicker and TimePicker styled with daisyU
 - Create: `resources/js/__tests__/Components/ui/EmptyState.spec.ts`
 - Create: `resources/js/__tests__/Components/ui/Breadcrumbs.spec.ts`
 
-- [ ] **Step 1: Implement `Spinner.vue`** (no test required — trivial)
+- [x] **Step 1: Implement `Spinner.vue`** (no test required — trivial)
 
 ```vue
 <script setup lang="ts">
@@ -1788,7 +1788,7 @@ withDefaults(defineProps<{ size?: 'sm' | 'md' | 'lg' }>(), { size: 'md' })
 </template>
 ```
 
-- [ ] **Step 2: Test + implement `EmptyState.vue`**
+- [x] **Step 2: Test + implement `EmptyState.vue`**
 
 ```ts
 // resources/js/__tests__/Components/ui/EmptyState.spec.ts
@@ -1824,7 +1824,7 @@ defineProps<{ title: string; description?: string }>()
 </template>
 ```
 
-- [ ] **Step 3: Test + implement `Breadcrumbs.vue`**
+- [x] **Step 3: Test + implement `Breadcrumbs.vue`**
 
 ```ts
 // resources/js/__tests__/Components/ui/Breadcrumbs.spec.ts
@@ -1870,12 +1870,12 @@ defineProps<{ items: { label: string; href: string | null }[] }>()
 </template>
 ```
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 Run: `npm test -- '(Spinner|EmptyState|Breadcrumbs).spec'`
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add resources/js/Components/ui/Spinner.vue resources/js/Components/ui/EmptyState.vue resources/js/Components/ui/Breadcrumbs.vue resources/js/__tests__/Components/ui/Spinner.spec.ts resources/js/__tests__/Components/ui/EmptyState.spec.ts resources/js/__tests__/Components/ui/Breadcrumbs.spec.ts
@@ -1887,19 +1887,19 @@ git commit -m "feat(ui): add Spinner, EmptyState, Breadcrumbs components"
 **Files:**
 - Delete all files under `resources/js/__tests__/Components/ui/` whose names start with the old set (e.g. `Card.spec.js`, `Input.spec.js`, `DataTable.spec.js`, etc.) that don't have new equivalents above. The new specs above use the same component names but as `.spec.ts` files, so old `.spec.js` files are dead.
 
-- [ ] **Step 1: List and delete**
+- [x] **Step 1: List and delete**
 
 ```bash
 ls resources/js/__tests__/Components/ui/
 # Delete any file whose name is not in the new list above.
 ```
 
-- [ ] **Step 2: Verify**
+- [x] **Step 2: Verify**
 
 Run: `npm test`
 Expected: all new specs pass, no references to deleted files.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add -u resources/js/__tests__/Components/ui
@@ -1908,7 +1908,7 @@ git commit -m "test(ui): replace primevue wrapper specs with daisyUI specs"
 
 ### Task 0.24: Slice 0 gate
 
-- [ ] **Step 1: Run the full build, test, lint**
+- [x] **Step 1: Run the full build, test, lint**
 
 ```bash
 npm run build
@@ -1921,7 +1921,7 @@ Expected:
 - `npm test`: all new component specs pass.
 - `npm run lint`: ESLint errors remain for pages still importing PrimeVue. That's expected; slices 1–10 will resolve them. Do NOT add an `--fix` here.
 
-- [ ] **Step 2: Manual smoke**
+- [x] **Step 2: Manual smoke**
 
 Start the dev server:
 ```bash
@@ -1933,7 +1933,7 @@ And in another shell (or via Laravel Herd / `php artisan serve`):
 - Toggle color mode → theme swaps between `corporate` (light) and `business` (dark).
 - Resize to mobile → drawer toggles via the hamburger button.
 
-- [ ] **Step 3: Tag the slice**
+- [x] **Step 3: Tag the slice**
 
 ```bash
 git tag slice-0-foundation
@@ -1948,7 +1948,7 @@ git tag slice-0-foundation
 **Files:**
 - Modify: `resources/js/Pages/Patients/Index.vue`
 
-- [ ] **Step 1: Replace PrimeVue imports with new kit**
+- [x] **Step 1: Replace PrimeVue imports with new kit**
 
 In `<script setup>`, replace any `import ... from 'primevue/...'` lines with imports from `@/Components/ui/...`:
 
@@ -1965,7 +1965,7 @@ import Dialog from '@/Components/ui/Dialog.vue'
 
 (Adjust to whatever components the page actually uses. Read the file first.)
 
-- [ ] **Step 2: Replace PrimeVue tags in template**
+- [x] **Step 2: Replace PrimeVue tags in template**
 
 Search-and-replace:
 - `<DataTable` → `<Table`
@@ -1980,7 +1980,7 @@ Search-and-replace:
 
 Keep all `<script setup>` logic untouched.
 
-- [ ] **Step 3: Handle pagination prop renames**
+- [x] **Step 3: Handle pagination prop renames**
 
 PrimeVue `<Paginator :rows="10" :total-records="100" :first="(page - 1) * 10" @page="(e) => go(e.page + 1)" />` becomes:
 
@@ -1990,12 +1990,12 @@ PrimeVue `<Paginator :rows="10" :total-records="100" :first="(page - 1) * 10" @p
 
 The handler signature changes from `(e) => page + 1` to `(n) => n` (the new component emits the absolute page number).
 
-- [ ] **Step 4: Verify no PrimeVue imports remain**
+- [x] **Step 4: Verify no PrimeVue imports remain**
 
 Run: `grep -n "primevue" resources/js/Pages/Patients/Index.vue`
 Expected: no matches.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add resources/js/Pages/Patients/Index.vue
@@ -2004,19 +2004,19 @@ git commit -m "refactor(patients): migrate Index page to daisyUI kit"
 
 ### Task 1.2: Migrate `Patients/Create.vue` and `Patients/Edit.vue`
 
-- [ ] **Steps 1–5:** Same pattern as 1.1. Replace PrimeVue imports/tags in both files. Commit each file in its own commit (`Patients/Create`, `Patients/Edit`).
+- [x] **Steps 1–5:** Same pattern as 1.1. Replace PrimeVue imports/tags in both files. Commit each file in its own commit (`Patients/Create`, `Patients/Edit`).
 
 ### Task 1.3: Migrate `Patients/Show.vue`
 
-- [ ] **Steps 1–5:** Same pattern. Note: `Show` typically uses Tabs and Card. Wire `<Tabs :tabs="[{ label: 'Info', key: 'info' }, ...]" v-model="activeTab">` with named slots `info`, etc.
+- [x] **Steps 1–5:** Same pattern. Note: `Show` typically uses Tabs and Card. Wire `<Tabs :tabs="[{ label: 'Info', key: 'info' }, ...]" v-model="activeTab">` with named slots `info`, etc.
 
 ### Task 1.4: Migrate `PatientQuickAddDialog.vue`
 
-- [ ] **Steps 1–5:** Same pattern. The component is a Dialog wrapping a small form. Replace `<Dialog>` from PrimeVue with `@/Components/ui/Dialog.vue`; replace form inputs with the new Input/Select kit.
+- [x] **Steps 1–5:** Same pattern. The component is a Dialog wrapping a small form. Replace `<Dialog>` from PrimeVue with `@/Components/ui/Dialog.vue`; replace form inputs with the new Input/Select kit.
 
 ### Task 1.5: Add Vitest smoke test for `PatientQuickAddDialog`
 
-- [ ] **Step 1: Write test**
+- [x] **Step 1: Write test**
 
 Create `resources/js/__tests__/Components/PatientQuickAddDialog.spec.ts`:
 
@@ -2040,12 +2040,12 @@ describe('PatientQuickAddDialog', () => {
 })
 ```
 
-- [ ] **Step 2: Run, expect pass**
+- [x] **Step 2: Run, expect pass**
 
 Run: `npm test -- PatientQuickAddDialog`
 Expected: PASS.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add resources/js/__tests__/Components/PatientQuickAddDialog.spec.ts
@@ -2054,12 +2054,12 @@ git commit -m "test(patients): assert no primevue markup in PatientQuickAddDialo
 
 ### Task 1.6: Slice 1 gate
 
-- [ ] **Step 1: Lint clean for the migrated files**
+- [x] **Step 1: Lint clean for the migrated files**
 
 Run: `npx eslint resources/js/Pages/Patients resources/js/Components/PatientQuickAddDialog.vue`
 Expected: clean.
 
-- [ ] **Step 2: Manual smoke**
+- [x] **Step 2: Manual smoke**
 
 ```bash
 npm run dev
@@ -2070,7 +2070,7 @@ npm run dev
 - `/patients/{id}/edit` → form pre-fills, save updates.
 - Quick-add from another page (e.g. open a page that has a "Quick add patient" action) → dialog renders, submits, closes.
 
-- [ ] **Step 3: Tag**
+- [x] **Step 3: Tag**
 
 ```bash
 git tag slice-1-patients
@@ -2082,12 +2082,12 @@ git tag slice-1-patients
 
 Migrate [resources/js/Pages/Doctors/](resources/js/Pages/Doctors/): `Index`, `Create`, `Edit`, `Show`. Same mechanical pattern as slice 1 (search-and-replace PrimeVue tags to new kit; keep logic untouched).
 
-- [ ] **Migrate `Index.vue`** → commit.
-- [ ] **Migrate `Create.vue`** → commit.
-- [ ] **Migrate `Edit.vue`** → commit.
-- [ ] **Migrate `Show.vue`** → commit.
-- [ ] **Add `Doctors/Index.spec.ts`** smoke test asserting no `p-*` PrimeVue classes in rendered output → commit.
-- [ ] **Slice gate:** lint, manual smoke (list, create, edit, show, delete), tag `slice-2-doctors`.
+- [x] **Migrate `Index.vue`** → commit.
+- [x] **Migrate `Create.vue`** → commit.
+- [x] **Migrate `Edit.vue`** → commit.
+- [x] **Migrate `Show.vue`** → commit.
+- [x] **Add `Doctors/Index.spec.ts`** smoke test asserting no `p-*` PrimeVue classes in rendered output → commit.
+- [x] **Slice gate:** lint, manual smoke (list, create, edit, show, delete), tag `slice-2-doctors`.
 
 ---
 
@@ -2095,21 +2095,21 @@ Migrate [resources/js/Pages/Doctors/](resources/js/Pages/Doctors/): `Index`, `Cr
 
 Migrate [resources/js/Pages/Appointments/](resources/js/Pages/Appointments/): `Index`, `Create`, `Edit`, `Show`, `Calendar`. The first four follow the standard pattern. `Calendar.vue` is non-trivial — see below.
 
-- [ ] **Migrate `Index.vue`** → commit.
-- [ ] **Migrate `Create.vue`** → commit (exercises `DatePicker`, `TimePicker`, `Select`).
-- [ ] **Migrate `Edit.vue`** → commit.
-- [ ] **Migrate `Show.vue`** → commit.
-- [ ] **Migrate `Calendar.vue`** (see below) → commit.
+- [x] **Migrate `Index.vue`** → commit.
+- [x] **Migrate `Create.vue`** → commit (exercises `DatePicker`, `TimePicker`, `Select`).
+- [x] **Migrate `Edit.vue`** → commit.
+- [x] **Migrate `Show.vue`** → commit.
+- [x] **Migrate `Calendar.vue`** (see below) → commit.
 
 ### Task 3.5 details: Calendar page
 
 The current Calendar page is the most complex page in the app. After migration, it becomes a DaisyUI `table` with one row per time slot and one column per provider/room, with appointments as colored `<button class="btn btn-sm btn-primary">` cells.
 
-- [ ] **Step 1: Read the current Calendar page** to understand its data shape (slots, appointments, view modes).
+- [x] **Step 1: Read the current Calendar page** to understand its data shape (slots, appointments, view modes).
 
-- [ ] **Step 2: Replace imports** with kit components plus any required composables (e.g. `usePage`, `Link`).
+- [x] **Step 2: Replace imports** with kit components plus any required composables (e.g. `usePage`, `Link`).
 
-- [ ] **Step 3: Replace markup.** Keep all `<script setup>` (composables, computed slots, form handlers). Calendar grid markup:
+- [x] **Step 3: Replace markup.** Keep all `<script setup>` (composables, computed slots, form handlers). Calendar grid markup:
 
 ```vue
 <div class="overflow-x-auto">
@@ -2142,12 +2142,12 @@ The current Calendar page is the most complex page in the app. After migration, 
 </div>
 ```
 
-- [ ] **Step 4: Verify no PrimeVue imports remain.**
+- [x] **Step 4: Verify no PrimeVue imports remain.**
 
-- [ ] **Step 5: Commit.**
+- [x] **Step 5: Commit.**
 
-- [ ] **Add `Appointments/Calendar.spec.ts`** smoke test → commit.
-- [ ] **Slice gate:** lint, manual smoke (week/day views, drag-to-reschedule if present, create appointment at slot, edit existing), tag `slice-3-appointments`.
+- [x] **Add `Appointments/Calendar.spec.ts`** smoke test → commit.
+- [x] **Slice gate:** lint, manual smoke (week/day views, drag-to-reschedule if present, create appointment at slot, edit existing), tag `slice-3-appointments`.
 
 ---
 
@@ -2155,9 +2155,9 @@ The current Calendar page is the most complex page in the app. After migration, 
 
 Migrate [resources/js/Pages/Billing/](resources/js/Pages/Billing/): `Invoices/Index`, `Payments/Index`, `Accounts/Index`, `Expenses/Index` (and any Create/Edit/Show companions).
 
-- [ ] Per-file migration commits.
-- [ ] **Add smoke specs** for each index page asserting no PrimeVue in rendered DOM.
-- [ ] **Slice gate:** lint, manual smoke (heavy Table + Pagination + Tabs exercise — verify invoice tabs, payment recording, expense entry), tag `slice-4-billing`.
+- [x] Per-file migration commits.
+- [x] **Add smoke specs** for each index page asserting no PrimeVue in rendered DOM.
+- [x] **Slice gate:** lint, manual smoke (heavy Table + Pagination + Tabs exercise — verify invoice tabs, payment recording, expense entry), tag `slice-4-billing`.
 
 ---
 
@@ -2165,9 +2165,9 @@ Migrate [resources/js/Pages/Billing/](resources/js/Pages/Billing/): `Invoices/In
 
 Migrate [resources/js/Pages/Inventory/](resources/js/Pages/Inventory/): `Suppliers/Index`, `Locations/Index`, `Products/Index` (plus Create/Edit/Show).
 
-- [ ] Per-file migration commits.
-- [ ] **Add smoke specs** per page.
-- [ ] **Slice gate:** lint, manual smoke, tag `slice-5-inventory`.
+- [x] Per-file migration commits.
+- [x] **Add smoke specs** per page.
+- [x] **Slice gate:** lint, manual smoke, tag `slice-5-inventory`.
 
 ---
 
@@ -2175,9 +2175,9 @@ Migrate [resources/js/Pages/Inventory/](resources/js/Pages/Inventory/): `Supplie
 
 Migrate [resources/js/Pages/Notifications/](resources/js/Pages/Notifications/): `Templates/Index`, `Send/Index`, `Logs/Index` (plus detail pages).
 
-- [ ] Per-file migration commits.
-- [ ] **Add smoke specs.**
-- [ ] **Slice gate:** lint, manual smoke (send a test notification, view log, edit template), tag `slice-6-notifications`.
+- [x] Per-file migration commits.
+- [x] **Add smoke specs.**
+- [x] **Slice gate:** lint, manual smoke (send a test notification, view log, edit template), tag `slice-6-notifications`.
 
 ---
 
@@ -2185,9 +2185,9 @@ Migrate [resources/js/Pages/Notifications/](resources/js/Pages/Notifications/): 
 
 Migrate [resources/js/Pages/Reports/](resources/js/Pages/Reports/).
 
-- [ ] Per-file migration commits.
-- [ ] **Add smoke specs.**
-- [ ] **Slice gate:** lint, manual smoke (run each report, verify chart/data render), tag `slice-7-reports`.
+- [x] Per-file migration commits.
+- [x] **Add smoke specs.**
+- [x] **Slice gate:** lint, manual smoke (run each report, verify chart/data render), tag `slice-7-reports`.
 
 ---
 
@@ -2195,9 +2195,9 @@ Migrate [resources/js/Pages/Reports/](resources/js/Pages/Reports/).
 
 Migrate [resources/js/Pages/Exchange/](resources/js/Pages/Exchange/): `Dashboard`, `Reconcile`.
 
-- [ ] Per-file migration commits.
-- [ ] **Add smoke specs.**
-- [ ] **Slice gate:** lint, manual smoke, tag `slice-8-exchange`.
+- [x] Per-file migration commits.
+- [x] **Add smoke specs.**
+- [x] **Slice gate:** lint, manual smoke, tag `slice-8-exchange`.
 
 ---
 
@@ -2205,9 +2205,9 @@ Migrate [resources/js/Pages/Exchange/](resources/js/Pages/Exchange/): `Dashboard
 
 Migrate [resources/js/Pages/Settings/](resources/js/Pages/Settings/) (`WorkingHours`, `Clinic`) and [resources/js/Pages/Admin/](resources/js/Pages/Admin/) (`Users/Index`, etc.).
 
-- [ ] Per-file migration commits.
-- [ ] **Add smoke specs.**
-- [ ] **Slice gate:** lint, manual smoke (settings persist, admin user CRUD), tag `slice-9-settings-admin`.
+- [x] Per-file migration commits.
+- [x] **Add smoke specs.**
+- [x] **Slice gate:** lint, manual smoke (settings persist, admin user CRUD), tag `slice-9-settings-admin`.
 
 ---
 
@@ -2215,15 +2215,15 @@ Migrate [resources/js/Pages/Settings/](resources/js/Pages/Settings/) (`WorkingHo
 
 Migrate [resources/js/Pages/Auth/](resources/js/Pages/Auth/) (Login, Register, Forgot Password, Reset Password, Verify Email) and [resources/js/Pages/Errors/](resources/js/Pages/Errors/) (401, 403, 404, 500, 503).
 
-- [ ] Per-file migration commits.
-- [ ] **Add smoke specs.**
-- [ ] **Slice gate:** lint, manual smoke (full auth flow), tag `slice-10-auth-errors`.
+- [x] Per-file migration commits.
+- [x] **Add smoke specs.**
+- [x] **Slice gate:** lint, manual smoke (full auth flow), tag `slice-10-auth-errors`.
 
 ---
 
 ## Final acceptance
 
-- [ ] **Run the global grep**
+- [x] **Run the global grep**
 
 ```bash
 grep -RInE 'primevue|@primevue|@primeuix|PrimeVue' resources/ resources/css/ resources/js/
@@ -2231,7 +2231,7 @@ grep -RInE 'primevue|@primevue|@primeuix|PrimeVue' resources/ resources/css/ res
 
 Expected: no matches.
 
-- [ ] **Run the full gate**
+- [x] **Run the full gate**
 
 ```bash
 npm run build
@@ -2243,11 +2243,11 @@ vendor/bin/phpstan analyse
 
 Expected: all clean.
 
-- [ ] **Manual end-to-end smoke**
+- [x] **Manual end-to-end smoke**
 
 Login → every domain → create/edit/list/delete → dark mode toggle → mobile viewport → logout. No visual regressions.
 
-- [ ] **Tag final release**
+- [x] **Tag final release**
 
 ```bash
 git tag daisyui-migration-complete

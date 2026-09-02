@@ -1,13 +1,15 @@
 <script setup>
 import { Head, useForm, Link } from '@inertiajs/vue3'
 import AuthenticatedLayout from '@/Layouts/Authenticated.vue'
-import UiCard from '@/Components/ui/Card.vue'
-import UiForm from '@/Components/ui/Form/Form.vue'
-import UiField from '@/Components/ui/Form/Field.vue'
-import UiInput from '@/Components/ui/Input.vue'
-import UiButton from '@/Components/ui/Button.vue'
-import UiSelect from '@/Components/ui/Select.vue'
-import UiTextarea from '@/Components/ui/Textarea.vue'
+import PageHeader from '@/Components/ui/PageHeader.vue'
+import Card from '@/Components/ui/Card.vue'
+import Form from '@/Components/ui/Form/Form.vue'
+import Field from '@/Components/ui/Form/Field.vue'
+import Input from '@/Components/ui/Input.vue'
+import Button from '@/Components/ui/Button.vue'
+import Select from '@/Components/ui/Select.vue'
+import Textarea from '@/Components/ui/Textarea.vue'
+import Breadcrumbs from '@/Components/ui/Breadcrumbs.vue'
 import ToothChartPicker from '@/Components/ToothChartPicker.vue'
 
 const props = defineProps({
@@ -15,6 +17,8 @@ const props = defineProps({
   doctors: Array,
   statuses: Array,
 })
+
+const patient = props.patient
 
 const form = useForm({
   visited_at: new Date().toISOString().slice(0, 10),
@@ -31,67 +35,132 @@ const form = useForm({
 function submit() {
   form.post(`/patients/${props.patient.id}/treatment-records`)
 }
+
+const breadcrumbs = [
+  { label: 'Patients', href: '/patients' },
+  { label: patient.name, href: `/patients/${patient.id}` },
+  { label: 'Treatment records', href: `/patients/${patient.id}/treatment-records` },
+  { label: 'New' },
+]
 </script>
 
 <template>
   <Head :title="`New treatment record — ${patient.name}`" />
   <AuthenticatedLayout>
-    <div class="max-w-3xl">
-      <UiCard :title="`New treatment record — ${patient.name}`">
-        <p class="text-xs text-base-content/70 font-mono -mt-2 mb-4">{{ patient.patient_code }}</p>
-        <UiForm @submit.prevent="submit">
-          <div class="grid grid-cols-2 gap-3">
-            <UiField label="Visit date" :error="form.errors.visited_at" required
-              ><input
+    <div class="max-w-3xl space-y-5">
+      <Breadcrumbs :items="breadcrumbs" />
+      <PageHeader
+        title="New treatment record"
+        :subtitle="`${patient.name} · ${patient.patient_code}`"
+        icon="stethoscope"
+        eyebrow="Add visit"
+      />
+
+      <Form :processing="form.processing" @submit.prevent="submit">
+        <Card title="Visit details">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Field
+              label="Visit date"
+              :error="form.errors.visited_at"
+              required
+              html-for="rec-date"
+            >
+              <input
+                id="rec-date"
                 v-model="form.visited_at"
                 type="date"
                 required
-                class="h-10 w-full rounded-md border border-base-300 bg-base-100 px-3 text-sm"
-            /></UiField>
-            <UiField label="Doctor" :error="form.errors.doctor_id"
-              ><UiSelect
+                class="input-shell h-10"
+              />
+            </Field>
+            <Field label="Doctor" :error="form.errors.doctor_id" html-for="rec-doctor">
+              <Select
+                id="rec-doctor"
                 v-model="form.doctor_id"
                 :options="doctors.map((d) => ({ label: d.name, value: d.id }))"
                 placeholder="Select doctor"
               />
-            </UiField>
-            <UiField label="Status" :error="form.errors.status"
-              ><UiSelect v-model="form.status" :options="statuses" />
-            </UiField>
-            <UiField label="Follow-up date" :error="form.errors.follow_up_date"
-              ><input
+            </Field>
+            <Field label="Status" :error="form.errors.status" html-for="rec-status">
+              <Select
+                id="rec-status"
+                v-model="form.status"
+                :options="statuses"
+              />
+            </Field>
+            <Field
+              label="Follow-up date"
+              :error="form.errors.follow_up_date"
+              html-for="rec-followup"
+            >
+              <input
+                id="rec-followup"
                 v-model="form.follow_up_date"
                 type="date"
-                class="h-10 w-full rounded-md border border-base-300 bg-base-100 px-3 text-sm"
-            /></UiField>
+                class="input-shell h-10"
+              />
+            </Field>
           </div>
+        </Card>
 
-          <UiField label="Chief complaint" :error="form.errors.chief_complaint"
-            ><UiTextarea v-model="form.chief_complaint" rows="2"
-          /></UiField>
-
-          <UiField label="Diagnosis" :error="form.errors.diagnosis"
-            ><UiTextarea v-model="form.diagnosis" rows="3"
-          /></UiField>
-
-          <UiField label="Treatment notes" :error="form.errors.treatment_notes"
-            ><UiTextarea v-model="form.treatment_notes" rows="4"
-          /></UiField>
-
-          <UiField label="Tooth chart" :error="form.errors.tooth_chart">
-            <ToothChartPicker v-model="form.tooth_chart" />
-          </UiField>
-
-          <div class="flex items-center justify-end gap-2 pt-3 border-t border-base-300">
-            <Link
-              :href="`/patients/${patient.id}`"
-              class="h-10 px-4 inline-flex items-center rounded-md bg-base-200 text-base-content border border-base-300 text-sm"
-              >Cancel</Link
+        <Card title="Clinical notes">
+          <div class="space-y-4">
+            <Field
+              label="Chief complaint"
+              :error="form.errors.chief_complaint"
+              html-for="rec-complaint"
             >
-            <UiButton type="submit" :loading="form.processing">Create record</UiButton>
+              <Textarea
+                id="rec-complaint"
+                v-model="form.chief_complaint"
+                :rows="2"
+                placeholder="What brings the patient in today?"
+              />
+            </Field>
+
+            <Field
+              label="Diagnosis"
+              :error="form.errors.diagnosis"
+              html-for="rec-diagnosis"
+            >
+              <Textarea
+                id="rec-diagnosis"
+                v-model="form.diagnosis"
+                :rows="3"
+                placeholder="Findings and diagnosis…"
+              />
+            </Field>
+
+            <Field
+              label="Treatment notes"
+              :error="form.errors.treatment_notes"
+              html-for="rec-notes"
+            >
+              <Textarea
+                id="rec-notes"
+                v-model="form.treatment_notes"
+                :rows="4"
+                placeholder="Procedures performed, materials used, recommendations…"
+              />
+            </Field>
           </div>
-        </UiForm>
-      </UiCard>
+        </Card>
+
+        <Card title="Tooth chart" subtitle="Click a tooth to cycle through conditions.">
+          <Field :error="form.errors.tooth_chart">
+            <ToothChartPicker v-model="form.tooth_chart" />
+          </Field>
+        </Card>
+
+        <div class="flex items-center justify-end gap-2 pt-2">
+          <Link :href="`/patients/${patient.id}/treatment-records`">
+            <Button variant="outline">Cancel</Button>
+          </Link>
+          <Button type="submit" :loading="form.processing" icon-right="check">
+            Create record
+          </Button>
+        </div>
+      </Form>
     </div>
   </AuthenticatedLayout>
 </template>

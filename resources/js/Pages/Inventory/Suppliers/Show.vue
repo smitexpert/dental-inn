@@ -1,77 +1,113 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3'
+import { computed } from 'vue'
 import AuthenticatedLayout from '@/Layouts/Authenticated.vue'
-import UiCard from '@/Components/ui/Card.vue'
-import UiBadge from '@/Components/ui/Badge.vue'
+import PageHeader from '@/Components/ui/PageHeader.vue'
+import Card from '@/Components/ui/Card.vue'
+import Badge from '@/Components/ui/Badge.vue'
+import Button from '@/Components/ui/Button.vue'
+import EmptyState from '@/Components/ui/EmptyState.vue'
+import Breadcrumbs from '@/Components/ui/Breadcrumbs.vue'
 
 const props = defineProps({ supplier: Object, products: Array })
+
+const supplier = props.supplier
+
+const breadcrumbs = computed(() => [
+  { label: 'Suppliers', href: '/inventory/suppliers' },
+  { label: supplier.name },
+])
 </script>
 
 <template>
   <Head :title="supplier.name" />
   <AuthenticatedLayout>
-    <UiCard>
-      <template #header>
-        <div class="flex items-center justify-between gap-3">
-          <div>
-            <h3 class="text-base font-semibold text-base-content">{{ supplier.name }}</h3>
-            <p class="text-xs text-base-content/70 mt-1">{{ supplier.contact_person || 'No contact on file' }}</p>
-          </div>
-          <div class="flex items-center gap-2">
-            <UiBadge :variant="supplier.is_active ? 'success' : 'neutral'">{{ supplier.is_active ? 'Active' : 'Inactive' }}</UiBadge>
-            <Link :href="`/inventory/suppliers/${supplier.id}/edit`" class="text-primary hover:text-primary text-sm">Edit</Link>
-            <Link href="/inventory/suppliers" class="text-base-content/70 text-sm">← Back</Link>
-          </div>
-        </div>
-      </template>
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-        <div>
-          <p class="text-xs uppercase tracking-wide text-base-content/70">Phone</p>
-          <p class="text-base-content">{{ supplier.phone || '—' }}</p>
-        </div>
-        <div>
-          <p class="text-xs uppercase tracking-wide text-base-content/70">Email</p>
-          <p class="text-base-content">{{ supplier.email || '—' }}</p>
-        </div>
-        <div class="col-span-2">
-          <p class="text-xs uppercase tracking-wide text-base-content/70">Address</p>
-          <p class="text-base-content whitespace-pre-line">{{ supplier.address || '—' }}</p>
-        </div>
-        <div class="col-span-2">
-          <p class="text-xs uppercase tracking-wide text-base-content/70">Notes</p>
-          <p class="text-base-content whitespace-pre-line">{{ supplier.notes || '—' }}</p>
-        </div>
-      </div>
-    </UiCard>
+    <div class="space-y-5 max-w-5xl">
+      <Breadcrumbs :items="breadcrumbs" />
 
-    <UiCard class="mt-4" title="Products supplied">
-      <table class="w-full text-sm">
-        <thead class="bg-base-200 text-base-content/70">
-          <tr>
-            <th class="text-left px-4 py-2">SKU</th>
-            <th class="text-left px-4 py-2">Name</th>
-            <th class="text-left px-4 py-2">Their SKU</th>
-            <th class="text-right px-4 py-2">Unit cost</th>
-            <th class="text-right px-4 py-2">Lead time</th>
-            <th class="text-left px-4 py-2">Preferred</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="p in products" :key="p.id" class="border-b border-base-300 last:border-b-0">
-            <td class="px-4 py-2 text-base-content/70 font-mono text-xs">{{ p.sku }}</td>
-            <td class="px-4 py-2 text-base-content">{{ p.name }}</td>
-            <td class="px-4 py-2 text-base-content/70 font-mono text-xs">{{ p.supplier_sku || '—' }}</td>
-            <td class="px-4 py-2 text-right">{{ p.unit_cost || '—' }}</td>
-            <td class="px-4 py-2 text-right">{{ p.lead_time_days ? `${p.lead_time_days} d` : '—' }}</td>
-            <td class="px-4 py-2">
-              <UiBadge :variant="p.is_preferred ? 'primary' : 'neutral'">{{ p.is_preferred ? 'Yes' : 'No' }}</UiBadge>
-            </td>
-          </tr>
-          <tr v-if="products.length === 0">
-            <td colspan="6" class="text-center text-base-content/70 py-6">No products linked yet.</td>
-          </tr>
-        </tbody>
-      </table>
-    </UiCard>
+      <PageHeader
+        :title="supplier.name"
+        :subtitle="supplier.contact_person || 'No contact on file'"
+        icon="send"
+        :eyebrow="`Supplier · ${supplier.is_active ? 'Active' : 'Inactive'}`"
+      >
+        <template #actions>
+          <Badge :variant="supplier.is_active ? 'success' : 'warning'" dot>
+            {{ supplier.is_active ? 'Active' : 'Inactive' }}
+          </Badge>
+          <Link :href="`/inventory/suppliers/${supplier.id}/edit`">
+            <Button variant="outline" icon="edit">Edit</Button>
+          </Link>
+        </template>
+      </PageHeader>
+
+      <Card title="Contact">
+        <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-3 text-sm">
+          <div>
+            <dt class="text-(--color-muted)">Phone</dt>
+            <dd class="font-medium mt-0.5">{{ supplier.phone || '—' }}</dd>
+          </div>
+          <div>
+            <dt class="text-(--color-muted)">Email</dt>
+            <dd class="font-medium mt-0.5">{{ supplier.email || '—' }}</dd>
+          </div>
+          <div class="sm:col-span-2">
+            <dt class="text-(--color-muted)">Address</dt>
+            <dd class="font-medium mt-0.5 whitespace-pre-line">{{ supplier.address || '—' }}</dd>
+          </div>
+          <div v-if="supplier.notes" class="sm:col-span-2">
+            <dt class="text-(--color-muted)">Notes</dt>
+            <dd class="font-medium mt-0.5 whitespace-pre-line">{{ supplier.notes }}</dd>
+          </div>
+        </dl>
+      </Card>
+
+      <Card title="Products supplied" :padded="false">
+        <EmptyState
+          v-if="products.length === 0"
+          icon="package"
+          title="No products linked"
+          description="Link products to track their supplier cost, lead time, and preferred ordering."
+        />
+        <div v-else class="overflow-x-auto">
+          <table class="app-table">
+            <thead>
+              <tr>
+                <th class="w-32">SKU</th>
+                <th>Name</th>
+                <th>Their SKU</th>
+                <th class="text-right">Unit cost</th>
+                <th class="text-right">Lead time</th>
+                <th>Preferred</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="p in products" :key="p.id">
+                <td class="font-mono text-xs text-(--color-muted)">{{ p.sku }}</td>
+                <td>
+                  <Link :href="`/inventory/products/${p.id}`" class="font-medium text-base-content hover:text-primary transition-colors">
+                    {{ p.name }}
+                  </Link>
+                </td>
+                <td class="font-mono text-xs text-(--color-muted)">{{ p.supplier_sku || '—' }}</td>
+                <td class="text-right">{{ p.unit_cost || '—' }}</td>
+                <td class="text-right">{{ p.lead_time_days ? `${p.lead_time_days} d` : '—' }}</td>
+                <td>
+                  <Badge :variant="p.is_preferred ? 'primary' : 'neutral'">
+                    {{ p.is_preferred ? 'Yes' : 'No' }}
+                  </Badge>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </Card>
+
+      <div class="flex justify-end">
+        <Link href="/inventory/suppliers">
+          <Button variant="ghost" icon="arrow-left">Back to suppliers</Button>
+        </Link>
+      </div>
+    </div>
   </AuthenticatedLayout>
 </template>

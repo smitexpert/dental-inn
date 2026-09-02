@@ -46,7 +46,7 @@ function tableFor(label, accounts, total) {
       </UiCard>
 
       <UiCard v-for="section in [tableFor('Assets', props.assets, props.totals.assets), tableFor('Liabilities', props.liabilities, props.totals.liabilities), tableFor('Equity', props.equity, props.totals.equity)]" :key="section.label" :title="section.label">
-        <table class="w-full text-sm">
+        <table class="app-table">
           <tbody>
             <tr v-for="acc in section.accounts" :key="acc.id" class="border-b border-base-300/40">
               <td class="py-2">

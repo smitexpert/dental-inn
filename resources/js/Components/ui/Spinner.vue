@@ -1,15 +1,29 @@
 <script setup>
+/**
+ * Spinner
+ * -------
+ * DaisyUI `loading` spinner with three size variants. Wraps in a span so
+ * it can sit inline next to text.
+ */
 defineProps({
-  size: { type: String, default: 'md', validator: (v) => ['sm', 'md', 'lg'].includes(v) },
+  size: {
+    type: String,
+    default: 'md',
+    validator: (v) => ['sm', 'md', 'lg'].includes(v),
+  },
   label: { type: String, default: 'Loading…' },
 })
 
-const sizes = { sm: 'h-4 w-4 border-2', md: 'h-6 w-6 border-2', lg: 'h-10 w-10 border-4' }
+const sizeClass = {
+  sm: 'loading-sm',
+  md: 'loading-md',
+  lg: 'loading-lg',
+}
 </script>
 
 <template>
   <span
-    :class="['inline-block rounded-full border-primary border-t-transparent animate-spin', sizes[size]]"
+    :class="['loading loading-spinner', sizeClass[size]]"
     role="status"
     :aria-label="label"
   />

@@ -1,12 +1,14 @@
 <script setup>
 import { Head, Link, router } from '@inertiajs/vue3'
-import AuthenticatedLayout from '@/Layouts/Authenticated.vue'
-import UiCard from '@/Components/ui/Card.vue'
-import UiInput from '@/Components/ui/Input.vue'
-import UiSelect from '@/Components/ui/Select.vue'
-import UiPagination from '@/Components/ui/Pagination.vue'
-import UiEmptyState from '@/Components/ui/EmptyState.vue'
 import { ref, watch } from 'vue'
+import AuthenticatedLayout from '@/Layouts/Authenticated.vue'
+import PageHeader from '@/Components/ui/PageHeader.vue'
+import FilterBar from '@/Components/ui/FilterBar.vue'
+import Card from '@/Components/ui/Card.vue'
+import Badge from '@/Components/ui/Badge.vue'
+import EmptyState from '@/Components/ui/EmptyState.vue'
+import Pagination from '@/Components/ui/Pagination.vue'
+import Icon from '@/Components/ui/Icon.vue'
 
 const props = defineProps({ payments: Object, filters: Object, methods: Array })
 
@@ -27,53 +29,112 @@ function applyFilters() {
   }, 300)
 }
 watch([q, method, dateFrom, dateTo], applyFilters)
+
+function goPage(n) {
+  router.get(
+    `/billing/payments?page=${n}`,
+    { q: q.value, method: method.value, date_from: dateFrom.value, date_to: dateTo.value },
+    { preserveState: true },
+  )
+}
 </script>
 
 <template>
   <Head title="Payments" />
   <AuthenticatedLayout>
-    <UiCard title="Payments">
-      <div class="grid grid-cols-4 gap-3 mb-4">
-        <UiInput v-model="q" placeholder="Search by invoice / reference" />
-        <UiSelect v-model="method" :options="[{ label: 'All methods', value: '' }, ...methods.map((m) => ({ label: m.label, value: m.value }))]" />
-        <UiInput v-model="dateFrom" type="date" />
-        <UiInput v-model="dateTo" type="date" />
-      </div>
+    <div class="space-y-5">
+      <PageHeader
+        title="Payments"
+        subtitle="Track all payments received against issued invoices."
+        icon="credit-card"
+        eyebrow="Billing"
+      />
 
-      <UiEmptyState v-if="payments.data.length === 0" title="No payments recorded yet" />
+      <FilterBar title="Filters">
+        <template #aside>
+          <Badge variant="primary">
+            {{ payments.total }} {{ payments.total === 1 ? 'payment' : 'payments' }}
+          </Badge>
+        </template>
+        <div class="md:col-span-2">
+          <div class="relative">
+            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-(--color-muted) pointer-events-none">
+              <Icon name="search" size="sm" />
+            </span>
+            <input
+              v-model="q"
+              type="search"
+              placeholder="Search by invoice or reference"
+              class="input-shell h-10 pl-9"
+            />
+          </div>
+        </div>
+        <select v-model="method" class="input-shell h-10" @change="applyFilters">
+          <option value="">All methods</option>
+          <option v-for="m in methods" :key="m.value" :value="m.value">{{ m.label }}</option>
+        </select>
+        <input v-model="dateFrom" type="date" class="input-shell h-10" />
+        <input v-model="dateTo" type="date" class="input-shell h-10" />
+      </FilterBar>
 
-      <div v-else class="overflow-x-auto">
-        <table class="w-full text-sm">
-          <thead class="bg-base-200 text-base-content/70">
-            <tr>
-              <th class="text-left px-4 py-2">Date</th>
-              <th class="text-left px-4 py-2">Invoice</th>
-              <th class="text-left px-4 py-2">Patient</th>
-              <th class="text-right px-4 py-2">Amount</th>
-              <th class="text-left px-4 py-2">Method</th>
-              <th class="text-left px-4 py-2">Reference</th>
-              <th class="text-left px-4 py-2">Received by</th>
-              <th class="text-right px-4 py-2">Receipt</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="p in payments.data" :key="p.id" class="border-b border-base-300 last:border-b-0">
-              <td class="px-4 py-2">{{ p.payment_date }}</td>
-              <td class="px-4 py-2 text-base-content font-mono text-xs">{{ p.invoice?.invoice_number ?? '—' }}</td>
-              <td class="px-4 py-2">{{ p.invoice?.patient?.name ?? '—' }}</td>
-              <td class="px-4 py-2 text-right font-medium">{{ p.amount }}</td>
-              <td class="px-4 py-2">{{ p.method_label }}</td>
-              <td class="px-4 py-2 text-base-content/70">{{ p.reference ?? '—' }}</td>
-              <td class="px-4 py-2">{{ p.receiver?.name ?? '—' }}</td>
-              <td class="px-4 py-2 text-right">
-                <Link :href="`/billing/payments/${p.id}/receipt`" class="text-primary hover:underline">View</Link>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <Card :padded="false">
+        <EmptyState
+          v-if="payments.data.length === 0"
+          icon="credit-card"
+          title="No payments recorded yet"
+          description="Record a payment against an invoice to see it here."
+        />
 
-      <div class="mt-4"><UiPagination :paginator="payments" /></div>
-    </UiCard>
+        <div v-else class="overflow-x-auto">
+          <table class="app-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Invoice</th>
+                <th>Patient</th>
+                <th class="text-right">Amount</th>
+                <th>Method</th>
+                <th>Reference</th>
+                <th>Received by</th>
+                <th class="w-24 text-right">Receipt</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="p in payments.data" :key="p.id">
+                <td class="text-(--color-muted)">{{ p.payment_date }}</td>
+                <td>
+                  <div class="font-medium font-mono text-xs">{{ p.invoice?.invoice_number ?? '—' }}</div>
+                </td>
+                <td>{{ p.invoice?.patient?.name ?? '—' }}</td>
+                <td class="text-right font-medium tabular-nums">{{ p.amount }}</td>
+                <td>{{ p.method_label }}</td>
+                <td class="text-(--color-muted)">{{ p.reference ?? '—' }}</td>
+                <td>{{ p.receiver?.name ?? '—' }}</td>
+                <td class="text-right">
+                  <Link
+                    :href="`/billing/payments/${p.id}/receipt`"
+                    class="p-1.5 rounded-md text-(--color-muted) hover:bg-base-200 hover:text-primary transition-colors inline-flex"
+                    aria-label="View receipt"
+                    title="View receipt"
+                  >
+                    <Icon name="receipt-text" size="sm" />
+                  </Link>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="px-5 pb-4">
+          <Pagination
+            :current-page="payments.current_page"
+            :last-page="payments.last_page"
+            :total="payments.total"
+            :per-page="payments.per_page"
+            @page="goPage"
+          />
+        </div>
+      </Card>
+    </div>
   </AuthenticatedLayout>
 </template>

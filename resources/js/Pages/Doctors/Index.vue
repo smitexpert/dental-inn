@@ -1,13 +1,15 @@
 <script setup>
 import { Head, Link, router } from '@inertiajs/vue3'
-import AuthenticatedLayout from '@/Layouts/Authenticated.vue'
-import UiCard from '@/Components/ui/Card.vue'
-import UiButton from '@/Components/ui/Button.vue'
-import UiBadge from '@/Components/ui/Badge.vue'
-import UiInput from '@/Components/ui/Input.vue'
-import UiSelect from '@/Components/ui/Select.vue'
-import UiSwitch from '@/Components/ui/Switch.vue'
 import { ref, watch } from 'vue'
+import AuthenticatedLayout from '@/Layouts/Authenticated.vue'
+import PageHeader from '@/Components/ui/PageHeader.vue'
+import FilterBar from '@/Components/ui/FilterBar.vue'
+import Card from '@/Components/ui/Card.vue'
+import Button from '@/Components/ui/Button.vue'
+import Badge from '@/Components/ui/Badge.vue'
+import EmptyState from '@/Components/ui/EmptyState.vue'
+import Pagination from '@/Components/ui/Pagination.vue'
+import Icon from '@/Components/ui/Icon.vue'
 
 const props = defineProps({ doctors: Object, specializations: Array, filters: Object })
 
@@ -31,92 +33,155 @@ function toggleAvailable(doctor) {
   router.post(`/doctors/${doctor.id}/toggle-availability`)
 }
 
-const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+function goPage(n) {
+  router.get(
+    `/doctors?page=${n}`,
+    { q: q.value, specialization: specialization.value },
+    { preserveState: true },
+  )
+}
 </script>
 
 <template>
   <Head title="Doctors" />
   <AuthenticatedLayout>
-    <UiCard title="Doctors">
-      <template #header>
-        <div class="flex items-center justify-between gap-3">
-          <h3 class="text-base font-semibold text-base-content">Doctors</h3>
-          <Link href="/doctors/create"><UiButton>New doctor</UiButton></Link>
-        </div>
-      </template>
-      <div class="grid grid-cols-2 gap-3 mb-4">
-        <UiInput v-model="q" placeholder="Search by name, email, or specialization" />
-        <UiSelect
-          v-model="specialization"
-          :options="[
-            { label: 'All specializations', value: null },
-            ...specializations.map((s) => ({ label: s, value: s })),
-          ]"
-        />
-      </div>
-      <div class="overflow-x-auto">
-        <table class="w-full text-sm">
-          <thead class="bg-base-200 text-base-content/70">
-            <tr>
-              <th class="text-left px-4 py-2">Doctor</th>
-              <th class="text-left px-4 py-2">Specialization</th>
-              <th class="text-left px-4 py-2">License</th>
-              <th class="text-left px-4 py-2">Fee</th>
-              <th class="text-left px-4 py-2">Status</th>
-              <th class="text-right px-4 py-2">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="d in doctors.data" :key="d.id" class="border-b border-base-300 last:border-b-0">
-              <td class="px-4 py-2 text-base-content">
-                <div class="flex items-center gap-2">
-                  <span class="inline-block h-2 w-2 rounded-full" :style="{ backgroundColor: d.color }" />
-                  <span class="font-medium">{{ d.name }}</span>
-                  <span class="text-base-content/70 text-xs">{{ d.email }}</span>
-                </div>
-              </td>
-              <td class="px-4 py-2 text-base-content/70">{{ d.specialization || '—' }}</td>
-              <td class="px-4 py-2 text-base-content/70">{{ d.license_number || '—' }}</td>
-              <td class="px-4 py-2 text-base-content/70">
-                {{ d.consultation_fee != null ? '$' + Number(d.consultation_fee).toFixed(2) : '—' }}
-              </td>
-              <td class="px-4 py-2">
-                <div class="flex items-center gap-2">
-                  <UiBadge :variant="d.is_available ? 'success' : 'danger'">{{
-                    d.is_available ? 'Available' : 'Unavailable'
-                  }}</UiBadge>
-                  <UiBadge v-if="!d.is_active" variant="warning">Inactive</UiBadge>
-                </div>
-              </td>
-              <td class="px-4 py-2 text-right">
-                <Link :href="`/doctors/${d.id}`" class="text-primary hover:text-primary mr-3 text-sm">View</Link>
-                <Link :href="`/doctors/${d.id}/edit`" class="text-primary hover:text-primary mr-3 text-sm">Edit</Link>
-                <button @click="toggleAvailable(d)" class="text-base-content/70 hover:text-base-content text-sm">
-                  {{ d.is_available ? 'Disable' : 'Enable' }}
-                </button>
-              </td>
-            </tr>
-            <tr v-if="doctors.data.length === 0">
-              <td colspan="6" class="text-center text-base-content/70 py-6">No doctors found.</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div
-        v-if="doctors.last_page > 1"
-        class="mt-3 flex items-center justify-between text-sm text-base-content/70"
+    <div class="space-y-5">
+      <PageHeader
+        title="Doctors"
+        subtitle="Manage the clinical team, schedules and availability."
+        icon="user-round"
+        eyebrow="Team"
       >
-        <span>Page {{ doctors.current_page }} of {{ doctors.last_page }}</span>
-        <div class="flex gap-1">
-          <template v-for="link in doctors.links" :key="link.label">
-            <Link
-              v-if="link.url"
-              :href="link.url"
-              class="px-2 py-1 rounded hover:bg-base-200"
-              ><!-- eslint-disable-next-line vue/no-v-text-v-html-on-component --><span v-html="link.label" /></Link>
-          </template>
+        <template #actions>
+          <Link href="/doctors/create"><Button icon="plus">New doctor</Button></Link>
+        </template>
+      </PageHeader>
+
+      <FilterBar title="Search">
+        <template #aside>
+          <Badge variant="primary">
+            {{ doctors.total }} {{ doctors.total === 1 ? 'doctor' : 'doctors' }}
+          </Badge>
+        </template>
+        <div class="md:col-span-2">
+          <div class="relative">
+            <span
+              class="absolute left-3 top-1/2 -translate-y-1/2 text-(--color-muted) pointer-events-none"
+            >
+              <Icon name="search" size="sm" />
+            </span>
+            <input
+              v-model="q"
+              type="search"
+              placeholder="Search by name, email, or specialization"
+              class="input-shell h-10 pl-9"
+            />
+          </div>
         </div>
-      </div>
-    </UiCard>
+        <select
+          v-model="specialization"
+          class="input-shell h-10"
+          @change="applyFilters"
+        >
+          <option :value="null">All specializations</option>
+          <option v-for="s in specializations" :key="s" :value="s">{{ s }}</option>
+        </select>
+      </FilterBar>
+
+      <Card :padded="false">
+        <div class="overflow-x-auto">
+          <table class="app-table">
+            <thead>
+              <tr>
+                <th>Doctor</th>
+                <th>Specialization</th>
+                <th>License</th>
+                <th class="w-28">Fee</th>
+                <th class="w-40">Status</th>
+                <th class="w-32 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="d in doctors.data" :key="d.id">
+                <td>
+                  <div class="flex items-center gap-2.5">
+                    <span
+                      class="h-8 w-8 rounded-full inline-flex items-center justify-center text-xs font-semibold shrink-0 ring-2 ring-base-100"
+                      :style="{ backgroundColor: d.color, color: '#fff' }"
+                    >
+                      {{ d.name?.split(' ').map((s) => s[0]).slice(0, 2).join('').toUpperCase() }}
+                    </span>
+                    <div class="min-w-0">
+                      <div class="font-medium">{{ d.name }}</div>
+                      <div class="text-xs text-(--color-muted)">{{ d.email }}</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="text-(--color-muted)">{{ d.specialization || '—' }}</td>
+                <td class="text-(--color-muted) font-mono text-xs">{{ d.license_number || '—' }}</td>
+                <td class="text-(--color-muted)">
+                  {{ d.consultation_fee != null ? '$' + Number(d.consultation_fee).toFixed(2) : '—' }}
+                </td>
+                <td>
+                  <Badge :variant="d.is_active ? 'success' : 'warning'" dot>
+                    {{ d.is_active ? 'Active' : 'Inactive' }}
+                  </Badge>
+                </td>
+                <td class="text-right">
+                  <div class="inline-flex items-center gap-1">
+                    <Link
+                      :href="`/doctors/${d.id}`"
+                      class="p-1.5 rounded-md text-(--color-muted) hover:bg-base-200 hover:text-primary transition-colors"
+                      :aria-label="`View ${d.name}`"
+                      :title="`View ${d.name}`"
+                    >
+                      <Icon name="eye" size="sm" />
+                    </Link>
+                    <Link
+                      :href="`/doctors/${d.id}/edit`"
+                      class="p-1.5 rounded-md text-(--color-muted) hover:bg-base-200 hover:text-primary transition-colors"
+                      :aria-label="`Edit ${d.name}`"
+                      :title="`Edit ${d.name}`"
+                    >
+                      <Icon name="edit" size="sm" />
+                    </Link>
+                    <button
+                      type="button"
+                      class="p-1.5 rounded-md text-(--color-muted) hover:bg-base-200 hover:text-primary transition-colors"
+                      :aria-label="`Toggle availability for ${d.name}`"
+                      :title="`Toggle availability for ${d.name}`"
+                      @click="toggleAvailable(d)"
+                    >
+                      <Icon :name="d.is_available ? 'user-x' : 'user-check'" size="sm" />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <EmptyState
+            v-if="doctors.data.length === 0"
+            icon="user-round"
+            title="No doctors found"
+            description="Add your first doctor to start managing schedules and appointments."
+          >
+            <template #action>
+              <Link href="/doctors/create"><Button icon="plus">New doctor</Button></Link>
+            </template>
+          </EmptyState>
+        </div>
+
+        <div class="px-5 pb-4">
+          <Pagination
+            :current-page="doctors.current_page"
+            :last-page="doctors.last_page"
+            :total="doctors.total"
+            :per-page="doctors.per_page"
+            @page="goPage"
+          />
+        </div>
+      </Card>
+    </div>
   </AuthenticatedLayout>
 </template>

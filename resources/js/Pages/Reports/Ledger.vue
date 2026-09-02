@@ -54,7 +54,7 @@ watch([dateFrom, dateTo], () => {
       </UiCard>
 
       <UiCard title="Entries">
-        <table class="w-full text-sm">
+        <table class="app-table">
           <thead class="border-b border-base-300 text-left text-base-content/70">
             <tr>
               <th class="py-2 pr-3">Date</th>
@@ -79,7 +79,7 @@ watch([dateFrom, dateTo], () => {
               </td>
               <td class="py-2 pr-3 text-right tabular-nums">{{ format(entry.amount) }}</td>
               <td class="py-2 pr-3">
-                <UiBadge v-if="entry.reference_type" variant="secondary">
+                <UiBadge v-if="entry.reference_type" variant="neutral">
                   {{ entry.reference_type }}#{{ entry.reference_id }}
                 </UiBadge>
               </td>

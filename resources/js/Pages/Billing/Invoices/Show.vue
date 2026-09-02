@@ -2,15 +2,22 @@
 import { Head, Link, router, useForm } from '@inertiajs/vue3'
 import { ref } from 'vue'
 import AuthenticatedLayout from '@/Layouts/Authenticated.vue'
-import UiCard from '@/Components/ui/Card.vue'
-import UiBadge from '@/Components/ui/Badge.vue'
-import UiButton from '@/Components/ui/Button.vue'
-import UiDialog from '@/Components/ui/Dialog.vue'
-import UiInput from '@/Components/ui/Input.vue'
-import UiSelect from '@/Components/ui/Select.vue'
-import UiField from '@/Components/ui/Form/Field.vue'
+import PageHeader from '@/Components/ui/PageHeader.vue'
+import Breadcrumbs from '@/Components/ui/Breadcrumbs.vue'
+import Card from '@/Components/ui/Card.vue'
+import Badge from '@/Components/ui/Badge.vue'
+import Button from '@/Components/ui/Button.vue'
+import Dialog from '@/Components/ui/Dialog.vue'
+import Input from '@/Components/ui/Input.vue'
+import Select from '@/Components/ui/Select.vue'
+import Field from '@/Components/ui/Form/Field.vue'
+import EmptyState from '@/Components/ui/EmptyState.vue'
+import Icon from '@/Components/ui/Icon.vue'
+import Stat from '@/Components/ui/Stat.vue'
 
 const props = defineProps({ invoice: Object })
+
+const invoice = props.invoice
 
 const paymentOpen = ref(false)
 
@@ -45,149 +52,245 @@ function cancel() {
 }
 
 function statusBadge(s) {
-  const m = { draft: 'neutral', issued: 'info', partially_paid: 'warning', paid: 'success', overdue: 'danger', cancelled: 'neutral', refunded: 'neutral' }
+  const m = {
+    draft: 'neutral',
+    issued: 'info',
+    partially_paid: 'warning',
+    paid: 'success',
+    overdue: 'danger',
+    cancelled: 'neutral',
+    refunded: 'neutral',
+  }
   return m[s] ?? 'neutral'
 }
+
+const breadcrumbs = [
+  { label: 'Invoices', href: '/billing/invoices' },
+  { label: invoice.invoice_number },
+]
 </script>
 
 <template>
   <Head :title="`Invoice ${invoice.invoice_number}`" />
   <AuthenticatedLayout>
-    <div class="space-y-4">
-      <UiCard>
-        <template #header>
-          <div class="flex items-start justify-between gap-3">
-            <div>
-              <h3 class="text-base font-semibold text-base-content">Invoice {{ invoice.invoice_number }}</h3>
-              <p class="text-xs text-base-content/70 mt-1">
-                {{ invoice.patient?.name ?? 'No patient' }}
-                <span v-if="invoice.patient">· {{ invoice.patient.patient_code }}</span>
-              </p>
-            </div>
-            <div class="flex items-center gap-2">
-              <UiBadge :variant="statusBadge(invoice.status)">{{ invoice.status_label }}</UiBadge>
-              <Link href="/billing/invoices"><UiButton variant="ghost">Back</UiButton></Link>
-            </div>
-          </div>
+    <div class="space-y-5 max-w-5xl">
+      <Breadcrumbs :items="breadcrumbs" />
+
+      <PageHeader
+        :title="`Invoice ${invoice.invoice_number}`"
+        :subtitle="invoice.patient?.name ?? 'No patient'"
+        icon="receipt-text"
+        eyebrow="Billing"
+      >
+        <template #actions>
+          <Badge :variant="statusBadge(invoice.status)" dot>{{ invoice.status_label }}</Badge>
+          <Link v-if="invoice.status === 'draft'" :href="`/billing/invoices/${invoice.id}/edit`">
+            <Button variant="outline" icon="edit">Edit</Button>
+          </Link>
+          <Link href="/billing/invoices">
+            <Button variant="ghost">Back</Button>
+          </Link>
         </template>
+      </PageHeader>
 
-        <div class="grid grid-cols-4 gap-4 text-sm">
-          <div>
-            <div class="text-base-content/70 text-xs">Invoice date</div>
-            <div class="text-base-content">{{ invoice.invoice_date }}</div>
-          </div>
-          <div>
-            <div class="text-base-content/70 text-xs">Due date</div>
-            <div class="text-base-content">{{ invoice.due_date }}</div>
-          </div>
-          <div>
-            <div class="text-base-content/70 text-xs">Created by</div>
-            <div class="text-base-content">{{ invoice.creator?.name ?? '—' }}</div>
-          </div>
-          <div>
-            <div class="text-base-content/70 text-xs">Issued at</div>
-            <div class="text-base-content">{{ invoice.issued_at ?? '—' }}</div>
-          </div>
-        </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <Stat
+          label="Total"
+          :value="invoice.total"
+          icon="banknote"
+          tone="primary"
+        />
+        <Stat
+          label="Paid"
+          :value="invoice.paid_amount"
+          icon="check-circle"
+          tone="success"
+        />
+        <Stat
+          label="Balance due"
+          :value="invoice.balance_due"
+          icon="wallet"
+          :tone="Number(invoice.balance_due) > 0 ? 'warning' : 'success'"
+        />
+        <Stat
+          label="Issued"
+          :value="invoice.invoice_date"
+          icon="calendar"
+          tone="neutral"
+          hint="Due {{ invoice.due_date }}"
+        />
+      </div>
 
-        <div class="mt-6 overflow-x-auto">
-          <table class="w-full text-sm">
-            <thead class="bg-base-200 text-base-content/70">
+      <Card title="Invoice details">
+        <dl class="grid grid-cols-2 sm:grid-cols-4 gap-x-4 gap-y-3 text-sm">
+          <div>
+            <dt class="text-(--color-muted)">Invoice date</dt>
+            <dd class="font-medium mt-0.5">{{ invoice.invoice_date }}</dd>
+          </div>
+          <div>
+            <dt class="text-(--color-muted)">Due date</dt>
+            <dd class="font-medium mt-0.5">{{ invoice.due_date }}</dd>
+          </div>
+          <div>
+            <dt class="text-(--color-muted)">Created by</dt>
+            <dd class="font-medium mt-0.5">{{ invoice.creator?.name ?? '—' }}</dd>
+          </div>
+          <div>
+            <dt class="text-(--color-muted)">Issued at</dt>
+            <dd class="font-medium mt-0.5">{{ invoice.issued_at ?? '—' }}</dd>
+          </div>
+        </dl>
+
+        <div class="mt-6 overflow-x-auto -mx-1">
+          <table class="app-table">
+            <thead>
               <tr>
-                <th class="text-left px-4 py-2">Description</th>
-                <th class="text-right px-4 py-2">Qty</th>
-                <th class="text-right px-4 py-2">Unit price</th>
-                <th class="text-right px-4 py-2">Line total</th>
+                <th>Description</th>
+                <th class="text-right w-20">Qty</th>
+                <th class="text-right w-28">Unit price</th>
+                <th class="text-right w-32">Line total</th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="item in invoice.items" :key="item.id" class="border-b border-base-300 last:border-b-0">
-                <td class="px-4 py-2 text-base-content">{{ item.description }}</td>
-                <td class="px-4 py-2 text-right text-base-content">{{ item.quantity }}</td>
-                <td class="px-4 py-2 text-right text-base-content">{{ item.unit_price }}</td>
-                <td class="px-4 py-2 text-right text-base-content font-medium">{{ item.line_total }}</td>
+              <tr v-for="item in invoice.items" :key="item.id">
+                <td class="font-medium">{{ item.description }}</td>
+                <td class="text-right text-(--color-muted) tabular-nums">{{ item.quantity }}</td>
+                <td class="text-right text-(--color-muted) tabular-nums">{{ item.unit_price }}</td>
+                <td class="text-right font-medium tabular-nums">{{ item.line_total }}</td>
               </tr>
             </tbody>
           </table>
         </div>
 
-        <div class="mt-4 flex justify-end">
-          <div class="w-64 space-y-1 text-sm">
-            <div class="flex justify-between"><span>Subtotal</span><span>{{ invoice.subtotal }}</span></div>
-            <div class="flex justify-between"><span>Discount</span><span>-{{ invoice.discount_amount }}</span></div>
-            <div class="flex justify-between"><span>Tax</span><span>{{ invoice.tax_amount }}</span></div>
-            <div class="flex justify-between font-semibold border-t border-base-300 pt-1 mt-1">
-              <span>Total</span><span>{{ invoice.total }}</span>
+        <div class="mt-6 flex justify-end">
+          <dl class="w-full max-w-xs space-y-1.5 text-sm">
+            <div class="flex justify-between text-(--color-muted)">
+              <dt>Subtotal</dt>
+              <dd class="tabular-nums text-base-content">{{ invoice.subtotal }}</dd>
             </div>
-            <div class="flex justify-between text-success"><span>Paid</span><span>{{ invoice.paid_amount }}</span></div>
-            <div class="flex justify-between font-semibold"><span>Balance due</span><span>{{ invoice.balance_due }}</span></div>
-          </div>
+            <div class="flex justify-between text-(--color-muted)">
+              <dt>Discount</dt>
+              <dd class="tabular-nums text-base-content">-{{ invoice.discount_amount }}</dd>
+            </div>
+            <div class="flex justify-between text-(--color-muted)">
+              <dt>Tax</dt>
+              <dd class="tabular-nums text-base-content">{{ invoice.tax_amount }}</dd>
+            </div>
+            <div class="flex justify-between font-semibold border-t border-(--color-line) pt-2 mt-1">
+              <dt>Total</dt>
+              <dd class="tabular-nums">{{ invoice.total }}</dd>
+            </div>
+            <div class="flex justify-between text-success">
+              <dt>Paid</dt>
+              <dd class="tabular-nums">{{ invoice.paid_amount }}</dd>
+            </div>
+            <div class="flex justify-between font-semibold text-base-content">
+              <dt>Balance due</dt>
+              <dd class="tabular-nums">{{ invoice.balance_due }}</dd>
+            </div>
+          </dl>
         </div>
 
-        <div class="mt-6 flex items-center gap-2">
-          <UiButton v-if="invoice.status === 'draft'" @click="issue">Issue invoice</UiButton>
-          <UiButton v-if="['issued', 'partially_paid', 'overdue'].includes(invoice.status)" @click="paymentOpen = true">Record payment</UiButton>
-          <UiButton v-if="invoice.status === 'draft'" variant="ghost" @click="cancel">Cancel</UiButton>
+        <div v-if="invoice.notes" class="mt-6 pt-4 border-t border-(--color-line)">
+          <h4 class="text-sm font-semibold text-base-content mb-1">Notes</h4>
+          <p class="text-sm text-(--color-muted) whitespace-pre-wrap">{{ invoice.notes }}</p>
         </div>
-      </UiCard>
 
-      <UiCard title="Payments">
-        <div v-if="invoice.payments.length === 0" class="text-sm text-base-content/70">No payments recorded yet.</div>
+        <div class="mt-6 pt-4 border-t border-(--color-line) flex flex-wrap items-center gap-2">
+          <Button
+            v-if="invoice.status === 'draft'"
+            icon-right="send"
+            @click="issue"
+          >
+            Issue invoice
+          </Button>
+          <Button
+            v-if="['issued', 'partially_paid', 'overdue'].includes(invoice.status)"
+            icon="credit-card"
+            @click="paymentOpen = true"
+          >
+            Record payment
+          </Button>
+          <Button
+            v-if="invoice.status === 'draft'"
+            variant="ghost"
+            icon="x"
+            @click="cancel"
+          >
+            Cancel invoice
+          </Button>
+        </div>
+      </Card>
+
+      <Card title="Payments" :padded="false">
+        <EmptyState
+          v-if="invoice.payments.length === 0"
+          icon="credit-card"
+          title="No payments recorded yet"
+          description="Record a payment to update the invoice balance."
+        />
         <div v-else class="overflow-x-auto">
-          <table class="w-full text-sm">
-            <thead class="bg-base-200 text-base-content/70">
+          <table class="app-table">
+            <thead>
               <tr>
-                <th class="text-left px-4 py-2">Date</th>
-                <th class="text-right px-4 py-2">Amount</th>
-                <th class="text-left px-4 py-2">Method</th>
-                <th class="text-left px-4 py-2">Reference</th>
-                <th class="text-left px-4 py-2">Received by</th>
-                <th class="text-right px-4 py-2">Receipt</th>
+                <th>Date</th>
+                <th class="text-right">Amount</th>
+                <th>Method</th>
+                <th>Reference</th>
+                <th>Received by</th>
+                <th class="w-24 text-right">Receipt</th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="p in invoice.payments" :key="p.id" class="border-b border-base-300 last:border-b-0">
-                <td class="px-4 py-2">{{ p.payment_date }}</td>
-                <td class="px-4 py-2 text-right font-medium">{{ p.amount }}</td>
-                <td class="px-4 py-2">{{ p.method_label }}</td>
-                <td class="px-4 py-2 text-base-content/70">{{ p.reference ?? '—' }}</td>
-                <td class="px-4 py-2">{{ p.receiver ?? '—' }}</td>
-                <td class="px-4 py-2 text-right">
-                  <Link :href="`/billing/payments/${p.id}/receipt`" class="text-primary hover:underline">Receipt</Link>
+              <tr v-for="p in invoice.payments" :key="p.id">
+                <td class="text-(--color-muted)">{{ p.payment_date }}</td>
+                <td class="text-right font-medium tabular-nums">{{ p.amount }}</td>
+                <td>{{ p.method_label }}</td>
+                <td class="text-(--color-muted)">{{ p.reference ?? '—' }}</td>
+                <td>{{ p.receiver ?? '—' }}</td>
+                <td class="text-right">
+                  <Link
+                    :href="`/billing/payments/${p.id}/receipt`"
+                    class="p-1.5 rounded-md text-(--color-muted) hover:bg-base-200 hover:text-primary transition-colors inline-flex"
+                    aria-label="View receipt"
+                    title="View receipt"
+                  >
+                    <Icon name="receipt-text" size="sm" />
+                  </Link>
                 </td>
               </tr>
             </tbody>
           </table>
         </div>
-      </UiCard>
+      </Card>
     </div>
 
-    <UiDialog v-model:visible="paymentOpen" header="Record payment">
+    <Dialog v-model:visible="paymentOpen" title="Record payment" size="lg">
       <form @submit.prevent="submitPayment" class="space-y-4">
-        <div class="grid grid-cols-2 gap-4">
-          <UiField label="Date" required>
-            <UiInput v-model="paymentForm.payment_date" type="date" />
-          </UiField>
-          <UiField label="Amount" required>
-            <UiInput v-model="paymentForm.amount" type="number" min="0.01" step="0.01" />
-          </UiField>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <Field label="Date" required>
+            <Input v-model="paymentForm.payment_date" type="date" />
+          </Field>
+          <Field label="Amount" required>
+            <Input v-model="paymentForm.amount" type="number" min="0.01" step="0.01" />
+          </Field>
         </div>
-        <div class="grid grid-cols-2 gap-4">
-          <UiField label="Method" required>
-            <UiSelect v-model="paymentForm.method" :options="paymentMethods" />
-          </UiField>
-          <UiField label="Currency">
-            <UiInput v-model="paymentForm.currency_code" />
-          </UiField>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <Field label="Method" required>
+            <Select v-model="paymentForm.method" :options="paymentMethods" />
+          </Field>
+          <Field label="Currency">
+            <Input v-model="paymentForm.currency_code" />
+          </Field>
         </div>
-        <UiField label="Reference">
-          <UiInput v-model="paymentForm.reference" />
-        </UiField>
-        <div class="flex justify-end gap-2">
-          <UiButton type="button" variant="ghost" @click="paymentOpen = false">Cancel</UiButton>
-          <UiButton type="submit" :processing="paymentForm.processing">Save</UiButton>
+        <Field label="Reference">
+          <Input v-model="paymentForm.reference" placeholder="Optional reference / receipt number" />
+        </Field>
+        <div class="flex justify-end gap-2 pt-2">
+          <Button type="button" variant="ghost" @click="paymentOpen = false">Cancel</Button>
+          <Button type="submit" :loading="paymentForm.processing" icon-right="check">Save</Button>
         </div>
       </form>
-    </UiDialog>
+    </Dialog>
   </AuthenticatedLayout>
 </template>

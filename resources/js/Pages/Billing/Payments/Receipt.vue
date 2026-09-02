@@ -1,63 +1,118 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3'
 import AuthenticatedLayout from '@/Layouts/Authenticated.vue'
-import UiCard from '@/Components/ui/Card.vue'
-import UiButton from '@/Components/ui/Button.vue'
+import PageHeader from '@/Components/ui/PageHeader.vue'
+import Breadcrumbs from '@/Components/ui/Breadcrumbs.vue'
+import Card from '@/Components/ui/Card.vue'
+import Button from '@/Components/ui/Button.vue'
+import Stat from '@/Components/ui/Stat.vue'
+import Icon from '@/Components/ui/Icon.vue'
 
 const props = defineProps({ payment: Object })
+
+const payment = props.payment
+
+const breadcrumbs = [
+  { label: 'Payments', href: '/billing/payments' },
+  { label: `Receipt #${payment.id}` },
+]
 </script>
 
 <template>
   <Head title="Payment receipt" />
   <AuthenticatedLayout>
-    <UiCard title="Payment receipt">
-      <template #header>
-        <div class="flex items-center justify-between gap-3">
-          <h3 class="text-base font-semibold text-base-content">Receipt #{{ payment.id }}</h3>
-          <Link href="/billing/payments"><UiButton variant="ghost">Back</UiButton></Link>
-        </div>
-      </template>
+    <div class="space-y-5 max-w-3xl">
+      <Breadcrumbs :items="breadcrumbs" />
 
-      <div class="grid grid-cols-2 gap-4 text-sm">
-        <div>
-          <div class="text-base-content/70 text-xs">Payment date</div>
-          <div class="text-base-content">{{ payment.payment_date }}</div>
-        </div>
-        <div>
-          <div class="text-base-content/70 text-xs">Method</div>
-          <div class="text-base-content">{{ payment.method_label }}</div>
-        </div>
-        <div>
-          <div class="text-base-content/70 text-xs">Amount</div>
-          <div class="text-base-content text-2xl font-semibold">{{ payment.amount }} {{ payment.currency_code }}</div>
-        </div>
-        <div>
-          <div class="text-base-content/70 text-xs">Received by</div>
-          <div class="text-base-content">{{ payment.receiver ?? '—' }}</div>
-        </div>
-        <div v-if="payment.reference" class="col-span-2">
-          <div class="text-base-content/70 text-xs">Reference</div>
-          <div class="text-base-content">{{ payment.reference }}</div>
-        </div>
+      <PageHeader
+        :title="`Receipt #${payment.id}`"
+        :subtitle="`Recorded on ${payment.payment_date}`"
+        icon="receipt-text"
+        eyebrow="Receipt"
+      >
+        <template #actions>
+          <Link href="/billing/payments">
+            <Button variant="outline" icon="arrow-right">Back to payments</Button>
+          </Link>
+        </template>
+      </PageHeader>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <Stat
+          label="Amount"
+          :value="`${payment.amount} ${payment.currency_code}`"
+          icon="banknote"
+          tone="success"
+        />
+        <Stat
+          label="Method"
+          :value="payment.method_label"
+          icon="credit-card"
+          tone="primary"
+        />
+        <Stat
+          label="Received by"
+          :value="payment.receiver ?? '—'"
+          icon="user"
+          tone="neutral"
+        />
       </div>
 
-      <div class="mt-6 border-t border-base-300 pt-4">
-        <h4 class="text-sm font-medium text-base-content mb-2">Linked invoice</h4>
-        <div v-if="payment.invoice" class="grid grid-cols-2 gap-4 text-sm">
+      <Card title="Payment details">
+        <dl class="grid grid-cols-2 sm:grid-cols-2 gap-x-4 gap-y-3 text-sm">
           <div>
-            <div class="text-base-content/70 text-xs">Invoice number</div>
-            <div class="text-base-content font-mono">{{ payment.invoice.invoice_number }}</div>
+            <dt class="text-(--color-muted)">Payment date</dt>
+            <dd class="font-medium mt-0.5">{{ payment.payment_date }}</dd>
           </div>
           <div>
-            <div class="text-base-content/70 text-xs">Patient</div>
-            <div class="text-base-content">{{ payment.invoice.patient?.name ?? '—' }}</div>
+            <dt class="text-(--color-muted)">Method</dt>
+            <dd class="font-medium mt-0.5">{{ payment.method_label }}</dd>
           </div>
           <div>
-            <div class="text-base-content/70 text-xs">Invoice total</div>
-            <div class="text-base-content">{{ payment.invoice.total }}</div>
+            <dt class="text-(--color-muted)">Currency</dt>
+            <dd class="font-medium mt-0.5">{{ payment.currency_code }}</dd>
           </div>
+          <div>
+            <dt class="text-(--color-muted)">Received by</dt>
+            <dd class="font-medium mt-0.5">{{ payment.receiver ?? '—' }}</dd>
+          </div>
+          <div v-if="payment.reference" class="col-span-2">
+            <dt class="text-(--color-muted)">Reference</dt>
+            <dd class="font-medium mt-0.5">{{ payment.reference }}</dd>
+          </div>
+          <div v-if="payment.notes" class="col-span-2">
+            <dt class="text-(--color-muted)">Notes</dt>
+            <dd class="font-medium mt-0.5 whitespace-pre-wrap">{{ payment.notes }}</dd>
+          </div>
+        </dl>
+      </Card>
+
+      <Card title="Linked invoice">
+        <div v-if="payment.invoice">
+          <dl class="grid grid-cols-2 sm:grid-cols-2 gap-x-4 gap-y-3 text-sm">
+            <div>
+              <dt class="text-(--color-muted)">Invoice number</dt>
+              <dd class="font-medium mt-0.5 font-mono">
+                <Link :href="`/billing/invoices/${payment.invoice.id}`" class="text-primary hover:underline">
+                  {{ payment.invoice.invoice_number }}
+                </Link>
+              </dd>
+            </div>
+            <div>
+              <dt class="text-(--color-muted)">Patient</dt>
+              <dd class="font-medium mt-0.5">{{ payment.invoice.patient?.name ?? '—' }}</dd>
+            </div>
+            <div>
+              <dt class="text-(--color-muted)">Invoice total</dt>
+              <dd class="font-medium mt-0.5 tabular-nums">{{ payment.invoice.total }}</dd>
+            </div>
+            <div>
+              <dt class="text-(--color-muted)">Balance due</dt>
+              <dd class="font-medium mt-0.5 tabular-nums">{{ payment.invoice.balance_due }}</dd>
+            </div>
+          </dl>
         </div>
-      </div>
-    </UiCard>
+      </Card>
+    </div>
   </AuthenticatedLayout>
 </template>

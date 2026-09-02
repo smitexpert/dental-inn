@@ -1,15 +1,19 @@
 <script setup>
 import { Head, useForm, Link } from '@inertiajs/vue3'
+import { ref } from 'vue'
 import AuthenticatedLayout from '@/Layouts/Authenticated.vue'
-import UiCard from '@/Components/ui/Card.vue'
-import UiForm from '@/Components/ui/Form/Form.vue'
-import UiField from '@/Components/ui/Form/Field.vue'
-import UiInput from '@/Components/ui/Input.vue'
-import UiSelect from '@/Components/ui/Select.vue'
-import UiButton from '@/Components/ui/Button.vue'
-import UiTextarea from '@/Components/ui/Textarea.vue'
+import PageHeader from '@/Components/ui/PageHeader.vue'
+import Breadcrumbs from '@/Components/ui/Breadcrumbs.vue'
+import Card from '@/Components/ui/Card.vue'
+import Form from '@/Components/ui/Form/Form.vue'
+import Field from '@/Components/ui/Form/Field.vue'
+import Input from '@/Components/ui/Input.vue'
+import Select from '@/Components/ui/Select.vue'
+import Button from '@/Components/ui/Button.vue'
+import Textarea from '@/Components/ui/Textarea.vue'
+import Icon from '@/Components/ui/Icon.vue'
 import PatientQuickAddDialog from '@/Components/PatientQuickAddDialog.vue'
-import { ref, watch } from 'vue'
+import AppointmentDateTimePicker from '@/Components/AppointmentDateTimePicker.vue'
 
 const props = defineProps({ doctors: Array })
 
@@ -33,128 +37,127 @@ function onPatientCreated(p) {
   form.patient_id = p.id
 }
 
-const slots = ref([])
-const loadingSlots = ref(false)
-
-async function loadSlots() {
-  if (!form.doctor_id || !form.scheduled_at) {
-    slots.value = []
-    return
-  }
-  const date = form.scheduled_at.slice(0, 10)
-  loadingSlots.value = true
-  try {
-    const res = await fetch(
-      `/appointments/slots/${form.doctor_id}?date=${date}&duration_minutes=${form.duration_minutes}`,
-      { headers: { Accept: 'application/json' } },
-    )
-    const data = await res.json()
-    slots.value = data.slots || []
-  } catch (e) {
-    slots.value = []
-  }
-  loadingSlots.value = false
-}
-
-watch(() => [form.doctor_id, form.duration_minutes], loadSlots)
-
-function pickSlot(slot) {
-  form.scheduled_at = slot.slice(0, 16)
-}
-
-function fmtSlot(slot) {
-  return new Date(slot).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
-}
-
 function submit() {
   form.post('/appointments')
 }
+
+const breadcrumbs = [
+  { label: 'Appointments', href: '/appointments' },
+  { label: 'New appointment' },
+]
 </script>
 
 <template>
   <Head title="New appointment" />
   <AuthenticatedLayout>
-    <div class="max-w-3xl">
-      <UiCard title="New appointment">
-        <UiForm @submit.prevent="submit">
-          <div class="grid grid-cols-2 gap-3">
-            <UiField label="Doctor" :error="form.errors.doctor_id" required>
-              <UiSelect
+    <div class="max-w-3xl space-y-5">
+      <Breadcrumbs :items="breadcrumbs" />
+      <PageHeader
+        title="New appointment"
+        subtitle="Pick a patient, doctor, and time — notes are optional."
+        icon="calendar-clock"
+        eyebrow="Schedule"
+      />
+
+      <Form :processing="form.processing" @submit.prevent="submit">
+        <Card title="Visit details">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Field label="Doctor" :error="form.errors.doctor_id" required>
+              <Select
                 v-model="form.doctor_id"
                 :options="doctors.map((d) => ({ label: d.name, value: d.id }))"
+                placeholder="Select doctor"
               />
-            </UiField>
-            <UiField label="Duration (minutes)" :error="form.errors.duration_minutes" required>
-              <UiInput v-model="form.duration_minutes" type="number" min="5" max="480" required />
-            </UiField>
+            </Field>
+            <Field label="Duration" :error="form.errors.duration_minutes" required>
+              <Input
+                v-model="form.duration_minutes"
+                type="number"
+                min="5"
+                max="480"
+                required
+                placeholder="30"
+              />
+              <p class="mt-1.5 text-xs text-(--color-muted)">Minutes (5–480).</p>
+            </Field>
           </div>
+        </Card>
 
-          <UiField label="Patient" :error="form.errors.patient_id" required>
-            <div v-if="selectedPatient" class="flex items-center justify-between gap-2 rounded-md border border-base-300 bg-base-200 px-3 py-2">
-              <div>
-                <div class="text-sm font-medium text-base-content">{{ selectedPatient.name }}</div>
-                <div class="text-xs text-base-content/70 font-mono">{{ selectedPatient.patient_code }} · {{ selectedPatient.phone || 'no phone' }}</div>
+        <Card title="Patient">
+          <Field label="Patient" :error="form.errors.patient_id" required>
+            <div
+              v-if="selectedPatient"
+              class="flex items-center justify-between gap-3 rounded-lg border border-(--color-line) bg-base-200 px-3 py-2.5"
+            >
+              <div class="flex items-center gap-3 min-w-0">
+                <span
+                  class="h-9 w-9 rounded-full bg-primary/10 text-primary inline-flex items-center justify-center text-sm font-semibold shrink-0"
+                >
+                  {{ selectedPatient.name?.split(' ').map((s) => s[0]).slice(0, 2).join('').toUpperCase() }}
+                </span>
+                <div class="min-w-0">
+                  <div class="text-sm font-medium text-base-content truncate">
+                    {{ selectedPatient.name }}
+                  </div>
+                  <div class="text-xs text-(--color-muted) font-mono">
+                    {{ selectedPatient.patient_code }} · {{ selectedPatient.phone || 'no phone' }}
+                  </div>
+                </div>
               </div>
-              <button type="button" class="text-xs text-primary hover:underline" @click="pickerOpen = true">
+              <Button type="button" variant="ghost" size="sm" icon="edit" @click="pickerOpen = true">
                 Change
-              </button>
+              </Button>
             </div>
             <button
               v-else
               type="button"
-              class="h-10 w-full rounded-md border border-dashed border-base-300 bg-base-100 px-3 text-sm text-base-content/70 hover:bg-base-200"
+              class="h-20 w-full rounded-lg border border-dashed border-(--color-line-strong) bg-base-100 px-3 text-sm text-(--color-muted) hover:bg-base-200 hover:border-primary/40 hover:text-base-content transition-colors inline-flex flex-col items-center justify-center gap-1.5"
               @click="pickerOpen = true"
             >
-              Select or create a patient
+              <Icon name="user" size="md" class="text-(--color-muted)" />
+              <span>Select or create a patient</span>
             </button>
-          </UiField>
+          </Field>
+        </Card>
 
-          <div class="grid grid-cols-2 gap-3">
-            <UiField label="Date" :error="form.errors.scheduled_at" required>
-              <input
-                v-model="form.scheduled_at"
-                type="date"
-                class="h-10 w-full rounded-md border border-base-300 bg-base-100 px-3 text-sm"
-                @change="loadSlots"
-              />
-            </UiField>
-            <UiField label="Time" :error="form.errors.scheduled_at" required>
-              <input
-                v-model="form.scheduled_at"
-                type="datetime-local"
-                class="h-10 w-full rounded-md border border-base-300 bg-base-100 px-3 text-sm"
-              />
-            </UiField>
-          </div>
-          <div v-if="loadingSlots" class="text-sm text-base-content/70">Loading slots…</div>
-          <div v-else-if="slots.length > 0" class="grid grid-cols-6 gap-2">
-            <button
-              v-for="s in slots"
-              :key="s"
-              type="button"
-              @click="pickSlot(s)"
-              class="h-9 rounded-md border border-base-300 bg-base-100 px-2 text-xs text-base-content hover:bg-base-200"
-              :class="{ 'ring-2 ring-primary': form.scheduled_at === s.slice(0, 16) }"
-            >
-              {{ fmtSlot(s) }}
-            </button>
-          </div>
-          <div v-else-if="form.doctor_id && form.scheduled_at" class="text-sm text-base-content/70">
-            No available slots for this date.
-          </div>
-          <UiField label="Notes" :error="form.errors.notes">
-            <UiTextarea v-model="form.notes" rows="3" />
-          </UiField>
-          <div class="flex items-center justify-end gap-2 pt-3 border-t border-base-300">
-            <Link
-              href="/appointments"
-              class="h-10 px-4 inline-flex items-center rounded-md bg-base-200 text-base-content border border-base-300 text-sm"
-              >Cancel</Link
-            >
-            <UiButton type="submit" :loading="form.processing" :disabled="!form.patient_id">Book</UiButton>
-          </div>
-        </UiForm>
-      </UiCard>
+        <Card title="When">
+          <Field label="Date & time" :error="form.errors.scheduled_at" required>
+            <AppointmentDateTimePicker
+              v-model="form.scheduled_at"
+              :doctor-id="form.doctor_id"
+              :duration-minutes="form.duration_minutes"
+              placeholder="Pick a date and time"
+            />
+            <p class="mt-1.5 text-xs text-(--color-muted)">
+              Click an available slot to book the doctor in one step, or pick any date and time manually.
+            </p>
+          </Field>
+        </Card>
+
+        <Card title="Notes">
+          <Field label="Notes" :error="form.errors.notes">
+            <Textarea
+              v-model="form.notes"
+              :rows="3"
+              placeholder="Anything staff should know before the visit…"
+            />
+          </Field>
+        </Card>
+
+        <div class="flex items-center justify-end gap-2 pt-2">
+          <Link href="/appointments">
+            <Button variant="outline">Cancel</Button>
+          </Link>
+          <Button
+            type="submit"
+            :loading="form.processing"
+            :disabled="!form.patient_id"
+            icon-right="check"
+          >
+            Book appointment
+          </Button>
+        </div>
+      </Form>
     </div>
 
     <PatientQuickAddDialog

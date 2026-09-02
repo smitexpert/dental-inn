@@ -1,12 +1,15 @@
 <script setup>
 import { Head, Link, router } from '@inertiajs/vue3'
-import AuthenticatedLayout from '@/Layouts/Authenticated.vue'
-import UiCard from '@/Components/ui/Card.vue'
-import UiButton from '@/Components/ui/Button.vue'
-import UiBadge from '@/Components/ui/Badge.vue'
-import UiInput from '@/Components/ui/Input.vue'
-import UiSelect from '@/Components/ui/Select.vue'
 import { ref, watch, computed } from 'vue'
+import AuthenticatedLayout from '@/Layouts/Authenticated.vue'
+import PageHeader from '@/Components/ui/PageHeader.vue'
+import FilterBar from '@/Components/ui/FilterBar.vue'
+import Card from '@/Components/ui/Card.vue'
+import Button from '@/Components/ui/Button.vue'
+import Badge from '@/Components/ui/Badge.vue'
+import EmptyState from '@/Components/ui/EmptyState.vue'
+import Pagination from '@/Components/ui/Pagination.vue'
+import Icon from '@/Components/ui/Icon.vue'
 
 const props = defineProps({ appointments: Object, doctors: Array, statuses: Array, filters: Object })
 
@@ -37,102 +40,187 @@ const statusLabels = computed(() => {
 
 function statusVariant(s) {
   return {
-    scheduled: 'secondary',
+    scheduled: 'info',
     confirmed: 'primary',
     checked_in: 'warning',
     completed: 'success',
     cancelled: 'danger',
     no_show: 'danger',
-  }[s] || 'secondary'
+  }[s] || 'neutral'
 }
 
 function fmt(iso) {
   if (!iso) return ''
   return new Date(iso).toLocaleString()
 }
+
+function goPage(n) {
+  router.get(
+    `/appointments?page=${n}`,
+    { q: q.value, doctor_id: doctorId.value, status: status.value, from: from.value, to: to.value },
+    { preserveState: true },
+  )
+}
+
+function clearFilters() {
+  q.value = ''
+  doctorId.value = null
+  status.value = null
+  from.value = ''
+  to.value = ''
+}
 </script>
 
 <template>
   <Head title="Appointments" />
   <AuthenticatedLayout>
-    <div class="space-y-4">
-      <div class="flex items-center justify-between">
-        <div class="flex gap-2">
-          <Link href="/appointments"><UiButton variant="secondary">List</UiButton></Link>
-          <Link href="/appointments/calendar"><UiButton variant="secondary">Calendar</UiButton></Link>
+    <div class="space-y-5">
+      <PageHeader
+        title="Appointments"
+        subtitle="Schedule, view and manage patient appointments."
+        icon="calendar-clock"
+        eyebrow="Schedule"
+      >
+        <template #actions>
+          <Link href="/appointments/calendar">
+            <Button variant="outline" icon="layout-grid">Calendar</Button>
+          </Link>
+          <Link href="/appointments/create">
+            <Button icon="plus">New appointment</Button>
+          </Link>
+        </template>
+      </PageHeader>
+
+      <FilterBar title="Search & filter">
+        <template #aside>
+          <Badge variant="primary">
+            {{ appointments.total }} {{ appointments.total === 1 ? 'appointment' : 'appointments' }}
+          </Badge>
+        </template>
+        <div class="md:col-span-2">
+          <div class="relative">
+            <span
+              class="absolute left-3 top-1/2 -translate-y-1/2 text-(--color-muted) pointer-events-none"
+            >
+              <Icon name="search" size="sm" />
+            </span>
+            <input
+              v-model="q"
+              type="search"
+              placeholder="Search patient name, phone or code"
+              class="input-shell h-10 pl-9"
+            />
+          </div>
         </div>
-        <Link href="/appointments/create"><UiButton>New appointment</UiButton></Link>
-      </div>
-      <UiCard title="Appointments">
-        <div class="grid grid-cols-5 gap-3 mb-4">
-          <UiInput v-model="q" placeholder="Search patient name or phone" />
-          <UiSelect
-            v-model="doctorId"
-            :options="[{ label: 'All doctors', value: null }, ...doctors.map((d) => ({ label: d.name, value: d.id }))]"
-          />
-          <UiSelect
-            v-model="status"
-            :options="[{ label: 'All statuses', value: null }, ...statuses.map((s) => ({ label: s.label, value: s.value }))]"
-          />
-          <input v-model="from" type="date" class="h-10 rounded-md border border-base-300 bg-base-100 px-3 text-sm" />
-          <input v-model="to" type="date" class="h-10 rounded-md border border-base-300 bg-base-100 px-3 text-sm" />
+        <select v-model="doctorId" class="input-shell h-10">
+          <option :value="null">All doctors</option>
+          <option v-for="d in doctors" :key="d.id" :value="d.id">{{ d.name }}</option>
+        </select>
+        <select v-model="status" class="input-shell h-10">
+          <option :value="null">All statuses</option>
+          <option v-for="s in statuses" :key="s.value" :value="s.value">{{ s.label }}</option>
+        </select>
+        <input
+          v-model="from"
+          type="date"
+          class="input-shell h-10"
+          aria-label="From date"
+        />
+        <input
+          v-model="to"
+          type="date"
+          class="input-shell h-10"
+          aria-label="To date"
+        />
+        <div class="md:col-span-1 flex items-center justify-end">
+          <Button variant="ghost" size="sm" icon="x" @click="clearFilters">Clear</Button>
         </div>
-        <div class="overflow-x-auto">
-          <table class="w-full text-sm">
-            <thead class="bg-base-200 text-base-content/70">
+      </FilterBar>
+
+      <Card :padded="false">
+        <div v-if="appointments.data.length === 0" class="px-5 pb-2">
+          <EmptyState
+            icon="calendar-clock"
+            title="No appointments found"
+            description="Try adjusting the filters, or schedule a new appointment."
+          >
+            <template #action>
+              <Link href="/appointments/create">
+                <Button icon="plus">New appointment</Button>
+              </Link>
+            </template>
+          </EmptyState>
+        </div>
+        <div v-else class="overflow-x-auto">
+          <table class="app-table">
+            <thead>
               <tr>
-                <th class="text-left px-4 py-2">When</th>
-                <th class="text-left px-4 py-2">Doctor</th>
-                <th class="text-left px-4 py-2">Patient</th>
-                <th class="text-left px-4 py-2">Duration</th>
-                <th class="text-left px-4 py-2">Status</th>
-                <th class="text-right px-4 py-2"></th>
+                <th>When</th>
+                <th>Doctor</th>
+                <th>Patient</th>
+                <th class="w-28">Duration</th>
+                <th class="w-36">Status</th>
+                <th class="w-32 text-right">Actions</th>
               </tr>
             </thead>
             <tbody>
-              <tr
-                v-for="a in appointments.data"
-                :key="a.id"
-                class="border-b border-base-300 last:border-b-0"
-              >
-                <td class="px-4 py-2 text-base-content">{{ fmt(a.scheduled_at) }}</td>
-                <td class="px-4 py-2 text-base-content">
-                  <div class="flex items-center gap-2">
-                    <span class="inline-block h-2 w-2 rounded-full" :style="{ backgroundColor: a.doctor_color }" />
-                    {{ a.doctor_name }}
+              <tr v-for="a in appointments.data" :key="a.id">
+                <td>
+                  <div class="font-medium">{{ fmt(a.scheduled_at) }}</div>
+                </td>
+                <td>
+                  <div class="inline-flex items-center gap-2">
+                    <span
+                      class="h-2.5 w-2.5 rounded-full ring-2 ring-base-100"
+                      :style="{ backgroundColor: a.doctor_color }"
+                    />
+                    <span>{{ a.doctor_name }}</span>
                   </div>
                 </td>
-                <td class="px-4 py-2 text-base-content">{{ a.patient_name }}</td>
-                <td class="px-4 py-2 text-base-content/70">{{ a.duration_minutes }} min</td>
-                <td class="px-4 py-2">
-                  <UiBadge :variant="statusVariant(a.status)">{{ statusLabels[a.status] || a.status }}</UiBadge>
+                <td>
+                  <div class="font-medium">{{ a.patient_name }}</div>
+                  <div class="text-xs text-(--color-muted) font-mono">{{ a.patient_code }}</div>
                 </td>
-                <td class="px-4 py-2 text-right">
-                  <Link :href="`/appointments/${a.id}`" class="text-primary hover:text-primary text-sm">View</Link>
+                <td class="text-(--color-muted)">{{ a.duration_minutes }} min</td>
+                <td>
+                  <Badge :variant="statusVariant(a.status)" dot>
+                    {{ statusLabels[a.status] || a.status }}
+                  </Badge>
                 </td>
-              </tr>
-              <tr v-if="appointments.data.length === 0">
-                <td colspan="6" class="text-center text-base-content/70 py-6">No appointments.</td>
+                <td class="text-right">
+                  <div class="inline-flex items-center gap-1">
+                    <Link
+                      :href="`/appointments/${a.id}`"
+                      class="p-1.5 rounded-md text-(--color-muted) hover:bg-base-200 hover:text-primary transition-colors"
+                      :aria-label="`View appointment with ${a.patient_name}`"
+                      :title="`View appointment with ${a.patient_name}`"
+                    >
+                      <Icon name="eye" size="sm" />
+                    </Link>
+                    <Link
+                      :href="`/appointments/${a.id}/edit`"
+                      class="p-1.5 rounded-md text-(--color-muted) hover:bg-base-200 hover:text-primary transition-colors"
+                      :aria-label="`Edit appointment with ${a.patient_name}`"
+                      :title="`Edit appointment with ${a.patient_name}`"
+                    >
+                      <Icon name="edit" size="sm" />
+                    </Link>
+                  </div>
+                </td>
               </tr>
             </tbody>
           </table>
         </div>
-        <div
-          v-if="appointments.last_page > 1"
-          class="mt-3 flex items-center justify-between text-sm text-base-content/70"
-        >
-          <span>Page {{ appointments.current_page }} of {{ appointments.last_page }}</span>
-          <div class="flex gap-1">
-            <template v-for="link in appointments.links" :key="link.label">
-              <Link
-                v-if="link.url"
-                :href="link.url"
-                class="px-2 py-1 rounded hover:bg-base-200"
-                ><!-- eslint-disable-next-line vue/no-v-text-v-html-on-component --><span v-html="link.label" /></Link>
-            </template>
-          </div>
+        <div class="px-5 pb-4">
+          <Pagination
+            :current-page="appointments.current_page"
+            :last-page="appointments.last_page"
+            :total="appointments.total"
+            :per-page="appointments.per_page"
+            @page="goPage"
+          />
         </div>
-      </UiCard>
+      </Card>
     </div>
   </AuthenticatedLayout>
 </template>

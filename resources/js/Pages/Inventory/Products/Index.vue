@@ -1,26 +1,36 @@
 <script setup>
 import { Head, Link, router } from '@inertiajs/vue3'
-import AuthenticatedLayout from '@/Layouts/Authenticated.vue'
-import UiCard from '@/Components/ui/Card.vue'
-import UiButton from '@/Components/ui/Button.vue'
-import UiBadge from '@/Components/ui/Badge.vue'
-import UiInput from '@/Components/ui/Input.vue'
-import UiSelect from '@/Components/ui/Select.vue'
-import UiSwitch from '@/Components/ui/Switch.vue'
 import { ref, watch } from 'vue'
+import AuthenticatedLayout from '@/Layouts/Authenticated.vue'
+import PageHeader from '@/Components/ui/PageHeader.vue'
+import FilterBar from '@/Components/ui/FilterBar.vue'
+import Card from '@/Components/ui/Card.vue'
+import Button from '@/Components/ui/Button.vue'
+import Badge from '@/Components/ui/Badge.vue'
+import EmptyState from '@/Components/ui/EmptyState.vue'
+import Pagination from '@/Components/ui/Pagination.vue'
+import Icon from '@/Components/ui/Icon.vue'
 
 const props = defineProps({ products: Object, filters: Object })
 
 const q = ref(props.filters.q ?? '')
 const category = ref(props.filters.category ?? '')
 const isActive = ref(
-  props.filters.is_active === '1' || props.filters.is_active === 1 || props.filters.is_active === true
+  props.filters.is_active === '1' ||
+  props.filters.is_active === 1 ||
+  props.filters.is_active === true
     ? '1'
-    : props.filters.is_active === '0' || props.filters.is_active === 0 || props.filters.is_active === false
+    : props.filters.is_active === '0' ||
+        props.filters.is_active === 0 ||
+        props.filters.is_active === false
       ? '0'
       : '',
 )
-const lowStock = ref(props.filters.low_stock === '1' || props.filters.low_stock === 1 || props.filters.low_stock === true)
+const lowStock = ref(
+  props.filters.low_stock === '1' ||
+  props.filters.low_stock === 1 ||
+  props.filters.low_stock === true,
+)
 
 let t
 function applyFilters() {
@@ -28,105 +38,175 @@ function applyFilters() {
   t = setTimeout(() => {
     router.get(
       '/inventory/products',
-      { q: q.value, category: category.value, is_active: isActive.value, low_stock: lowStock.value ? '1' : '' },
+      {
+        q: q.value,
+        category: category.value,
+        is_active: isActive.value,
+        low_stock: lowStock.value ? '1' : '',
+      },
       { preserveState: true, replace: true },
     )
   }, 300)
 }
 watch([q, category, isActive, lowStock], applyFilters)
+
+const categoryOptions = [
+  { label: 'All categories', value: '' },
+  { label: 'Consumable', value: 'consumable' },
+  { label: 'Equipment', value: 'equipment' },
+  { label: 'Medication', value: 'medication' },
+  { label: 'Material', value: 'material' },
+  { label: 'Other', value: 'other' },
+]
+
+const statusOptions = [
+  { label: 'All', value: '' },
+  { label: 'Active only', value: '1' },
+  { label: 'Inactive only', value: '0' },
+]
+
+function goPage(n) {
+  router.get(
+    `/inventory/products?page=${n}`,
+    {
+      q: q.value,
+      category: category.value,
+      is_active: isActive.value,
+      low_stock: lowStock.value ? '1' : '',
+    },
+    { preserveState: true },
+  )
+}
 </script>
 
 <template>
   <Head title="Inventory — Products" />
   <AuthenticatedLayout>
-    <UiCard title="Products">
-      <template #header>
-        <div class="flex items-center justify-between gap-3">
-          <h3 class="text-base font-semibold text-base-content">Products</h3>
-          <Link href="/inventory/products/create"><UiButton>New product</UiButton></Link>
-        </div>
-      </template>
-      <div class="grid grid-cols-4 gap-3 mb-4">
-        <UiInput v-model="q" placeholder="Search by name, SKU, barcode" />
-        <UiSelect
-          v-model="category"
-          :options="[
-            { label: 'All categories', value: '' },
-            { label: 'Consumable', value: 'consumable' },
-            { label: 'Equipment', value: 'equipment' },
-            { label: 'Medication', value: 'medication' },
-            { label: 'Material', value: 'material' },
-            { label: 'Other', value: 'other' },
-          ]"
-        />
-        <UiSelect
-          v-model="isActive"
-          :options="[
-            { label: 'All', value: '' },
-            { label: 'Active only', value: '1' },
-            { label: 'Inactive only', value: '0' },
-          ]"
-        />
-        <div class="flex items-center gap-2 px-3">
-          <UiSwitch v-model="lowStock" />
-          <span class="text-sm text-base-content">Low stock only</span>
-        </div>
-      </div>
-      <div class="overflow-x-auto">
-        <table class="w-full text-sm">
-          <thead class="bg-base-200 text-base-content/70">
-            <tr>
-              <th class="text-left px-4 py-2">SKU</th>
-              <th class="text-left px-4 py-2">Name</th>
-              <th class="text-left px-4 py-2">Category</th>
-              <th class="text-right px-4 py-2">Stock</th>
-              <th class="text-right px-4 py-2">Reorder</th>
-              <th class="text-left px-4 py-2">Status</th>
-              <th class="text-right px-4 py-2">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="p in products.data" :key="p.id" class="border-b border-base-300 last:border-b-0">
-              <td class="px-4 py-2 text-base-content/70 font-mono text-xs">{{ p.sku }}</td>
-              <td class="px-4 py-2 text-base-content font-medium">{{ p.name }}</td>
-              <td class="px-4 py-2 text-base-content/70">{{ p.category_label || p.category }}</td>
-              <td class="px-4 py-2 text-right">
-                <UiBadge :variant="p.is_low ? 'danger' : 'neutral'">
-                  {{ p.total_quantity }} {{ p.unit_short || p.unit }}
-                </UiBadge>
-              </td>
-              <td class="px-4 py-2 text-right text-base-content/70">{{ p.reorder_level }}</td>
-              <td class="px-4 py-2">
-                <UiBadge :variant="p.is_active ? 'success' : 'neutral'">
-                  {{ p.is_active ? 'Active' : 'Inactive' }}
-                </UiBadge>
-              </td>
-              <td class="px-4 py-2 text-right">
-                <Link :href="`/inventory/products/${p.id}`" class="text-primary hover:text-primary mr-3 text-sm">View</Link>
-                <Link :href="`/inventory/products/${p.id}/edit`" class="text-primary hover:text-primary text-sm">Edit</Link>
-              </td>
-            </tr>
-            <tr v-if="products.data.length === 0">
-              <td colspan="7" class="text-center text-base-content/70 py-6">No products found.</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div
-        v-if="products.last_page > 1"
-        class="mt-3 flex items-center justify-between text-sm text-base-content/70"
+    <div class="space-y-5">
+      <PageHeader
+        title="Products"
+        subtitle="Manage catalog, stock levels, and reorder thresholds."
+        icon="boxes"
+        eyebrow="Inventory"
       >
-        <span>Page {{ products.current_page }} of {{ products.last_page }}</span>
-        <div class="flex gap-1">
-          <template v-for="link in products.links" :key="link.label">
-            <Link
-              v-if="link.url"
-              :href="link.url"
-              class="px-2 py-1 rounded hover:bg-base-200"
-            ><span v-html="link.label" /></Link>
-          </template>
+        <template #actions>
+          <Link href="/inventory/low-stock">
+            <Button variant="outline" icon="alert-triangle">Low stock</Button>
+          </Link>
+          <Link href="/inventory/products/create">
+            <Button icon="plus">New product</Button>
+          </Link>
+        </template>
+      </PageHeader>
+
+      <FilterBar title="Search">
+        <template #aside>
+          <Badge variant="primary">
+            {{ products.total }} {{ products.total === 1 ? 'product' : 'products' }}
+          </Badge>
+        </template>
+        <div class="md:col-span-2">
+          <div class="relative">
+            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-(--color-muted) pointer-events-none">
+              <Icon name="search" size="sm" />
+            </span>
+            <input
+              v-model="q"
+              type="search"
+              placeholder="Search by name, SKU, barcode"
+              class="input-shell h-10 pl-9"
+            />
+          </div>
         </div>
-      </div>
-    </UiCard>
+        <select v-model="category" class="input-shell h-10" @change="applyFilters">
+          <option v-for="o in categoryOptions" :key="o.value" :value="o.value">{{ o.label }}</option>
+        </select>
+        <select v-model="isActive" class="input-shell h-10" @change="applyFilters">
+          <option v-for="o in statusOptions" :key="o.value" :value="o.value">{{ o.label }}</option>
+        </select>
+        <label class="inline-flex items-center gap-2 px-3 h-10 cursor-pointer select-none">
+          <input
+            v-model="lowStock"
+            type="checkbox"
+            class="h-4 w-4 rounded border-base-300 text-primary focus:ring-primary/30"
+            @change="applyFilters"
+          />
+          <span class="text-sm text-base-content">Low stock only</span>
+        </label>
+      </FilterBar>
+
+      <Card :padded="false">
+        <div class="overflow-x-auto">
+          <table class="app-table">
+            <thead>
+              <tr>
+                <th class="w-32">SKU</th>
+                <th>Name</th>
+                <th>Category</th>
+                <th class="w-36 text-right">Stock</th>
+                <th class="w-24 text-right">Reorder</th>
+                <th class="w-28">Status</th>
+                <th class="w-28 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="p in products.data" :key="p.id">
+                <td class="font-mono text-xs text-(--color-muted)">{{ p.sku }}</td>
+                <td>
+                  <Link :href="`/inventory/products/${p.id}`" class="font-medium text-base-content hover:text-primary transition-colors">
+                    {{ p.name }}
+                  </Link>
+                </td>
+                <td class="text-(--color-muted)">{{ p.category_label || p.category }}</td>
+                <td class="text-right">
+                  <Badge :variant="p.is_low ? 'danger' : 'success'">
+                    {{ p.total_quantity }} {{ p.unit_short || p.unit }}
+                  </Badge>
+                </td>
+                <td class="text-right text-(--color-muted)">{{ p.reorder_level }}</td>
+                <td>
+                  <Badge :variant="p.is_active ? 'success' : 'warning'" dot>
+                    {{ p.is_active ? 'Active' : 'Inactive' }}
+                  </Badge>
+                </td>
+                <td class="text-right">
+                  <div class="inline-flex items-center gap-1">
+                    <Link :href="`/inventory/products/${p.id}`" class="p-1.5 rounded-md text-(--color-muted) hover:bg-base-200 hover:text-primary transition-colors" :aria-label="`View ${p.name}`" :title="`View ${p.name}`">
+                      <Icon name="eye" size="sm" />
+                    </Link>
+                    <Link :href="`/inventory/products/${p.id}/edit`" class="p-1.5 rounded-md text-(--color-muted) hover:bg-base-200 hover:text-primary transition-colors" :aria-label="`Edit ${p.name}`" :title="`Edit ${p.name}`">
+                      <Icon name="edit" size="sm" />
+                    </Link>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <EmptyState
+            v-if="products.data.length === 0"
+            icon="boxes"
+            title="No products found"
+            description="Try adjusting your filters or add a new product to the catalog."
+          >
+            <template #action>
+              <Link href="/inventory/products/create">
+                <Button icon="plus">New product</Button>
+              </Link>
+            </template>
+          </EmptyState>
+        </div>
+
+        <div class="px-5 pb-4">
+          <Pagination
+            :current-page="products.current_page"
+            :last-page="products.last_page"
+            :total="products.total"
+            :per-page="products.per_page"
+            @page="goPage"
+          />
+        </div>
+      </Card>
+    </div>
   </AuthenticatedLayout>
 </template>
