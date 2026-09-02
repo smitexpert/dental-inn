@@ -9,7 +9,6 @@ use App\Models\BankAccount;
 use App\Models\CashMovement;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 
 /**
  * @extends Factory<CashMovement>

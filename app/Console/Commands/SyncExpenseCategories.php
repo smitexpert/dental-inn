@@ -39,6 +39,7 @@ class SyncExpenseCategories extends Command
 
             if ($exists) {
                 $skipped++;
+
                 continue;
             }
 

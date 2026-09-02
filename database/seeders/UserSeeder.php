@@ -21,5 +21,25 @@ class UserSeeder extends Seeder
                 'email_verified_at' => now(),
             ]
         )->assignRole('admin');
+
+        User::firstOrCreate(
+            ['email' => 'doctor@clinic.test'],
+            [
+                'name' => 'Dr. Demo',
+                'password' => Hash::make('password'),
+                'is_active' => true,
+                'email_verified_at' => now(),
+            ]
+        )->assignRole('doctor');
+
+        User::firstOrCreate(
+            ['email' => 'receptionist@clinic.test'],
+            [
+                'name' => 'Receptionist Demo',
+                'password' => Hash::make('password'),
+                'is_active' => true,
+                'email_verified_at' => now(),
+            ]
+        )->assignRole('receptionist');
     }
 }

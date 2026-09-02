@@ -21,5 +21,7 @@ class DatabaseSeeder extends Seeder
             SystemAccountsSeeder::class,
             NotificationTemplateSeeder::class,
         ]);
+
+        $this->command?->callSilent('expenses:sync-categories');
     }
 }
