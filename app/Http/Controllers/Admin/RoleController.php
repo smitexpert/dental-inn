@@ -70,7 +70,7 @@ class RoleController extends Controller
     {
         $this->roles->update($role, $request->validated());
 
-        return back()->with('success', 'Role updated.');
+        return redirect()->route('admin.roles.index')->with('success', 'Role updated.');
     }
 
     public function destroy(Role $role): RedirectResponse

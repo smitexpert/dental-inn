@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Database\Factories\TransferFactory;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -26,7 +27,7 @@ use Spatie\Activitylog\Support\LogOptions;
  * @property-read BankAccount $fromAccount
  * @property-read BankAccount $toAccount
  * @property-read User $performer
- * @property-read \Illuminate\Database\Eloquent\Collection<int, CashMovement> $movements
+ * @property-read Collection<int, CashMovement> $movements
  */
 class Transfer extends Model
 {

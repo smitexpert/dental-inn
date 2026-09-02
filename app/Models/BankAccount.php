@@ -6,6 +6,7 @@ namespace App\Models;
 
 use Database\Factories\BankAccountFactory;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -31,7 +32,7 @@ use Spatie\Activitylog\Support\LogOptions;
  * @property ?string $last_reconciled_balance
  * @property ?int $created_by
  * @property-read User $creator
- * @property-read \Illuminate\Database\Eloquent\Collection<int, CashMovement> $movements
+ * @property-read Collection<int, CashMovement> $movements
  */
 class BankAccount extends Model
 {
