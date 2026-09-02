@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Models\BankAccount;
+use App\Models\CashMovement;
 use App\Repositories\Contracts\BankAccountRepository;
 use App\Repositories\Contracts\CashMovementRepository;
-use App\Repositories\Contracts\TransferRepository;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use RuntimeException;
@@ -15,11 +17,19 @@ class ReconciliationService
 {
     public function __construct(
         private readonly BankAccountRepository $accounts,
-        private readonly TransferRepository $transfers,
         private readonly CashMovementRepository $movements,
         private readonly TransferService $transferService,
     ) {}
 
+    /**
+     * @return array{
+     *   account: BankAccount,
+     *   balance: string,
+     *   last_reconciled_at: ?Carbon,
+     *   last_reconciled_balance: ?string,
+     *   recent_movements: LengthAwarePaginator<int, CashMovement>,
+     * }
+     */
     public function snapshot(int $accountId): array
     {
         $account = $this->accounts->findByIdOrFail($accountId);

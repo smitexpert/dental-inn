@@ -49,6 +49,14 @@ class AppointmentResource extends JsonResource
             'cancelled_reason' => $this->cancelled_reason,
             'created_by' => $this->created_by,
             'created_at' => $this->created_at?->toIso8601String(),
+            'invoices' => $this->whenLoaded('invoices', fn () => $this->invoices->map(fn ($i) => [
+                'id' => $i->id,
+                'invoice_number' => $i->invoice_number,
+                'status' => $i->status?->value,
+                'total' => (string) $i->total,
+                'paid_amount' => (string) $i->paid_amount,
+                'balance_due' => $i->balance_due,
+            ])->all()),
         ];
     }
 }

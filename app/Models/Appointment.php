@@ -7,16 +7,18 @@ namespace App\Models;
 use App\Enums\AppointmentStatus;
 use Database\Factories\AppointmentFactory;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
 
 /**
  * @property int $id
- * @property int $patient_id
+ * @property ?int $patient_id
  * @property int $doctor_id
  * @property ?Carbon $scheduled_at
  * @property int $duration_minutes
@@ -30,6 +32,7 @@ use Spatie\Activitylog\Support\LogOptions;
  * @property-read ?Patient $patient
  * @property-read ?Doctor $doctor
  * @property-read ?User $creator
+ * @property-read Collection<int, Invoice> $invoices
  */
 class Appointment extends Model
 {
@@ -74,6 +77,14 @@ class Appointment extends Model
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    /**
+     * @return HasMany<Invoice, $this>
+     */
+    public function invoices(): HasMany
+    {
+        return $this->hasMany(Invoice::class);
     }
 
     public function endAt(): Carbon

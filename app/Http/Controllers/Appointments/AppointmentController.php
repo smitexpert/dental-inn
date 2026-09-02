@@ -85,7 +85,7 @@ class AppointmentController extends Controller
 
     public function show(Appointment $appointment): Response
     {
-        $appointment->load(['doctor.user', 'creator']);
+        $appointment->load(['doctor.user', 'creator', 'invoices.items']);
 
         return Inertia::render('Appointments/Show', [
             'appointment' => (new AppointmentResource($appointment))->resolve(),

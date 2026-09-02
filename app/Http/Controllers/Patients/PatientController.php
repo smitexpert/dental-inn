@@ -133,6 +133,15 @@ class PatientController extends Controller
     {
         $data = $request->validated();
         $data['created_by'] = $request->user()->id;
+
+        // When the front-end dialog only knows the patient's age, derive
+        // an approximate date_of_birth so the cashier doesn't have to
+        // ask for the full DOB during a walk-in booking.
+        if (isset($data['age']) && $data['age'] !== null && $data['age'] !== '' && empty($data['date_of_birth'])) {
+            $data['date_of_birth'] = now()->subYears((int) $data['age'])->toDateString();
+        }
+        unset($data['age']);
+
         $patient = $this->patients->create($data);
 
         return redirect()->back()->with([

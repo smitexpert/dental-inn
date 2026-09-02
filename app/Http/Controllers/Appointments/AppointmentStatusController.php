@@ -8,13 +8,17 @@ use App\Enums\AppointmentStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Appointment;
 use App\Repositories\Contracts\AppointmentRepository;
+use App\Services\AppointmentBillingService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class AppointmentStatusController extends Controller
 {
-    public function __construct(private readonly AppointmentRepository $appointments) {}
+    public function __construct(
+        private readonly AppointmentRepository $appointments,
+        private readonly AppointmentBillingService $billing,
+    ) {}
 
     public function update(Request $request, Appointment $appointment): RedirectResponse|JsonResponse
     {
@@ -44,6 +48,17 @@ class AppointmentStatusController extends Controller
         }
 
         $this->appointments->updateStatus($appointment, $next, $data['reason'] ?? null);
+
+        // Auto-draft a zero-priced Consultation invoice when the visit
+        // is marked Completed so the cashier can collect without
+        // remembering which doctor saw which patient. The service is
+        // idempotent — re-completion is a no-op.
+        if ($next === AppointmentStatus::Completed) {
+            $this->billing->createInvoiceForCompletedAppointment(
+                $appointment->fresh(),
+                (int) $request->user()->id,
+            );
+        }
 
         if ($request->wantsJson()) {
             return response()->json(['status' => $next->value]);

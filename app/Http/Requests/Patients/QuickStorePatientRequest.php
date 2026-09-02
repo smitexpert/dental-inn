@@ -17,7 +17,8 @@ class QuickStorePatientRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'phone' => ['required', 'string', 'max:32'],
+            'phone' => ['nullable', 'string', 'max:32'],
+            'age' => ['nullable', 'integer', 'min:0', 'max:130'],
         ];
     }
 }
