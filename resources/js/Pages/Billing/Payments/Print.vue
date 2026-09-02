@@ -289,11 +289,12 @@ onMounted(() => {
   gap: 0.25rem;
   text-align: right;
   font-size: 10pt;
-  min-width: 60mm;
+  min-width: 78mm;
 }
 .date-row {
   display: flex;
   justify-content: space-between;
+  align-items: baseline;
   gap: 1rem;
 }
 .date-label {
@@ -301,10 +302,13 @@ onMounted(() => {
   text-transform: uppercase;
   letter-spacing: 0.06em;
   font-size: 8.5pt;
+  white-space: nowrap;
 }
 .date-value {
   font-weight: 600;
   color: #111827;
+  white-space: nowrap;
+  text-align: right;
 }
 
 .section-label {

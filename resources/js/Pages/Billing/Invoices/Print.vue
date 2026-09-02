@@ -317,11 +317,12 @@ onMounted(() => {
   gap: 0.25rem;
   text-align: right;
   font-size: 10pt;
-  min-width: 60mm;
+  min-width: 78mm;
 }
 .date-row {
   display: flex;
   justify-content: space-between;
+  align-items: baseline;
   gap: 1rem;
 }
 .date-label {
@@ -329,17 +330,24 @@ onMounted(() => {
   text-transform: uppercase;
   letter-spacing: 0.06em;
   font-size: 8.5pt;
+  white-space: nowrap;
 }
 .date-value {
   font-weight: 600;
   color: #111827;
+  white-space: nowrap;
+  text-align: right;
 }
 .date-value.status {
-  padding: 0 0.4em;
+  padding: 0.05rem 0.45rem;
   border-radius: 3px;
+  display: inline-block;
 }
 .date-value.status[data-status='paid'] {
   color: #166534;
+}
+.date-value.status[data-status='partially_paid'] {
+  color: #92400e;
 }
 .date-value.status[data-status='overdue'] {
   color: #b91c1c;
