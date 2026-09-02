@@ -137,7 +137,7 @@ function statusBadge(s) {
                   </div>
                 </td>
                 <td class="text-(--color-muted)">{{ i.invoice_date }}</td>
-                <td class="text-(--color-muted)">{{ i.due_date }}</td>
+                <td class="text-(--color-muted)">{{ i.due_date || '—' }}</td>
                 <td class="text-right font-medium tabular-nums">{{ i.total }}</td>
                 <td class="text-right font-medium tabular-nums">{{ i.balance_due }}</td>
                 <td>

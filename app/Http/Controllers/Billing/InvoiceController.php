@@ -32,8 +32,32 @@ class InvoiceController extends Controller
             request()->only(['q', 'status', 'patient_id', 'date_from', 'date_to']),
         );
 
+        $rows = $page->getCollection()->map(fn (Invoice $i): array => [
+            'id' => $i->id,
+            'invoice_number' => $i->invoice_number,
+            'patient' => $i->patient ? [
+                'id' => $i->patient->id,
+                'patient_code' => $i->patient->patient_code,
+                'name' => $i->patient->name,
+            ] : null,
+            'invoice_date' => $i->invoice_date->toDateString(),
+            'due_date' => $i->due_date?->toDateString(),
+            'status' => $i->status->value,
+            'status_label' => $i->status->label(),
+            'total' => (string) $i->total,
+            'balance_due' => $i->balance_due,
+        ])->all();
+
         return Inertia::render('Billing/Invoices/Index', [
-            'invoices' => $page,
+            'invoices' => [
+                'data' => $rows,
+                'current_page' => $page->currentPage(),
+                'last_page' => $page->lastPage(),
+                'per_page' => $page->perPage(),
+                'total' => $page->total(),
+                'from' => $page->firstItem(),
+                'to' => $page->lastItem(),
+            ],
             'filters' => request()->only(['q', 'status', 'patient_id', 'date_from', 'date_to']),
             'statuses' => collect(InvoiceStatus::cases())->map(fn (InvoiceStatus $s): array => [
                 'value' => $s->value,
