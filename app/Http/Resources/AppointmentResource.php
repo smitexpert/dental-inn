@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Http\Resources;
 
+use App\Enums\InvoiceStatus;
 use App\Models\Appointment;
+use App\Models\Invoice;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -49,13 +51,28 @@ class AppointmentResource extends JsonResource
             'cancelled_reason' => $this->cancelled_reason,
             'created_by' => $this->created_by,
             'created_at' => $this->created_at?->toIso8601String(),
-            'invoices' => $this->whenLoaded('invoices', fn () => $this->invoices->map(fn ($i) => [
+            'invoices' => $this->whenLoaded('invoices', fn () => $this->invoices->map(fn (Invoice $i) => [
                 'id' => $i->id,
                 'invoice_number' => $i->invoice_number,
-                'status' => $i->status?->value,
+                'invoice_date' => $i->invoice_date->toDateString(),
+                'due_date' => $i->due_date?->toDateString(),
+                'status' => $i->status->value,
+                'status_label' => $i->status->label(),
                 'total' => (string) $i->total,
                 'paid_amount' => (string) $i->paid_amount,
                 'balance_due' => $i->balance_due,
+                'is_editable' => ! \in_array($i->status, [InvoiceStatus::Paid, InvoiceStatus::Cancelled, InvoiceStatus::Refunded], true),
+                'show_url' => route('billing.invoices.show', $i),
+                'edit_url' => route('billing.invoices.edit', $i),
+                'payments' => $i->relationLoaded('payments')
+                    ? $i->payments->map(fn ($p) => [
+                        'id' => $p->id,
+                        'payment_date' => $p->payment_date->toDateString(),
+                        'method_label' => $p->method->label(),
+                        'reference' => $p->reference,
+                        'amount' => (string) $p->amount,
+                    ])->all()
+                    : [],
             ])->all()),
         ];
     }
