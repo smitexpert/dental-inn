@@ -27,6 +27,7 @@ class ReconciliationServiceTest extends TestCase
     private function makeAccount(int $opening): BankAccount
     {
         $user = User::factory()->create();
+
         return $this->app->make(BankAccountService::class)->create([
             'name' => 'Cash',
             'type' => BankAccountType::Cash->value,

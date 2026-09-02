@@ -9,6 +9,7 @@ use App\Enums\InvoiceStatus;
 use App\Models\Appointment;
 use App\Models\Invoice;
 use App\Models\User;
+use App\Services\AppointmentBillingService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -112,7 +113,7 @@ class CompleteAppointmentTest extends TestCase
         // Hit the service directly to mimic the controller's call on a
         // re-completion (the HTTP path can't actually re-complete a
         // completed appointment because canTransitionTo rejects it).
-        $service = app(\App\Services\AppointmentBillingService::class);
+        $service = app(AppointmentBillingService::class);
         $service->createInvoiceForCompletedAppointment($appt->fresh(), $admin->id);
 
         $this->assertSame($firstCount, Invoice::query()->where('appointment_id', $appt->id)->count());

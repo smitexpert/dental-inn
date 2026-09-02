@@ -6,13 +6,13 @@ namespace Tests\Feature\Bank;
 
 use App\Enums\BankAccountType;
 use App\Enums\CashMovementType;
-use App\Models\BankAccount;
 use App\Models\CashMovement;
 use App\Models\User;
 use App\Services\BankAccountService;
 use App\Services\TransferService;
 use Database\Seeders\SystemAccountsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use RuntimeException;
 use Tests\TestCase;
 
@@ -39,22 +39,23 @@ class TransferServiceTest extends TestCase
             'bank_name' => 'Acme',
             'account_name' => 'Clinic',
             'account_number' => '123',
-            'opening_balance' => $bankBalance,
         ], $user->id);
 
-        if ($cashBalance > 0) {
-            $this->app->make(TransferService::class)->execute(
-                BankAccount::query()->where('name', 'External Adjustment')->first()->id,
-                $cash->id,
-                (string) $cashBalance,
-                null,
-                'Test setup',
-                null,
-                $user->id,
-            );
-        }
+        // Directly stamp starting balances — bypassing the TransferService keeps
+        // CashMovement rows pristine so the test only sees entries from its own
+        // setup. Production opening balances still flow through Transfers.
+        DB::table('bank_accounts')->where('id', $cash->id)->update([
+            'opening_balance' => $cashBalance,
+            'balance' => number_format($cashBalance, 4, '.', ''),
+            'updated_at' => now(),
+        ]);
+        DB::table('bank_accounts')->where('id', $bank->id)->update([
+            'opening_balance' => $bankBalance,
+            'balance' => number_format($bankBalance, 4, '.', ''),
+            'updated_at' => now(),
+        ]);
 
-        return [$user, $cash, $bank];
+        return [$user, $cash->refresh(), $bank->refresh()];
     }
 
     public function test_cash_to_bank_transfer(): void

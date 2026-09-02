@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Enums\CashMovementType;
+use App\Models\CashMovement;
+use App\Models\Transfer;
 use App\Repositories\Contracts\BankAccountRepository;
 use App\Repositories\Contracts\CashMovementRepository;
 use App\Repositories\Contracts\TransferRepository;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use RuntimeException;
@@ -21,7 +24,7 @@ class TransferService
     ) {}
 
     /**
-     * @return array{0: \App\Models\Transfer, 1: \App\Models\CashMovement, 2: \App\Models\CashMovement}
+     * @return array{0: Transfer, 1: CashMovement, 2: CashMovement}
      */
     public function execute(int $fromId, int $toId, string $amount, ?string $occurredAt, ?string $reference, ?string $note, int $userId): array
     {
@@ -46,7 +49,7 @@ class TransferService
                 throw new RuntimeException('Both accounts must be active to transfer.');
             }
 
-            if ((float) $from->balance < (float) $amount) {
+            if (! $from->is_system && (float) $from->balance < (float) $amount) {
                 throw new RuntimeException("Insufficient balance on account {$from->name}.");
             }
 
@@ -57,7 +60,7 @@ class TransferService
                 'from_account_id' => $from->id,
                 'to_account_id' => $to->id,
                 'amount' => $signed,
-                'occurred_at' => $occurredAt ? \Illuminate\Support\Carbon::parse($occurredAt) : now(),
+                'occurred_at' => $occurredAt ? Carbon::parse($occurredAt) : now(),
                 'reference' => $reference,
                 'note' => $note,
                 'transfer_group_id' => $groupId,

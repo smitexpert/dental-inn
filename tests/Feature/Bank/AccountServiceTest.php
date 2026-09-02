@@ -11,6 +11,7 @@ use App\Models\CashMovement;
 use App\Models\User;
 use App\Services\BankAccountService;
 use Database\Seeders\SystemAccountsSeeder;
+use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use RuntimeException;
 use Tests\TestCase;
@@ -88,7 +89,7 @@ class AccountServiceTest extends TestCase
             'account_number' => '111',
         ], $user->id);
 
-        $this->expectException(\Illuminate\Database\QueryException::class);
+        $this->expectException(QueryException::class);
         $this->service()->create([
             'name' => 'Acme B',
             'type' => BankAccountType::Bank->value,
