@@ -29,7 +29,7 @@ class QuickStorePatientTest extends TestCase
 
         $response = $this->actingAs($admin)
             ->from('/appointments/create')
-            ->post('/patients/quick-store', [
+            ->post('/patients/quick', [
                 'name' => 'Walk-in Patient',
                 'phone' => '+8801700000000',
             ]);
@@ -57,7 +57,7 @@ class QuickStorePatientTest extends TestCase
         $admin = User::factory()->create(['is_active' => true])->assignRole('admin');
 
         $response = $this->actingAs($admin)
-            ->post('/patients/quick-store', [
+            ->post('/patients/quick', [
                 'phone' => '+8801700000000',
             ]);
 
@@ -71,7 +71,7 @@ class QuickStorePatientTest extends TestCase
 
         $response = $this->actingAs($admin)
             ->from('/appointments/create')
-            ->post('/patients/quick-store', [
+            ->post('/patients/quick', [
                 'name' => 'Walk-in Patient',
                 // phone intentionally omitted — the dialog marks it optional
             ]);
@@ -88,7 +88,7 @@ class QuickStorePatientTest extends TestCase
 
         $response = $this->actingAs($admin)
             ->from('/appointments/create')
-            ->post('/patients/quick-store', [
+            ->post('/patients/quick', [
                 'name' => 'Walk-in Patient',
                 'age' => 30,
             ]);
@@ -110,7 +110,7 @@ class QuickStorePatientTest extends TestCase
 
         $response = $this->actingAs($admin)
             ->from('/appointments/create')
-            ->post('/patients/quick-store', [
+            ->post('/patients/quick', [
                 'name' => 'Walk-in Patient',
                 'age' => 999, // out of bounds
             ]);

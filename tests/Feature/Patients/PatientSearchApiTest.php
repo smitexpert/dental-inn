@@ -28,7 +28,7 @@ class PatientSearchApiTest extends TestCase
         Patient::factory()->create(['name' => 'John Smith', 'phone' => '+8801711111111']);
         Patient::factory()->create(['name' => 'Jane Doe', 'phone' => '+8801722222222']);
 
-        $response = $this->actingAs($admin)->getJson('/patients/api/search?q=John');
+        $response = $this->actingAs($admin)->getJson('/patients/search?q=John');
         $response->assertOk();
         $data = $response->json('data');
         $this->assertCount(1, $data);
@@ -42,7 +42,7 @@ class PatientSearchApiTest extends TestCase
             Patient::factory()->create(['name' => 'Person '.$i]);
         }
 
-        $response = $this->actingAs($admin)->getJson('/patients/api/search?limit=3');
+        $response = $this->actingAs($admin)->getJson('/patients/search?limit=3');
         $response->assertOk();
         $this->assertCount(3, $response->json('data'));
     }
@@ -52,7 +52,7 @@ class PatientSearchApiTest extends TestCase
         $admin = User::factory()->create(['is_active' => true])->assignRole('admin');
         Patient::factory()->count(3)->create();
 
-        $response = $this->actingAs($admin)->getJson('/patients/api/search?q=');
+        $response = $this->actingAs($admin)->getJson('/patients/search?q=');
         $response->assertOk();
         $this->assertCount(3, $response->json('data'));
     }

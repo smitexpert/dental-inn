@@ -35,7 +35,7 @@ watch(search, () => {
       const { data } = await axios.get('/patients/search', {
         params: { q: search.value, limit: 8 },
       })
-      results.value = data.data ?? []
+      results.value = Array.isArray(data) ? data : (data.data ?? [])
     } finally {
       searching.value = false
     }
