@@ -13,6 +13,7 @@ use App\Repositories\Contracts\PaymentRepository;
 use App\Services\PaymentService;
 use App\Settings\ClinicSettings;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 use RuntimeException;
@@ -27,29 +28,50 @@ class PaymentController extends Controller
 
     public function index(): Response
     {
-        $page = $this->payments->paginate(
-            request()->integer('per_page', 25),
-            request()->only(['q', 'method', 'date_from', 'date_to', 'invoice_id']),
-        );
+        $filters = request()->only(['q', 'method', 'date_from', 'date_to', 'invoice_id']);
+        $page = $this->payments->paginate(request()->integer('per_page', 25), $filters);
+        $aggregates = $this->payments->aggregatesFiltered($filters);
+
+        // Outstanding computed across the FULL filter set (not just the current
+        // page). Pull distinct invoice ids from the repo, then sum their open
+        // balances via a single grouped query.
+        $invoiceIds = $this->payments->distinctInvoiceIds($filters);
+
+        $outstanding = 0.0;
+        $invoiceCount = 0;
+        if ($invoiceIds !== []) {
+            $row = DB::table('invoices')
+                ->whereIn('id', $invoiceIds)
+                ->selectRaw('COALESCE(SUM(CAST(total AS DECIMAL(18,2)) - CAST(paid_amount AS DECIMAL(18,2))), 0) AS due,
+                    COUNT(*) AS invoice_count')
+                ->first();
+            $outstanding = (float) ($row->due ?? 0);
+            $invoiceCount = (int) ($row->invoice_count ?? 0);
+        }
+
+        $aggregates['outstanding'] = number_format($outstanding, 2, '.', '');
+        $aggregates['distinct_invoices_seen'] = $invoiceCount;
 
         return Inertia::render('Billing/Payments/Index', [
             'payments' => $page,
-            'filters' => request()->only(['q', 'method', 'date_from', 'date_to', 'invoice_id']),
+            'filters' => $filters,
             'methods' => collect(PaymentMethod::cases())->map(fn (PaymentMethod $m): array => [
                 'value' => $m->value,
                 'label' => $m->label(),
             ])->all(),
+            'aggregates' => $aggregates,
         ]);
     }
 
     public function store(RecordPaymentRequest $request): RedirectResponse
     {
         $data = $request->validated();
-        $data['currency_code'] = $data['currency_code'] ?? app(ClinicSettings::class)->currency_code;
-        $data['exchange_rate'] = $data['exchange_rate'] ?? 1.0;
+        $settings = app(ClinicSettings::class);
+        $data['currency_code'] ??= $settings->currency_code;
+        $data['exchange_rate'] ??= 1.0;
 
         try {
-            $payment = $this->service->record($data, $request->user()->id);
+            $this->service->record($data, $request->user()->id);
         } catch (RuntimeException $e) {
             return back()->withErrors(['amount' => $e->getMessage()]);
         }
@@ -80,6 +102,9 @@ class PaymentController extends Controller
                         'name' => $payment->invoice->patient->name,
                     ] : null,
                     'total' => (string) $payment->invoice->total,
+                    'paid_amount' => (string) $payment->invoice->paid_amount,
+                    'balance_due' => $payment->invoice->balance_due,
+                    'show_url' => route('billing.invoices.show', $payment->invoice),
                 ] : null,
             ],
         ]);

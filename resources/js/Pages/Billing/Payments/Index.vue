@@ -6,11 +6,17 @@ import PageHeader from '@/Components/ui/PageHeader.vue'
 import FilterBar from '@/Components/ui/FilterBar.vue'
 import Card from '@/Components/ui/Card.vue'
 import Badge from '@/Components/ui/Badge.vue'
+import Stat from '@/Components/ui/Stat.vue'
 import EmptyState from '@/Components/ui/EmptyState.vue'
 import Pagination from '@/Components/ui/Pagination.vue'
 import Icon from '@/Components/ui/Icon.vue'
 
-const props = defineProps({ payments: Object, filters: Object, methods: Array })
+const props = defineProps({
+  payments: Object,
+  filters: Object,
+  methods: Array,
+  aggregates: Object,
+})
 
 const q = ref(props.filters.q ?? '')
 const method = ref(props.filters.method ?? '')
@@ -49,6 +55,35 @@ function goPage(n) {
         icon="credit-card"
         eyebrow="Billing"
       />
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+        <Stat
+          label="Payments"
+          :value="aggregates?.count ?? 0"
+          :hint="`${aggregates?.distinct_invoices ?? 0} invoice${(aggregates?.distinct_invoices ?? 0) === 1 ? '' : 's'}`"
+          icon="credit-card"
+          tone="primary"
+        />
+        <Stat
+          label="Total collected"
+          :value="aggregates?.total_collected ?? '0.00'"
+          icon="banknote"
+          tone="success"
+        />
+        <Stat
+          label="Avg. payment"
+          :value="aggregates?.avg_payment ?? '0.00'"
+          icon="calculator"
+          tone="info"
+        />
+        <Stat
+          label="Outstanding"
+          :value="aggregates?.outstanding ?? '0.00'"
+          :hint="`across ${aggregates?.distinct_invoices_seen ?? 0} invoice${(aggregates?.distinct_invoices_seen ?? 0) === 1 ? '' : 's'}`"
+          icon="alert-circle"
+          tone="warning"
+        />
+      </div>
 
       <FilterBar title="Filters">
         <template #aside>

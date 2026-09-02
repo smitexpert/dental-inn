@@ -89,7 +89,7 @@ const breadcrumbs = [
 
       <Card title="Linked invoice">
         <div v-if="payment.invoice">
-          <dl class="grid grid-cols-2 sm:grid-cols-2 gap-x-4 gap-y-3 text-sm">
+          <dl class="grid grid-cols-2 sm:grid-cols-2 gap-x-4 gap-y-3 text-sm mb-4">
             <div>
               <dt class="text-(--color-muted)">Invoice number</dt>
               <dd class="font-medium mt-0.5 font-mono">
@@ -102,15 +102,28 @@ const breadcrumbs = [
               <dt class="text-(--color-muted)">Patient</dt>
               <dd class="font-medium mt-0.5">{{ payment.invoice.patient?.name ?? '—' }}</dd>
             </div>
-            <div>
-              <dt class="text-(--color-muted)">Invoice total</dt>
-              <dd class="font-medium mt-0.5 tabular-nums">{{ payment.invoice.total }}</dd>
-            </div>
-            <div>
-              <dt class="text-(--color-muted)">Balance due</dt>
-              <dd class="font-medium mt-0.5 tabular-nums">{{ payment.invoice.balance_due }}</dd>
-            </div>
           </dl>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-3 border-t border-(--color-border)">
+            <Stat
+              label="Invoice total"
+              :value="payment.invoice.total"
+              icon="file-text"
+              tone="primary"
+            />
+            <Stat
+              label="Paid"
+              :value="payment.invoice.paid_amount"
+              icon="check-circle"
+              tone="success"
+            />
+            <Stat
+              label="Balance due"
+              :value="payment.invoice.balance_due"
+              icon="alert-circle"
+              tone="warning"
+            />
+          </div>
         </div>
       </Card>
     </div>
