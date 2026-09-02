@@ -78,7 +78,7 @@ const breadcrumbs = [
                 required
                 placeholder="30"
               />
-              <p class="mt-1.5 text-xs text-(--color-muted)">Minutes (5–480).</p>
+              <p class="mt-1.5 text-xs text-muted">Minutes (5–480).</p>
             </Field>
           </div>
         </Card>
@@ -99,7 +99,7 @@ const breadcrumbs = [
                   <div class="text-sm font-medium text-base-content truncate">
                     {{ selectedPatient.name }}
                   </div>
-                  <div class="text-xs text-(--color-muted) font-mono">
+                  <div class="text-xs text-muted font-mono">
                     {{ selectedPatient.patient_code }} · {{ selectedPatient.phone || 'no phone' }}
                   </div>
                 </div>
@@ -111,10 +111,10 @@ const breadcrumbs = [
             <button
               v-else
               type="button"
-              class="h-20 w-full rounded-lg border border-dashed border-(--color-line-strong) bg-base-100 px-3 text-sm text-(--color-muted) hover:bg-base-200 hover:border-primary/40 hover:text-base-content transition-colors inline-flex flex-col items-center justify-center gap-1.5"
+              class="h-20 w-full rounded-lg border border-dashed border-(--color-line-strong) bg-base-100 px-3 text-sm text-muted hover:bg-base-200 hover:border-primary/40 hover:text-base-content transition-colors inline-flex flex-col items-center justify-center gap-1.5"
               @click="pickerOpen = true"
             >
-              <Icon name="user" size="md" class="text-(--color-muted)" />
+              <Icon name="user" size="md" class="text-muted" />
               <span>Select or create a patient</span>
             </button>
           </Field>
@@ -128,7 +128,7 @@ const breadcrumbs = [
               :duration-minutes="form.duration_minutes"
               placeholder="Pick a date and time"
             />
-            <p class="mt-1.5 text-xs text-(--color-muted)">
+            <p class="mt-1.5 text-xs text-muted">
               Click an available slot to book the doctor in one step, or pick any date and time manually.
             </p>
           </Field>

@@ -220,10 +220,10 @@ function rangeLabel() {
               >
                 <div class="flex justify-between gap-1">
                   <span class="font-medium text-base-content">{{ timeLabel(a.scheduled_at) }}</span>
-                  <span class="text-(--color-muted)">{{ a.duration_minutes }}m</span>
+                  <span class="text-muted">{{ a.duration_minutes }}m</span>
                 </div>
                 <div class="text-base-content truncate font-medium mt-0.5">{{ a.patient_name }}</div>
-                <div class="text-(--color-muted) truncate">{{ a.doctor_name }}</div>
+                <div class="text-muted truncate">{{ a.doctor_name }}</div>
               </Link>
               <p v-if="apptsFor(d).length === 0" class="text-[11px] text-(--color-subtle) text-center py-2">
                 —
@@ -261,7 +261,7 @@ function rangeLabel() {
                 <Badge :variant="statusVariant(a.status)" dot>{{ a.status_label }}</Badge>
               </div>
               <div class="text-sm text-base-content mt-1">{{ a.patient_name }}</div>
-              <div class="text-xs text-(--color-muted) mt-0.5 flex items-center gap-2">
+              <div class="text-xs text-muted mt-0.5 flex items-center gap-2">
                 <span class="inline-flex items-center gap-1.5">
                   <span
                     class="h-2 w-2 rounded-full"

@@ -98,7 +98,7 @@ const breadcrumbs = [
               id="exp-receipt"
               type="file"
               @change="(e) => form.receipt = e.target.files[0]"
-              class="block w-full text-sm text-(--color-muted) file:mr-3 file:rounded-md file:border-0 file:bg-primary/10 file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-primary hover:file:bg-primary/15"
+              class="block w-full text-sm text-muted file:mr-3 file:rounded-md file:border-0 file:bg-primary/10 file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-primary hover:file:bg-primary/15"
             />
           </Field>
         </Card>

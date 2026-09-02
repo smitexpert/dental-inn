@@ -107,14 +107,14 @@ function goPage(n) {
         </template>
         <div class="md:col-span-2">
           <div class="relative">
-            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-(--color-muted) pointer-events-none">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-muted pointer-events-none">
               <Icon name="search" size="sm" />
             </span>
             <input
               v-model="q"
               type="search"
               placeholder="Search by name, SKU, barcode"
-              class="input-shell h-10 pl-9"
+              class="input-shell h-10 pl-9 pr-9"
             />
           </div>
         </div>
@@ -151,19 +151,19 @@ function goPage(n) {
             </thead>
             <tbody>
               <tr v-for="p in products.data" :key="p.id">
-                <td class="font-mono text-xs text-(--color-muted)">{{ p.sku }}</td>
+                <td class="font-mono text-xs text-muted">{{ p.sku }}</td>
                 <td>
                   <Link :href="`/inventory/products/${p.id}`" class="font-medium text-base-content hover:text-primary transition-colors">
                     {{ p.name }}
                   </Link>
                 </td>
-                <td class="text-(--color-muted)">{{ p.category_label || p.category }}</td>
+                <td class="text-muted">{{ p.category_label || p.category }}</td>
                 <td class="text-right">
                   <Badge :variant="p.is_low ? 'danger' : 'success'">
                     {{ p.total_quantity }} {{ p.unit_short || p.unit }}
                   </Badge>
                 </td>
-                <td class="text-right text-(--color-muted)">{{ p.reorder_level }}</td>
+                <td class="text-right text-muted">{{ p.reorder_level }}</td>
                 <td>
                   <Badge :variant="p.is_active ? 'success' : 'warning'" dot>
                     {{ p.is_active ? 'Active' : 'Inactive' }}
@@ -171,10 +171,10 @@ function goPage(n) {
                 </td>
                 <td class="text-right">
                   <div class="inline-flex items-center gap-1">
-                    <Link :href="`/inventory/products/${p.id}`" class="p-1.5 rounded-md text-(--color-muted) hover:bg-base-200 hover:text-primary transition-colors" :aria-label="`View ${p.name}`" :title="`View ${p.name}`">
+                    <Link :href="`/inventory/products/${p.id}`" class="p-1.5 rounded-md text-muted hover:bg-base-200 hover:text-primary transition-colors" :aria-label="`View ${p.name}`" :title="`View ${p.name}`">
                       <Icon name="eye" size="sm" />
                     </Link>
-                    <Link :href="`/inventory/products/${p.id}/edit`" class="p-1.5 rounded-md text-(--color-muted) hover:bg-base-200 hover:text-primary transition-colors" :aria-label="`Edit ${p.name}`" :title="`Edit ${p.name}`">
+                    <Link :href="`/inventory/products/${p.id}/edit`" class="p-1.5 rounded-md text-muted hover:bg-base-200 hover:text-primary transition-colors" :aria-label="`Edit ${p.name}`" :title="`Edit ${p.name}`">
                       <Icon name="edit" size="sm" />
                     </Link>
                   </div>

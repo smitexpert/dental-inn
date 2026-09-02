@@ -42,7 +42,7 @@ defineEmits(['update:modelValue'])
     </button>
     <span v-if="label || description" class="flex flex-col">
       <span v-if="label" class="text-sm font-medium text-base-content">{{ label }}</span>
-      <span v-if="description" class="text-xs text-(--color-muted)">{{ description }}</span>
+      <span v-if="description" class="text-xs text-muted">{{ description }}</span>
     </span>
   </label>
 </template>

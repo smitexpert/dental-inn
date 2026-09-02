@@ -74,7 +74,7 @@ const fmt = (n) => Number(n ?? 0).toLocaleString(undefined, { minimumFractionDig
         <div class="md:col-span-2">
           <div class="relative">
             <span
-              class="absolute left-3 top-1/2 -translate-y-1/2 text-(--color-muted) pointer-events-none"
+              class="absolute inset-y-0 left-0 flex items-center pl-3 text-muted pointer-events-none"
             >
               <Icon name="search" size="sm" />
             </span>
@@ -82,7 +82,7 @@ const fmt = (n) => Number(n ?? 0).toLocaleString(undefined, { minimumFractionDig
               v-model="q"
               type="search"
               placeholder="Search reference or note…"
-              class="input-shell h-10 pl-9"
+              class="input-shell h-10 pl-9 pr-9"
             />
           </div>
         </div>
@@ -109,7 +109,7 @@ const fmt = (n) => Number(n ?? 0).toLocaleString(undefined, { minimumFractionDig
             </thead>
             <tbody>
               <tr v-for="t in transfers.data" :key="t.id">
-                <td class="text-(--color-muted)">{{ t.occurred_at }}</td>
+                <td class="text-muted">{{ t.occurred_at }}</td>
                 <td>
                   <div class="flex items-center gap-2.5">
                     <span
@@ -121,14 +121,14 @@ const fmt = (n) => Number(n ?? 0).toLocaleString(undefined, { minimumFractionDig
                       <p class="font-medium text-base-content">
                         {{ t.from_account?.name || '—' }}
                       </p>
-                      <p v-if="t.from_account?.bank_name" class="text-xs text-(--color-muted)">
+                      <p v-if="t.from_account?.bank_name" class="text-xs text-muted">
                         {{ t.from_account.bank_name }}
                       </p>
                     </div>
                   </div>
                 </td>
                 <td>
-                  <Icon name="arrow-right" size="sm" class="text-(--color-muted)" />
+                  <Icon name="arrow-right" size="sm" class="text-muted" />
                 </td>
                 <td>
                   <div class="flex items-center gap-2.5">
@@ -141,7 +141,7 @@ const fmt = (n) => Number(n ?? 0).toLocaleString(undefined, { minimumFractionDig
                       <p class="font-medium text-base-content">
                         {{ t.to_account?.name || '—' }}
                       </p>
-                      <p v-if="t.to_account?.bank_name" class="text-xs text-(--color-muted)">
+                      <p v-if="t.to_account?.bank_name" class="text-xs text-muted">
                         {{ t.to_account.bank_name }}
                       </p>
                     </div>
@@ -150,11 +150,11 @@ const fmt = (n) => Number(n ?? 0).toLocaleString(undefined, { minimumFractionDig
                 <td class="text-right font-semibold tabular-nums">
                   {{ fmt(t.amount) }} {{ currency }}
                 </td>
-                <td class="text-(--color-muted)">{{ t.reference || '—' }}</td>
+                <td class="text-muted">{{ t.reference || '—' }}</td>
                 <td class="text-right">
                   <Link
                     :href="route('bank.transfers.show', t.id)"
-                    class="p-1.5 rounded-md text-(--color-muted) hover:bg-base-200 hover:text-primary transition-colors"
+                    class="p-1.5 rounded-md text-muted hover:bg-base-200 hover:text-primary transition-colors"
                     :aria-label="`View transfer ${t.id}`"
                     :title="`View transfer ${t.id}`"
                   >

@@ -41,7 +41,7 @@ const wrapperClass = computed(() => {
       <slot name="header">
         <div>
           <h3 class="app-section-title text-base-content">{{ title }}</h3>
-          <p v-if="subtitle" class="text-xs text-(--color-muted) mt-0.5">{{ subtitle }}</p>
+          <p v-if="subtitle" class="text-xs text-muted mt-0.5">{{ subtitle }}</p>
         </div>
       </slot>
       <div v-if="$slots.actions" class="flex items-center gap-2 shrink-0">

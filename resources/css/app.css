@@ -184,7 +184,7 @@ table,
   @apply text-primary underline-offset-4 hover:underline transition-colors;
 }
 .app-muted {
-  @apply text-(--color-muted);
+  @apply text-muted;
 }
 .app-subtle {
   @apply text-(--color-subtle);

@@ -72,19 +72,19 @@ const breadcrumbs = [
       <Card title="Account details">
         <dl class="grid grid-cols-2 sm:grid-cols-2 gap-x-4 gap-y-3 text-sm">
           <div>
-            <dt class="text-(--color-muted)">Code</dt>
+            <dt class="text-muted">Code</dt>
             <dd class="font-medium mt-0.5 font-mono">{{ account.code }}</dd>
           </div>
           <div>
-            <dt class="text-(--color-muted)">Name</dt>
+            <dt class="text-muted">Name</dt>
             <dd class="font-medium mt-0.5">{{ account.name }}</dd>
           </div>
           <div>
-            <dt class="text-(--color-muted)">Type</dt>
+            <dt class="text-muted">Type</dt>
             <dd class="font-medium mt-0.5">{{ account.type_label }}</dd>
           </div>
           <div>
-            <dt class="text-(--color-muted)">Parent</dt>
+            <dt class="text-muted">Parent</dt>
             <dd class="font-medium mt-0.5">
               <Link
                 v-if="account.parent_code"

@@ -60,7 +60,7 @@ const breadcrumbs = [
         <Avatar :name="user.name" size="lg" />
         <div class="min-w-0">
           <p class="font-medium">{{ user.name }}</p>
-          <p class="text-sm text-(--color-muted)">
+          <p class="text-sm text-muted">
             {{ user.email }}
           </p>
         </div>

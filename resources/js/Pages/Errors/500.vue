@@ -14,7 +14,7 @@ import Icon from '@/Components/ui/Icon.vue'
       </div>
       <p class="app-section-title mt-5">Error 500</p>
       <h1 class="text-2xl font-semibold text-base-content mt-1">Something went wrong</h1>
-      <p class="text-sm text-(--color-muted) mt-2 max-w-sm mx-auto">
+      <p class="text-sm text-muted mt-2 max-w-sm mx-auto">
         An unexpected error occurred on our end. Please try again in a moment,
         or head back to the dashboard.
       </p>

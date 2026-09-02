@@ -79,27 +79,27 @@ const breadcrumbs = [
       <Card title="Expense details">
         <dl class="grid grid-cols-2 sm:grid-cols-2 gap-x-4 gap-y-3 text-sm">
           <div>
-            <dt class="text-(--color-muted)">Date</dt>
+            <dt class="text-muted">Date</dt>
             <dd class="font-medium mt-0.5">{{ expense.expense_date }}</dd>
           </div>
           <div>
-            <dt class="text-(--color-muted)">Category</dt>
+            <dt class="text-muted">Category</dt>
             <dd class="font-medium mt-0.5">{{ expense.category.name }}</dd>
           </div>
           <div>
-            <dt class="text-(--color-muted)">Vendor</dt>
+            <dt class="text-muted">Vendor</dt>
             <dd class="font-medium mt-0.5">{{ expense.vendor ?? '—' }}</dd>
           </div>
           <div>
-            <dt class="text-(--color-muted)">Submitted by</dt>
+            <dt class="text-muted">Submitted by</dt>
             <dd class="font-medium mt-0.5">{{ expense.creator ?? '—' }}</dd>
           </div>
           <div v-if="expense.approver" class="col-span-2">
-            <dt class="text-(--color-muted)">Approved by</dt>
+            <dt class="text-muted">Approved by</dt>
             <dd class="font-medium mt-0.5">{{ expense.approver }} on {{ expense.approved_at }}</dd>
           </div>
           <div v-if="expense.description" class="col-span-2">
-            <dt class="text-(--color-muted)">Description</dt>
+            <dt class="text-muted">Description</dt>
             <dd class="font-medium mt-0.5 whitespace-pre-wrap">{{ expense.description }}</dd>
           </div>
         </dl>

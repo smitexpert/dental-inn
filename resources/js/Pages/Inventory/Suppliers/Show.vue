@@ -44,19 +44,19 @@ const breadcrumbs = computed(() => [
       <Card title="Contact">
         <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-3 text-sm">
           <div>
-            <dt class="text-(--color-muted)">Phone</dt>
+            <dt class="text-muted">Phone</dt>
             <dd class="font-medium mt-0.5">{{ supplier.phone || '—' }}</dd>
           </div>
           <div>
-            <dt class="text-(--color-muted)">Email</dt>
+            <dt class="text-muted">Email</dt>
             <dd class="font-medium mt-0.5">{{ supplier.email || '—' }}</dd>
           </div>
           <div class="sm:col-span-2">
-            <dt class="text-(--color-muted)">Address</dt>
+            <dt class="text-muted">Address</dt>
             <dd class="font-medium mt-0.5 whitespace-pre-line">{{ supplier.address || '—' }}</dd>
           </div>
           <div v-if="supplier.notes" class="sm:col-span-2">
-            <dt class="text-(--color-muted)">Notes</dt>
+            <dt class="text-muted">Notes</dt>
             <dd class="font-medium mt-0.5 whitespace-pre-line">{{ supplier.notes }}</dd>
           </div>
         </dl>
@@ -83,13 +83,13 @@ const breadcrumbs = computed(() => [
             </thead>
             <tbody>
               <tr v-for="p in products" :key="p.id">
-                <td class="font-mono text-xs text-(--color-muted)">{{ p.sku }}</td>
+                <td class="font-mono text-xs text-muted">{{ p.sku }}</td>
                 <td>
                   <Link :href="`/inventory/products/${p.id}`" class="font-medium text-base-content hover:text-primary transition-colors">
                     {{ p.name }}
                   </Link>
                 </td>
-                <td class="font-mono text-xs text-(--color-muted)">{{ p.supplier_sku || '—' }}</td>
+                <td class="font-mono text-xs text-muted">{{ p.supplier_sku || '—' }}</td>
                 <td class="text-right">{{ p.unit_cost || '—' }}</td>
                 <td class="text-right">{{ p.lead_time_days ? `${p.lead_time_days} d` : '—' }}</td>
                 <td>

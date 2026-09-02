@@ -129,7 +129,7 @@ const typeTone = (t) => ({ cash: 'success', bank: 'primary', external: 'info' })
                       </span>
                       <div class="min-w-0">
                         <p class="font-medium text-base-content">{{ a.name }}</p>
-                        <p class="text-xs text-(--color-muted)">
+                        <p class="text-xs text-muted">
                           {{ a.account_number || '—' }}
                         </p>
                       </div>
@@ -138,11 +138,11 @@ const typeTone = (t) => ({ cash: 'success', bank: 'primary', external: 'info' })
                   <td>
                     <Badge :variant="typeTone(a.type)">{{ a.type }}</Badge>
                   </td>
-                  <td class="text-(--color-muted)">{{ a.bank_name || '—' }}</td>
+                  <td class="text-muted">{{ a.bank_name || '—' }}</td>
                   <td class="text-right font-semibold tabular-nums">
                     {{ fmt(a.balance) }} {{ currency }}
                   </td>
-                  <td class="text-(--color-muted)">
+                  <td class="text-muted">
                     {{ a.last_reconciled_at || 'Never' }}
                   </td>
                 </tr>
@@ -165,7 +165,7 @@ const typeTone = (t) => ({ cash: 'success', bank: 'primary', external: 'info' })
                 </span>
                 <span class="min-w-0">
                   <span class="block text-sm font-medium text-base-content">Add account</span>
-                  <span class="block text-xs text-(--color-muted)">
+                  <span class="block text-xs text-muted">
                     Bank, cash or external
                   </span>
                 </span>
@@ -173,7 +173,7 @@ const typeTone = (t) => ({ cash: 'success', bank: 'primary', external: 'info' })
               <Icon
                 name="chevron-right"
                 size="sm"
-                class="text-(--color-muted) group-hover:text-primary transition-colors"
+                class="text-muted group-hover:text-primary transition-colors"
               />
             </Link>
             <Link
@@ -188,13 +188,13 @@ const typeTone = (t) => ({ cash: 'success', bank: 'primary', external: 'info' })
                 </span>
                 <span class="min-w-0">
                   <span class="block text-sm font-medium text-base-content">Record transfer</span>
-                  <span class="block text-xs text-(--color-muted)">Move funds between accounts</span>
+                  <span class="block text-xs text-muted">Move funds between accounts</span>
                 </span>
               </span>
               <Icon
                 name="chevron-right"
                 size="sm"
-                class="text-(--color-muted) group-hover:text-primary transition-colors"
+                class="text-muted group-hover:text-primary transition-colors"
               />
             </Link>
             <Link
@@ -209,13 +209,13 @@ const typeTone = (t) => ({ cash: 'success', bank: 'primary', external: 'info' })
                 </span>
                 <span class="min-w-0">
                   <span class="block text-sm font-medium text-base-content">Reconcile</span>
-                  <span class="block text-xs text-(--color-muted)">Match counted vs recorded</span>
+                  <span class="block text-xs text-muted">Match counted vs recorded</span>
                 </span>
               </span>
               <Icon
                 name="chevron-right"
                 size="sm"
-                class="text-(--color-muted) group-hover:text-primary transition-colors"
+                class="text-muted group-hover:text-primary transition-colors"
               />
             </Link>
             <Link
@@ -230,13 +230,13 @@ const typeTone = (t) => ({ cash: 'success', bank: 'primary', external: 'info' })
                 </span>
                 <span class="min-w-0">
                   <span class="block text-sm font-medium text-base-content">Transfer history</span>
-                  <span class="block text-xs text-(--color-muted)">View all transfers</span>
+                  <span class="block text-xs text-muted">View all transfers</span>
                 </span>
               </span>
               <Icon
                 name="chevron-right"
                 size="sm"
-                class="text-(--color-muted) group-hover:text-primary transition-colors"
+                class="text-muted group-hover:text-primary transition-colors"
               />
             </Link>
           </div>

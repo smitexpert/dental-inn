@@ -144,7 +144,7 @@ const breadcrumbs = [
                 >
                   {{ appointment.patient.name }}
                 </Link>
-                <div class="text-xs text-(--color-muted) font-mono">
+                <div class="text-xs text-muted font-mono">
                   {{ appointment.patient.patient_code }}
                 </div>
               </div>
@@ -153,20 +153,20 @@ const breadcrumbs = [
               <div>
                 <dt class="app-section-title mb-1">Phone</dt>
                 <dd class="font-medium inline-flex items-center gap-1.5">
-                  <Icon name="phone" size="xs" class="text-(--color-muted)" />
+                  <Icon name="phone" size="xs" class="text-muted" />
                   {{ appointment.patient.phone || '—' }}
                 </dd>
               </div>
               <div v-if="appointment.patient.email">
                 <dt class="app-section-title mb-1">Email</dt>
                 <dd class="font-medium inline-flex items-center gap-1.5 break-all">
-                  <Icon name="mail" size="xs" class="text-(--color-muted)" />
+                  <Icon name="mail" size="xs" class="text-muted" />
                   {{ appointment.patient.email }}
                 </dd>
               </div>
             </dl>
           </div>
-          <p v-else class="text-sm text-(--color-muted)">Patient not linked.</p>
+          <p v-else class="text-sm text-muted">Patient not linked.</p>
         </Card>
       </div>
 
@@ -189,7 +189,7 @@ const breadcrumbs = [
       </Card>
 
       <Card v-if="transitions.length > 0" title="Status actions">
-        <p class="text-sm text-(--color-muted) mb-3">
+        <p class="text-sm text-muted mb-3">
           Update the visit state. Cancellation or no-show will prompt for a reason.
         </p>
         <div class="flex flex-wrap gap-2">
@@ -231,7 +231,7 @@ const breadcrumbs = [
                 <Link :href="inv.show_url" class="font-mono text-base-content hover:text-primary hover:underline font-medium">
                   {{ inv.invoice_number }}
                 </Link>
-                <div class="text-xs text-(--color-muted) mt-1">
+                <div class="text-xs text-muted mt-1">
                   Issued {{ inv.invoice_date }} · due {{ inv.due_date }}
                 </div>
               </div>
@@ -240,7 +240,7 @@ const breadcrumbs = [
                 <Link v-if="inv.is_editable" :href="inv.edit_url">
                   <Button variant="outline" size="sm" icon="edit">Edit</Button>
                 </Link>
-                <span v-else class="text-xs text-(--color-muted) italic">Read-only</span>
+                <span v-else class="text-xs text-muted italic">Read-only</span>
               </div>
             </div>
             <dl class="mt-3 grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
@@ -269,7 +269,7 @@ const breadcrumbs = [
                   :key="p.id"
                   class="flex items-center justify-between"
                 >
-                  <span class="text-(--color-muted)">
+                  <span class="text-muted">
                     {{ p.payment_date }} · {{ p.method_label }}
                     <span v-if="p.reference"> · {{ p.reference }}</span>
                   </span>

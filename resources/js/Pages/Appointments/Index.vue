@@ -100,7 +100,7 @@ function clearFilters() {
         <div class="md:col-span-2">
           <div class="relative">
             <span
-              class="absolute left-3 top-1/2 -translate-y-1/2 text-(--color-muted) pointer-events-none"
+              class="absolute inset-y-0 left-0 flex items-center pl-3 text-muted pointer-events-none"
             >
               <Icon name="search" size="sm" />
             </span>
@@ -108,7 +108,7 @@ function clearFilters() {
               v-model="q"
               type="search"
               placeholder="Search patient name, phone or code"
-              class="input-shell h-10 pl-9"
+              class="input-shell h-10 pl-9 pr-9"
             />
           </div>
         </div>
@@ -179,9 +179,9 @@ function clearFilters() {
                 </td>
                 <td>
                   <div class="font-medium">{{ a.patient_name }}</div>
-                  <div class="text-xs text-(--color-muted) font-mono">{{ a.patient_code }}</div>
+                  <div class="text-xs text-muted font-mono">{{ a.patient_code }}</div>
                 </td>
-                <td class="text-(--color-muted)">{{ a.duration_minutes }} min</td>
+                <td class="text-muted">{{ a.duration_minutes }} min</td>
                 <td>
                   <Badge :variant="statusVariant(a.status)" dot>
                     {{ statusLabels[a.status] || a.status }}
@@ -191,7 +191,7 @@ function clearFilters() {
                   <div class="inline-flex items-center gap-1">
                     <Link
                       :href="`/appointments/${a.id}`"
-                      class="p-1.5 rounded-md text-(--color-muted) hover:bg-base-200 hover:text-primary transition-colors"
+                      class="p-1.5 rounded-md text-muted hover:bg-base-200 hover:text-primary transition-colors"
                       :aria-label="`View appointment with ${a.patient_name}`"
                       :title="`View appointment with ${a.patient_name}`"
                     >
@@ -199,7 +199,7 @@ function clearFilters() {
                     </Link>
                     <Link
                       :href="`/appointments/${a.id}/edit`"
-                      class="p-1.5 rounded-md text-(--color-muted) hover:bg-base-200 hover:text-primary transition-colors"
+                      class="p-1.5 rounded-md text-muted hover:bg-base-200 hover:text-primary transition-colors"
                       :aria-label="`Edit appointment with ${a.patient_name}`"
                       :title="`Edit appointment with ${a.patient_name}`"
                     >

@@ -52,14 +52,14 @@ function logout() {
       >
         <div class="px-3 py-3 app-divider">
           <p class="text-sm font-semibold text-base-content truncate">{{ user?.name }}</p>
-          <p class="text-xs text-(--color-muted) truncate">{{ user?.email }}</p>
+          <p class="text-xs text-muted truncate">{{ user?.email }}</p>
         </div>
         <Link
           href="/profile"
           class="flex items-center gap-2 px-3 py-2 text-sm text-base-content hover:bg-base-200 transition-colors"
           role="menuitem"
         >
-          <Icon name="user" size="sm" class="text-(--color-muted)" />
+          <Icon name="user" size="sm" class="text-muted" />
           Profile
         </Link>
         <button

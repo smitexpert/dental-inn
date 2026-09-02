@@ -28,7 +28,7 @@ defineProps({
           {{ label }}
           <span v-if="required" class="text-error">*</span>
         </label>
-        <p v-if="description" class="text-xs text-(--color-muted) mt-0.5">
+        <p v-if="description" class="text-xs text-muted mt-0.5">
           {{ description }}
         </p>
       </div>
@@ -37,7 +37,7 @@ defineProps({
       </div>
     </div>
     <slot />
-    <p v-if="hint && !error" class="mt-1.5 text-xs text-(--color-muted)">{{ hint }}</p>
+    <p v-if="hint && !error" class="mt-1.5 text-xs text-muted">{{ hint }}</p>
     <p v-if="error" class="mt-1.5 text-xs text-error">{{ error }}</p>
   </div>
 </template>

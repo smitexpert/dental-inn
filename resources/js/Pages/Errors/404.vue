@@ -14,7 +14,7 @@ import Icon from '@/Components/ui/Icon.vue'
       </div>
       <p class="app-section-title mt-5">Error 404</p>
       <h1 class="text-2xl font-semibold text-base-content mt-1">Page not found</h1>
-      <p class="text-sm text-(--color-muted) mt-2 max-w-sm mx-auto">
+      <p class="text-sm text-muted mt-2 max-w-sm mx-auto">
         The page you're looking for doesn't exist or has been moved. Check
         the URL, or head back to the dashboard.
       </p>

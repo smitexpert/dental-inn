@@ -78,7 +78,7 @@ const breadcrumbs = [
             </thead>
             <tbody>
               <tr v-for="r in records.data" :key="r.id">
-                <td class="text-(--color-muted)">{{ fmtDate(r.visited_at) }}</td>
+                <td class="text-muted">{{ fmtDate(r.visited_at) }}</td>
                 <td class="font-medium">{{ r.chief_complaint || '—' }}</td>
                 <td>
                   <span v-if="r.doctor_name" class="inline-flex items-center gap-2">
@@ -88,7 +88,7 @@ const breadcrumbs = [
                     />
                     {{ r.doctor_name }}
                   </span>
-                  <span v-else class="text-(--color-muted)">—</span>
+                  <span v-else class="text-muted">—</span>
                 </td>
                 <td>
                   <Badge :variant="recordClass(r.status)" dot>
@@ -98,7 +98,7 @@ const breadcrumbs = [
                 <td class="text-right">
                   <Link
                     :href="`/patients/${patient.id}/treatment-records/${r.id}`"
-                    class="p-1.5 rounded-md text-(--color-muted) hover:bg-base-200 hover:text-primary transition-colors inline-flex"
+                    class="p-1.5 rounded-md text-muted hover:bg-base-200 hover:text-primary transition-colors inline-flex"
                     :aria-label="`View record`"
                     title="View"
                   >

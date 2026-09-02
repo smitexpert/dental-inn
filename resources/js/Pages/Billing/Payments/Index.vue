@@ -93,14 +93,14 @@ function goPage(n) {
         </template>
         <div class="md:col-span-2">
           <div class="relative">
-            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-(--color-muted) pointer-events-none">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-muted pointer-events-none">
               <Icon name="search" size="sm" />
             </span>
             <input
               v-model="q"
               type="search"
               placeholder="Search by invoice or reference"
-              class="input-shell h-10 pl-9"
+              class="input-shell h-10 pl-9 pr-9"
             />
           </div>
         </div>
@@ -136,19 +136,19 @@ function goPage(n) {
             </thead>
             <tbody>
               <tr v-for="p in payments.data" :key="p.id">
-                <td class="text-(--color-muted)">{{ p.payment_date }}</td>
+                <td class="text-muted">{{ p.payment_date }}</td>
                 <td>
                   <div class="font-medium font-mono text-xs">{{ p.invoice?.invoice_number ?? '—' }}</div>
                 </td>
                 <td>{{ p.invoice?.patient?.name ?? '—' }}</td>
                 <td class="text-right font-medium tabular-nums">{{ p.amount }}</td>
                 <td>{{ p.method_label }}</td>
-                <td class="text-(--color-muted)">{{ p.reference ?? '—' }}</td>
+                <td class="text-muted">{{ p.reference ?? '—' }}</td>
                 <td>{{ p.receiver?.name ?? '—' }}</td>
                 <td class="text-right">
                   <Link
                     :href="`/billing/payments/${p.id}/receipt`"
-                    class="p-1.5 rounded-md text-(--color-muted) hover:bg-base-200 hover:text-primary transition-colors inline-flex"
+                    class="p-1.5 rounded-md text-muted hover:bg-base-200 hover:text-primary transition-colors inline-flex"
                     aria-label="View receipt"
                     title="View receipt"
                   >

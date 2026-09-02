@@ -55,7 +55,7 @@ function reject() {
             <h3 class="font-semibold text-base text-base-content">
               {{ state.header }}
             </h3>
-            <p class="text-sm text-(--color-muted) mt-1">{{ state.message }}</p>
+            <p class="text-sm text-muted mt-1">{{ state.message }}</p>
           </div>
         </div>
         <div class="px-5 py-3 border-t border-(--color-line) bg-base-200/40 flex items-center justify-end gap-2">

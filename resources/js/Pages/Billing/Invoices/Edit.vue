@@ -121,7 +121,7 @@ const breadcrumbs = [
 
         <Card title="Line items" :padded="false">
           <div class="px-5 pt-5 pb-2">
-            <div class="grid grid-cols-12 gap-2 text-xs font-semibold uppercase tracking-wide text-(--color-muted) mb-2">
+            <div class="grid grid-cols-12 gap-2 text-xs font-semibold uppercase tracking-wide text-muted mb-2">
               <div class="col-span-6">Description</div>
               <div class="col-span-2 text-right">Qty</div>
               <div class="col-span-3 text-right">Unit price</div>
@@ -170,15 +170,15 @@ const breadcrumbs = [
 
           <div class="px-5 pb-5">
             <dl class="ml-auto max-w-sm space-y-1.5 text-sm">
-              <div class="flex justify-between text-(--color-muted)">
+              <div class="flex justify-between text-muted">
                 <dt>Subtotal</dt>
                 <dd class="tabular-nums text-base-content">{{ subtotal.toFixed(2) }}</dd>
               </div>
-              <div class="flex justify-between text-(--color-muted)">
+              <div class="flex justify-between text-muted">
                 <dt>Discount</dt>
                 <dd class="tabular-nums text-base-content">-{{ discountAmount.toFixed(2) }}</dd>
               </div>
-              <div class="flex justify-between text-(--color-muted)">
+              <div class="flex justify-between text-muted">
                 <dt>Tax</dt>
                 <dd class="tabular-nums text-base-content">{{ taxAmount.toFixed(2) }}</dd>
               </div>

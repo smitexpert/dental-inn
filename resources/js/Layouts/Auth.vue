@@ -36,7 +36,7 @@ const settings = computed(() => usePage().props.settings ?? {})
             Caremint
           </span>
         </Link>
-        <p v-if="settings.clinic_tagline" class="text-sm text-(--color-muted) mt-2">
+        <p v-if="settings.clinic_tagline" class="text-sm text-muted mt-2">
           {{ settings.clinic_tagline }}
         </p>
       </div>

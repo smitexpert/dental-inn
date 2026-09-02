@@ -21,7 +21,7 @@ const props = defineProps({
 })
 
 const toneClass = {
-  neutral: 'bg-base-200 text-(--color-muted)',
+  neutral: 'bg-base-200 text-muted',
   primary: 'bg-primary/10 text-primary',
   success: 'bg-success/10 text-success',
   warning: 'bg-warning/10 text-warning',
@@ -39,7 +39,7 @@ const iconTone = computed(() => toneClass[props.tone])
       <Icon :name="icon" size="lg" />
     </div>
     <h3 class="text-base font-semibold text-base-content">{{ title }}</h3>
-    <p v-if="description" class="text-sm text-(--color-muted) mt-1 max-w-sm">
+    <p v-if="description" class="text-sm text-muted mt-1 max-w-sm">
       {{ description }}
     </p>
     <div v-if="$slots.action" class="mt-4">

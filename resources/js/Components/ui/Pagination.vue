@@ -63,7 +63,7 @@ function go(n) {
   <div
     class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-4 py-3 app-card"
   >
-    <div class="text-sm text-(--color-muted)">
+    <div class="text-sm text-muted">
       <template v-if="total > 0">
         Showing <span class="font-medium text-base-content">{{ from }}</span>–<span class="font-medium text-base-content">{{ to }}</span>
         of <span class="font-medium text-base-content">{{ total }}</span>

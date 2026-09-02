@@ -43,7 +43,7 @@ const props = defineProps({ products: Object })
             </thead>
             <tbody>
               <tr v-for="p in products.data" :key="p.id">
-                <td class="font-mono text-xs text-(--color-muted)">{{ p.sku }}</td>
+                <td class="font-mono text-xs text-muted">{{ p.sku }}</td>
                 <td>
                   <Link :href="`/inventory/products/${p.id}`" class="font-medium text-base-content hover:text-primary transition-colors">
                     {{ p.name }}
@@ -54,14 +54,14 @@ const props = defineProps({ products: Object })
                     {{ p.lowest_quantity }} {{ p.unit?.shortLabel?.() ?? '' }}
                   </Badge>
                 </td>
-                <td class="text-right text-(--color-muted)">{{ p.reorder_level }}</td>
-                <td class="text-right text-(--color-muted)">{{ p.reorder_quantity }}</td>
+                <td class="text-right text-muted">{{ p.reorder_level }}</td>
+                <td class="text-right text-muted">{{ p.reorder_quantity }}</td>
                 <td class="text-right">
                   <div class="inline-flex items-center gap-1">
-                    <Link :href="`/inventory/products/${p.id}`" class="p-1.5 rounded-md text-(--color-muted) hover:bg-base-200 hover:text-primary transition-colors" :aria-label="`View ${p.name}`" :title="`View ${p.name}`">
+                    <Link :href="`/inventory/products/${p.id}`" class="p-1.5 rounded-md text-muted hover:bg-base-200 hover:text-primary transition-colors" :aria-label="`View ${p.name}`" :title="`View ${p.name}`">
                       <Icon name="eye" size="sm" />
                     </Link>
-                    <a href="#" class="p-1.5 rounded-md text-(--color-muted) hover:bg-base-200 hover:text-primary transition-colors" title="Auto-reorder coming soon" :aria-label="`Create purchase order for ${p.name}`">
+                    <a href="#" class="p-1.5 rounded-md text-muted hover:bg-base-200 hover:text-primary transition-colors" title="Auto-reorder coming soon" :aria-label="`Create purchase order for ${p.name}`">
                       <Icon name="send" size="sm" />
                     </a>
                   </div>

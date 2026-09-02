@@ -78,14 +78,14 @@ function goPage(n) {
         </template>
         <div class="md:col-span-2">
           <div class="relative">
-            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-(--color-muted) pointer-events-none">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-muted pointer-events-none">
               <Icon name="search" size="sm" />
             </span>
             <input
               v-model="q"
               type="search"
               placeholder="Search by vendor or description"
-              class="input-shell h-10 pl-9"
+              class="input-shell h-10 pl-9 pr-9"
             />
           </div>
         </div>
@@ -130,18 +130,18 @@ function goPage(n) {
             </thead>
             <tbody>
               <tr v-for="e in expenses.data" :key="e.id">
-                <td class="text-(--color-muted)">{{ e.expense_date }}</td>
+                <td class="text-muted">{{ e.expense_date }}</td>
                 <td class="font-medium">{{ e.category.name }}</td>
-                <td class="text-(--color-muted)">{{ e.vendor ?? '—' }}</td>
+                <td class="text-muted">{{ e.vendor ?? '—' }}</td>
                 <td class="text-right font-medium tabular-nums">{{ e.amount }} {{ e.currency_code }}</td>
-                <td class="text-(--color-muted)">{{ e.payment_method_label }}</td>
+                <td class="text-muted">{{ e.payment_method_label }}</td>
                 <td>
                   <Badge :variant="e.status_color" dot>{{ e.status_label }}</Badge>
                 </td>
                 <td class="text-right">
                   <Link
                     :href="`/billing/expenses/${e.id}`"
-                    class="p-1.5 rounded-md text-(--color-muted) hover:bg-base-200 hover:text-primary transition-colors inline-flex"
+                    class="p-1.5 rounded-md text-muted hover:bg-base-200 hover:text-primary transition-colors inline-flex"
                     aria-label="View expense"
                     title="View expense"
                   >

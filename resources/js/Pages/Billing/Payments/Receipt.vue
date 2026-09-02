@@ -64,27 +64,27 @@ const breadcrumbs = [
       <Card title="Payment details">
         <dl class="grid grid-cols-2 sm:grid-cols-2 gap-x-4 gap-y-3 text-sm">
           <div>
-            <dt class="text-(--color-muted)">Payment date</dt>
+            <dt class="text-muted">Payment date</dt>
             <dd class="font-medium mt-0.5">{{ payment.payment_date }}</dd>
           </div>
           <div>
-            <dt class="text-(--color-muted)">Method</dt>
+            <dt class="text-muted">Method</dt>
             <dd class="font-medium mt-0.5">{{ payment.method_label }}</dd>
           </div>
           <div>
-            <dt class="text-(--color-muted)">Currency</dt>
+            <dt class="text-muted">Currency</dt>
             <dd class="font-medium mt-0.5">{{ payment.currency_code }}</dd>
           </div>
           <div>
-            <dt class="text-(--color-muted)">Received by</dt>
+            <dt class="text-muted">Received by</dt>
             <dd class="font-medium mt-0.5">{{ payment.receiver ?? '—' }}</dd>
           </div>
           <div v-if="payment.reference" class="col-span-2">
-            <dt class="text-(--color-muted)">Reference</dt>
+            <dt class="text-muted">Reference</dt>
             <dd class="font-medium mt-0.5">{{ payment.reference }}</dd>
           </div>
           <div v-if="payment.notes" class="col-span-2">
-            <dt class="text-(--color-muted)">Notes</dt>
+            <dt class="text-muted">Notes</dt>
             <dd class="font-medium mt-0.5 whitespace-pre-wrap">{{ payment.notes }}</dd>
           </div>
         </dl>
@@ -94,7 +94,7 @@ const breadcrumbs = [
         <div v-if="payment.invoice">
           <dl class="grid grid-cols-2 sm:grid-cols-2 gap-x-4 gap-y-3 text-sm mb-4">
             <div>
-              <dt class="text-(--color-muted)">Invoice number</dt>
+              <dt class="text-muted">Invoice number</dt>
               <dd class="font-medium mt-0.5 font-mono">
                 <Link :href="`/billing/invoices/${payment.invoice.id}`" class="text-primary hover:underline">
                   {{ payment.invoice.invoice_number }}
@@ -102,7 +102,7 @@ const breadcrumbs = [
               </dd>
             </div>
             <div>
-              <dt class="text-(--color-muted)">Patient</dt>
+              <dt class="text-muted">Patient</dt>
               <dd class="font-medium mt-0.5">{{ payment.invoice.patient?.name ?? '—' }}</dd>
             </div>
           </dl>

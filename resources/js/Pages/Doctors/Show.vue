@@ -101,23 +101,23 @@ const breadcrumbs = [
         <Card title="Contact">
           <dl class="grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
             <div>
-              <dt class="text-(--color-muted)">Email</dt>
+              <dt class="text-muted">Email</dt>
               <dd class="font-medium mt-0.5">{{ doctor.email || '—' }}</dd>
             </div>
             <div>
-              <dt class="text-(--color-muted)">Phone</dt>
+              <dt class="text-muted">Phone</dt>
               <dd class="font-medium mt-0.5">{{ doctor.phone || '—' }}</dd>
             </div>
             <div>
-              <dt class="text-(--color-muted)">Specialization</dt>
+              <dt class="text-muted">Specialization</dt>
               <dd class="font-medium mt-0.5">{{ doctor.specialization || '—' }}</dd>
             </div>
             <div>
-              <dt class="text-(--color-muted)">License</dt>
+              <dt class="text-muted">License</dt>
               <dd class="font-medium mt-0.5 font-mono text-xs">{{ doctor.license_number || '—' }}</dd>
             </div>
             <div>
-              <dt class="text-(--color-muted)">Calendar color</dt>
+              <dt class="text-muted">Calendar color</dt>
               <dd class="font-medium mt-0.5 flex items-center gap-2">
                 <span
                   class="inline-block h-3 w-3 rounded-full ring-2 ring-base-100"
@@ -132,17 +132,17 @@ const breadcrumbs = [
         <Card title="Practice">
           <dl class="grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
             <div>
-              <dt class="text-(--color-muted)">Years of experience</dt>
+              <dt class="text-muted">Years of experience</dt>
               <dd class="font-medium mt-0.5">{{ doctor.years_of_experience ?? '—' }}</dd>
             </div>
             <div>
-              <dt class="text-(--color-muted)">Consultation fee</dt>
+              <dt class="text-muted">Consultation fee</dt>
               <dd class="font-medium mt-0.5">
                 {{ doctor.consultation_fee != null ? '$' + Number(doctor.consultation_fee).toFixed(2) : '—' }}
               </dd>
             </div>
             <div v-if="doctor.bio" class="col-span-2">
-              <dt class="text-(--color-muted)">Bio</dt>
+              <dt class="text-muted">Bio</dt>
               <dd class="font-medium mt-0.5 whitespace-pre-wrap">{{ doctor.bio }}</dd>
             </div>
           </dl>
@@ -204,8 +204,8 @@ const breadcrumbs = [
             <tbody>
               <tr v-for="row in scheduleRows" :key="row.day_of_week">
                 <td class="font-medium">{{ dayNames[row.day_of_week] }}</td>
-                <td class="text-(--color-muted)">{{ row.start_time }}</td>
-                <td class="text-(--color-muted)">{{ row.end_time }}</td>
+                <td class="text-muted">{{ row.start_time }}</td>
+                <td class="text-muted">{{ row.end_time }}</td>
                 <td>
                   <Badge :variant="row.is_active ? 'success' : 'neutral'" dot>
                     {{ row.is_active ? 'Active' : 'Off' }}
@@ -278,13 +278,13 @@ const breadcrumbs = [
             </thead>
             <tbody>
               <tr v-for="t in doctor.time_offs" :key="t.id">
-                <td class="text-(--color-muted)">{{ fmtDateTime(t.start_at) }}</td>
-                <td class="text-(--color-muted)">{{ fmtDateTime(t.end_at) }}</td>
+                <td class="text-muted">{{ fmtDateTime(t.start_at) }}</td>
+                <td class="text-muted">{{ fmtDateTime(t.end_at) }}</td>
                 <td>{{ t.reason || '—' }}</td>
                 <td class="text-right">
                   <button
                     type="button"
-                    class="p-1.5 rounded-md text-(--color-muted) hover:bg-error/10 hover:text-error transition-colors"
+                    class="p-1.5 rounded-md text-muted hover:bg-error/10 hover:text-error transition-colors"
                     :aria-label="`Remove time off`"
                     title="Remove"
                     @click="removeTimeOff(t.id)"

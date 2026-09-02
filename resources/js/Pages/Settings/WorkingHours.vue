@@ -103,9 +103,9 @@ const breadcrumbs = [
 
               <div
                 v-if="form.working_hours[day].length === 0"
-                class="text-sm text-(--color-muted) flex items-center gap-2 pl-10"
+                class="text-sm text-muted flex items-center gap-2 pl-10"
               >
-                <Icon name="info" size="sm" class="text-(--color-muted)" />
+                <Icon name="info" size="sm" class="text-muted" />
                 Closed all day
               </div>
 
@@ -116,7 +116,7 @@ const breadcrumbs = [
                   class="flex items-center gap-2"
                 >
                   <Input v-model="form.working_hours[day][idx].start" type="time" />
-                  <span class="text-(--color-muted) text-sm">to</span>
+                  <span class="text-muted text-sm">to</span>
                   <Input v-model="form.working_hours[day][idx].end" type="time" />
                   <Button
                     size="sm"

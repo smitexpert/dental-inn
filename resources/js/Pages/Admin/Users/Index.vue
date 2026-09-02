@@ -150,7 +150,7 @@ function roleLabel(r) {
                     </div>
                   </div>
                 </td>
-                <td class="text-(--color-muted)">{{ u.email }}</td>
+                <td class="text-muted">{{ u.email }}</td>
                 <td>
                   <div class="flex flex-wrap gap-1">
                     <Badge
@@ -171,7 +171,7 @@ function roleLabel(r) {
                   <div class="inline-flex items-center gap-1">
                     <Link
                       :href="`/admin/users/${u.id}/edit`"
-                      class="p-1.5 rounded-md text-(--color-muted) hover:bg-base-200 hover:text-primary transition-colors"
+                      class="p-1.5 rounded-md text-muted hover:bg-base-200 hover:text-primary transition-colors"
                       :aria-label="`Edit ${u.name}`"
                       :title="`Edit ${u.name}`"
                     >
@@ -180,7 +180,7 @@ function roleLabel(r) {
                     <button
                       v-if="u.id !== currentUserId"
                       type="button"
-                      class="p-1.5 rounded-md text-(--color-muted) hover:bg-base-200 hover:text-base-content transition-colors"
+                      class="p-1.5 rounded-md text-muted hover:bg-base-200 hover:text-base-content transition-colors"
                       :aria-label="u.is_active ? `Deactivate ${u.name}` : `Reactivate ${u.name}`"
                       :title="u.is_active ? 'Toggle active' : 'Reactivate'"
                       @click="toggleActive(u)"
@@ -193,7 +193,7 @@ function roleLabel(r) {
                     <button
                       v-if="u.id !== currentUserId"
                       type="button"
-                      class="p-1.5 rounded-md text-(--color-muted) hover:bg-error/10 hover:text-error transition-colors"
+                      class="p-1.5 rounded-md text-muted hover:bg-error/10 hover:text-error transition-colors"
                       :aria-label="`Delete ${u.name}`"
                       :title="`Delete ${u.name}`"
                       @click="destroyUser(u)"

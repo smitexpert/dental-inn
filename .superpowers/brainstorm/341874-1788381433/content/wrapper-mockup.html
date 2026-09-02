@@ -1,0 +1,108 @@
+<h2>KPI tiles + page header direction</h2>
+<p class="subtitle">Two more patterns to react to: a sticky page header and KPI tile variants.</p>
+
+<div class="mockup">
+  <div class="mockup-header">Sticky page header (with breadcrumb + actions)</div>
+  <div class="mockup-body" style="background:#fafbfc; padding:0;">
+    <div style="position:sticky; top:0; background:rgba(255,255,255,0.85); backdrop-filter:blur(12px); border-bottom:1px solid #f1f5f9; padding:14px 24px; display:flex; align-items:center; justify-content:space-between; z-index:5;">
+      <div>
+        <div style="display:flex; align-items:center; gap:6px; font-size:12px; color:#9ca3af;">
+          <span>Admin</span><span>›</span><span>Users</span>
+        </div>
+        <h1 style="margin:4px 0 0; font-size:22px; font-weight:700; color:#111827; letter-spacing:-0.01em;">Team members</h1>
+      </div>
+      <div style="display:flex; gap:8px;">
+        <button style="padding:9px 14px; border-radius:10px; border:1px solid #e5e7eb; background:#fff; color:#374151; font-size:13px; font-weight:500; cursor:pointer;">⤓ Export</button>
+        <button style="padding:9px 16px; border-radius:10px; border:none; background:#111827; color:#fff; font-size:13px; font-weight:600; cursor:pointer;">+ New user</button>
+      </div>
+    </div>
+    <div style="padding:20px 24px;">
+      <p style="color:#6b7280; font-size:13px; margin:0;">Sticky header stays put while you scroll a long table. Breadcrumb is subtle (slate-400) above the H1. Actions sit right-aligned.</p>
+    </div>
+  </div>
+</div>
+
+<div style="height:14px"></div>
+
+<div class="mockup">
+  <div class="mockup-header">KPI tile variants — pick a direction</div>
+  <div class="mockup-body" style="background:#fafbfc; padding:18px;">
+
+    <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:12px; margin-bottom:14px;">
+      <div class="kpi-a">
+        <div style="display:flex; justify-content:space-between; align-items:start;">
+          <div>
+            <div style="font-size:11px; color:#9ca3af; font-weight:600; text-transform:uppercase; letter-spacing:0.06em;">Today's revenue</div>
+            <div style="font-size:26px; font-weight:700; color:#111827; margin-top:4px; letter-spacing:-0.01em;">৳ 84,250</div>
+          </div>
+          <div style="width:36px; height:36px; border-radius:12px; background:linear-gradient(135deg,#d1fae5 0%,#a7f3d0 100%); display:flex; align-items:center; justify-content:center; font-size:16px;">💰</div>
+        </div>
+        <div style="font-size:12px; color:#10b981; margin-top:8px; font-weight:500;">▲ 12% vs yesterday</div>
+      </div>
+
+      <div class="kpi-a">
+        <div style="display:flex; justify-content:space-between; align-items:start;">
+          <div>
+            <div style="font-size:11px; color:#9ca3af; font-weight:600; text-transform:uppercase; letter-spacing:0.06em;">Appointments</div>
+            <div style="font-size:26px; font-weight:700; color:#111827; margin-top:4px; letter-spacing:-0.01em;">27</div>
+          </div>
+          <div style="width:36px; height:36px; border-radius:12px; background:linear-gradient(135deg,#dbeafe 0%,#bfdbfe 100%); display:flex; align-items:center; justify-content:center; font-size:16px;">📅</div>
+        </div>
+        <div style="font-size:12px; color:#6b7280; margin-top:8px;">8 remaining today</div>
+      </div>
+
+      <div class="kpi-a">
+        <div style="display:flex; justify-content:space-between; align-items:start;">
+          <div>
+            <div style="font-size:11px; color:#9ca3af; font-weight:600; text-transform:uppercase; letter-spacing:0.06em;">Outstanding</div>
+            <div style="font-size:26px; font-weight:700; color:#111827; margin-top:4px; letter-spacing:-0.01em;">৳ 142,800</div>
+          </div>
+          <div style="width:36px; height:36px; border-radius:12px; background:linear-gradient(135deg,#fef3c7 0%,#fde68a 100%); display:flex; align-items:center; justify-content:center; font-size:16px;">⏳</div>
+        </div>
+        <div style="font-size:12px; color:#ef4444; margin-top:8px;">12 invoices overdue</div>
+      </div>
+    </div>
+
+    <p class="subtitle">A — Soft tinted icon chip, large number, tiny status line.</p>
+
+    <div style="height:14px"></div>
+
+    <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:12px; margin-bottom:14px;">
+      <div class="kpi-b">
+        <div style="font-size:11px; color:#9ca3af; font-weight:600; text-transform:uppercase; letter-spacing:0.06em;">Today's revenue</div>
+        <div style="font-size:28px; font-weight:700; color:#111827; margin-top:6px; letter-spacing:-0.02em;">৳ 84,250</div>
+        <svg viewBox="0 0 100 30" style="width:100%; height:30px; margin-top:8px;">
+          <polyline fill="none" stroke="#10b981" stroke-width="2" points="0,22 12,18 24,20 36,14 48,16 60,10 72,12 84,6 100,4"/>
+        </svg>
+      </div>
+      <div class="kpi-b">
+        <div style="font-size:11px; color:#9ca3af; font-weight:600; text-transform:uppercase; letter-spacing:0.06em;">Appointments</div>
+        <div style="font-size:28px; font-weight:700; color:#111827; margin-top:6px; letter-spacing:-0.02em;">27</div>
+        <div style="display:flex; gap:2px; margin-top:10px; height:8px;">
+          <div style="flex:8; background:#10b981; border-radius:4px;"></div>
+          <div style="flex:3; background:#e5e7eb; border-radius:4px;"></div>
+        </div>
+      </div>
+      <div class="kpi-b">
+        <div style="font-size:11px; color:#9ca3af; font-weight:600; text-transform:uppercase; letter-spacing:0.06em;">Outstanding</div>
+        <div style="font-size:28px; font-weight:700; color:#111827; margin-top:6px; letter-spacing:-0.02em;">৳ 142,800</div>
+        <div style="display:flex; gap:2px; margin-top:10px; height:8px;">
+          <div style="flex:5; background:#ef4444; border-radius:4px;"></div>
+          <div style="flex:7; background:#e5e7eb; border-radius:4px;"></div>
+        </div>
+      </div>
+    </div>
+    <p class="subtitle">B — Number + tiny inline sparkline/bar for context. More info-dense.</p>
+  </div>
+</div>
+
+<style>
+  .kpi-a, .kpi-b {
+    background:#fff;
+    border-radius:18px;
+    padding:18px;
+    border:1px solid #f1f5f9;
+  }
+</style>
+
+<p class="subtitle" style="margin-top:16px;">Which KPI style do you prefer? (A) icon chip + status, (B) number + sparkline.</p>

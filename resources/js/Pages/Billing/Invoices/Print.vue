@@ -106,9 +106,7 @@ onMounted(() => {
           </div>
           <div class="date-row">
             <span class="date-label">Status</span>
-            <span class="date-value status" :data-status="invoice.status">
-              {{ invoice.status_label }}
-            </span>
+            <span class="date-value">{{ invoice.status_label }}</span>
           </div>
         </div>
       </header>

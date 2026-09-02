@@ -33,13 +33,13 @@ const toneClass = {
   warning: 'bg-warning/10 text-warning',
   danger: 'bg-error/10 text-error',
   info: 'bg-info/10 text-info',
-  neutral: 'bg-base-200 text-(--color-muted)',
+  neutral: 'bg-base-200 text-muted',
 }
 
 const trendClass = computed(() => {
   if (props.trend === 'up') return 'text-success'
   if (props.trend === 'down') return 'text-error'
-  return 'text-(--color-muted)'
+  return 'text-muted'
 })
 
 const trendIcon = computed(() => {
@@ -58,14 +58,14 @@ const trendIcon = computed(() => {
       <Icon :name="icon" size="md" />
     </div>
     <div class="min-w-0 flex-1">
-      <p class="text-xs uppercase tracking-wide text-(--color-muted) font-medium">
+      <p class="text-xs uppercase tracking-wide text-muted font-medium">
         {{ label }}
       </p>
       <p class="text-2xl font-semibold text-base-content mt-1 leading-tight">
         {{ value }}
       </p>
       <div v-if="hint || trend" class="mt-1 flex items-center gap-2 text-xs">
-        <span v-if="hint" class="text-(--color-muted)">{{ hint }}</span>
+        <span v-if="hint" class="text-muted">{{ hint }}</span>
         <span
           v-if="trend"
           :class="['inline-flex items-center gap-0.5 font-medium', trendClass]"

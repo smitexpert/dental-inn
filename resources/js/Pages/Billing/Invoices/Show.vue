@@ -127,19 +127,19 @@ const breadcrumbs = [
       <Card title="Invoice details">
         <dl class="grid grid-cols-2 sm:grid-cols-4 gap-x-4 gap-y-3 text-sm">
           <div>
-            <dt class="text-(--color-muted)">Invoice date</dt>
+            <dt class="text-muted">Invoice date</dt>
             <dd class="font-medium mt-0.5">{{ invoice.invoice_date }}</dd>
           </div>
           <div>
-            <dt class="text-(--color-muted)">Due date</dt>
+            <dt class="text-muted">Due date</dt>
             <dd class="font-medium mt-0.5">{{ invoice.due_date }}</dd>
           </div>
           <div>
-            <dt class="text-(--color-muted)">Created by</dt>
+            <dt class="text-muted">Created by</dt>
             <dd class="font-medium mt-0.5">{{ invoice.creator?.name ?? '—' }}</dd>
           </div>
           <div>
-            <dt class="text-(--color-muted)">Issued at</dt>
+            <dt class="text-muted">Issued at</dt>
             <dd class="font-medium mt-0.5">{{ invoice.issued_at ?? '—' }}</dd>
           </div>
         </dl>
@@ -157,8 +157,8 @@ const breadcrumbs = [
             <tbody>
               <tr v-for="item in invoice.items" :key="item.id">
                 <td class="font-medium">{{ item.description }}</td>
-                <td class="text-right text-(--color-muted) tabular-nums">{{ item.quantity }}</td>
-                <td class="text-right text-(--color-muted) tabular-nums">{{ item.unit_price }}</td>
+                <td class="text-right text-muted tabular-nums">{{ item.quantity }}</td>
+                <td class="text-right text-muted tabular-nums">{{ item.unit_price }}</td>
                 <td class="text-right font-medium tabular-nums">{{ item.line_total }}</td>
               </tr>
             </tbody>
@@ -167,15 +167,15 @@ const breadcrumbs = [
 
         <div class="mt-6 flex justify-end">
           <dl class="w-full max-w-xs space-y-1.5 text-sm">
-            <div class="flex justify-between text-(--color-muted)">
+            <div class="flex justify-between text-muted">
               <dt>Subtotal</dt>
               <dd class="tabular-nums text-base-content">{{ invoice.subtotal }}</dd>
             </div>
-            <div class="flex justify-between text-(--color-muted)">
+            <div class="flex justify-between text-muted">
               <dt>Discount</dt>
               <dd class="tabular-nums text-base-content">-{{ invoice.discount_amount }}</dd>
             </div>
-            <div class="flex justify-between text-(--color-muted)">
+            <div class="flex justify-between text-muted">
               <dt>Tax</dt>
               <dd class="tabular-nums text-base-content">{{ invoice.tax_amount }}</dd>
             </div>
@@ -196,7 +196,7 @@ const breadcrumbs = [
 
         <div v-if="invoice.notes" class="mt-6 pt-4 border-t border-(--color-line)">
           <h4 class="text-sm font-semibold text-base-content mb-1">Notes</h4>
-          <p class="text-sm text-(--color-muted) whitespace-pre-wrap">{{ invoice.notes }}</p>
+          <p class="text-sm text-muted whitespace-pre-wrap">{{ invoice.notes }}</p>
         </div>
 
         <div class="mt-6 pt-4 border-t border-(--color-line) flex flex-wrap items-center gap-2">
@@ -246,15 +246,15 @@ const breadcrumbs = [
             </thead>
             <tbody>
               <tr v-for="p in invoice.payments" :key="p.id">
-                <td class="text-(--color-muted)">{{ p.payment_date }}</td>
+                <td class="text-muted">{{ p.payment_date }}</td>
                 <td class="text-right font-medium tabular-nums">{{ p.amount }}</td>
                 <td>{{ p.method_label }}</td>
-                <td class="text-(--color-muted)">{{ p.reference ?? '—' }}</td>
+                <td class="text-muted">{{ p.reference ?? '—' }}</td>
                 <td>{{ p.receiver ?? '—' }}</td>
                 <td class="text-right">
                   <Link
                     :href="`/billing/payments/${p.id}/receipt`"
-                    class="p-1.5 rounded-md text-(--color-muted) hover:bg-base-200 hover:text-primary transition-colors inline-flex"
+                    class="p-1.5 rounded-md text-muted hover:bg-base-200 hover:text-primary transition-colors inline-flex"
                     aria-label="View receipt"
                     title="View receipt"
                   >

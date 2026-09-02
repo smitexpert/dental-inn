@@ -118,14 +118,14 @@ function goPage(n) {
         </template>
         <div class="md:col-span-2">
           <div class="relative">
-            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-(--color-muted) pointer-events-none">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-muted pointer-events-none">
               <Icon name="search" size="sm" />
             </span>
             <input
               v-model="q"
               type="search"
               placeholder="Search by name"
-              class="input-shell h-10 pl-9"
+              class="input-shell h-10 pl-9 pr-9"
             />
           </div>
         </div>
@@ -149,8 +149,8 @@ function goPage(n) {
             <tbody>
               <tr v-for="loc in locations.data" :key="loc.id">
                 <td class="font-medium text-base-content">{{ loc.name }}</td>
-                <td class="text-(--color-muted) capitalize">{{ loc.location_type }}</td>
-                <td class="text-right text-(--color-muted)">{{ loc.stock_levels_count }}</td>
+                <td class="text-muted capitalize">{{ loc.location_type }}</td>
+                <td class="text-right text-muted">{{ loc.stock_levels_count }}</td>
                 <td>
                   <Badge :variant="loc.is_active ? 'success' : 'warning'" dot>
                     {{ loc.is_active ? 'Active' : 'Inactive' }}
@@ -159,7 +159,7 @@ function goPage(n) {
                 <td class="text-right">
                   <button
                     type="button"
-                    class="p-1.5 rounded-md text-(--color-muted) hover:bg-base-200 hover:text-primary transition-colors"
+                    class="p-1.5 rounded-md text-muted hover:bg-base-200 hover:text-primary transition-colors"
                     :aria-label="`Edit ${loc.name}`"
                     :title="`Edit ${loc.name}`"
                     @click="openEdit(loc)"

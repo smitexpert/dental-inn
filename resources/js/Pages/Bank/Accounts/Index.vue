@@ -92,7 +92,7 @@ const fmt = (n) => Number(n ?? 0).toLocaleString(undefined, { minimumFractionDig
         <div class="md:col-span-2">
           <div class="relative">
             <span
-              class="absolute left-3 top-1/2 -translate-y-1/2 text-(--color-muted) pointer-events-none"
+              class="absolute inset-y-0 left-0 flex items-center pl-3 text-muted pointer-events-none"
             >
               <Icon name="search" size="sm" />
             </span>
@@ -100,7 +100,7 @@ const fmt = (n) => Number(n ?? 0).toLocaleString(undefined, { minimumFractionDig
               v-model="q"
               type="search"
               placeholder="Search by name, bank, account number…"
-              class="input-shell h-10 pl-9"
+              class="input-shell h-10 pl-9 pr-9"
             />
           </div>
         </div>
@@ -148,7 +148,7 @@ const fmt = (n) => Number(n ?? 0).toLocaleString(undefined, { minimumFractionDig
                     </span>
                     <div class="min-w-0">
                       <p class="font-medium text-base-content">{{ a.name }}</p>
-                      <p class="text-xs text-(--color-muted)">
+                      <p class="text-xs text-muted">
                         {{ a.account_name || a.branch || '—' }}
                       </p>
                     </div>
@@ -157,8 +157,8 @@ const fmt = (n) => Number(n ?? 0).toLocaleString(undefined, { minimumFractionDig
                 <td>
                   <Badge :variant="typeTone(a.type)">{{ a.type }}</Badge>
                 </td>
-                <td class="text-(--color-muted)">{{ a.bank_name || '—' }}</td>
-                <td class="text-(--color-muted) font-mono text-xs">
+                <td class="text-muted">{{ a.bank_name || '—' }}</td>
+                <td class="text-muted font-mono text-xs">
                   {{ a.account_number || '—' }}
                 </td>
                 <td class="text-right font-semibold tabular-nums">
@@ -172,7 +172,7 @@ const fmt = (n) => Number(n ?? 0).toLocaleString(undefined, { minimumFractionDig
                 <td class="text-right">
                   <Link
                     :href="route('bank.accounts.edit', a.id)"
-                    class="p-1.5 rounded-md text-(--color-muted) hover:bg-base-200 hover:text-primary transition-colors"
+                    class="p-1.5 rounded-md text-muted hover:bg-base-200 hover:text-primary transition-colors"
                     :aria-label="`Edit ${a.name}`"
                     :title="`Edit ${a.name}`"
                   >

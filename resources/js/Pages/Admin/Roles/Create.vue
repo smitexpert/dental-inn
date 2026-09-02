@@ -58,7 +58,7 @@ const breadcrumbs = [
             <div class="flex items-center justify-between w-full">
               <div>
                 <h3 class="text-base font-semibold text-base-content">Permissions</h3>
-                <p class="text-sm text-(--color-muted) mt-0.5">
+                <p class="text-sm text-muted mt-0.5">
                   Pick what this role can do. Inactive checkboxes mean it's not granted.
                 </p>
               </div>

@@ -56,12 +56,12 @@ const breadcrumbs = [
               <p class="text-sm font-semibold text-base-content">
                 {{ transfer.from_account?.name || '—' }}
               </p>
-              <p v-if="transfer.from_account?.bank_name" class="text-xs text-(--color-muted)">
+              <p v-if="transfer.from_account?.bank_name" class="text-xs text-muted">
                 {{ transfer.from_account.bank_name }}
               </p>
               <p
                 v-if="transfer.from_account?.account_number"
-                class="text-xs text-(--color-muted) font-mono mt-1"
+                class="text-xs text-muted font-mono mt-1"
               >
                 {{ transfer.from_account.account_number }}
               </p>
@@ -80,12 +80,12 @@ const breadcrumbs = [
               <p class="text-sm font-semibold text-base-content">
                 {{ transfer.to_account?.name || '—' }}
               </p>
-              <p v-if="transfer.to_account?.bank_name" class="text-xs text-(--color-muted)">
+              <p v-if="transfer.to_account?.bank_name" class="text-xs text-muted">
                 {{ transfer.to_account.bank_name }}
               </p>
               <p
                 v-if="transfer.to_account?.account_number"
-                class="text-xs text-(--color-muted) font-mono mt-1"
+                class="text-xs text-muted font-mono mt-1"
               >
                 {{ transfer.to_account.account_number }}
               </p>
@@ -97,31 +97,31 @@ const breadcrumbs = [
       <Card title="Details">
         <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 text-sm">
           <div>
-            <dt class="text-(--color-muted)">Amount</dt>
+            <dt class="text-muted">Amount</dt>
             <dd class="font-semibold text-base-content mt-0.5 tabular-nums text-lg">
               {{ fmt(transfer.amount) }} {{ currency }}
             </dd>
           </div>
           <div>
-            <dt class="text-(--color-muted)">Date</dt>
+            <dt class="text-muted">Date</dt>
             <dd class="font-medium text-base-content mt-0.5">
               {{ transfer.occurred_at || '—' }}
             </dd>
           </div>
           <div>
-            <dt class="text-(--color-muted)">Reference</dt>
+            <dt class="text-muted">Reference</dt>
             <dd class="font-medium text-base-content mt-0.5">
               {{ transfer.reference || '—' }}
             </dd>
           </div>
           <div>
-            <dt class="text-(--color-muted)">Group</dt>
-            <dd class="font-mono text-xs text-(--color-muted) mt-0.5 break-all">
+            <dt class="text-muted">Group</dt>
+            <dd class="font-mono text-xs text-muted mt-0.5 break-all">
               {{ transfer.transfer_group_id || '—' }}
             </dd>
           </div>
           <div v-if="transfer.note" class="sm:col-span-2">
-            <dt class="text-(--color-muted)">Note</dt>
+            <dt class="text-muted">Note</dt>
             <dd class="whitespace-pre-wrap text-base-content mt-0.5">
               {{ transfer.note }}
             </dd>

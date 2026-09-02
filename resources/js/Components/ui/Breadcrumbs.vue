@@ -24,14 +24,14 @@ defineProps({
         <Link
           v-if="item.href && i < items.length - 1"
           :href="item.href"
-          class="text-(--color-muted) hover:text-base-content"
+          class="text-muted hover:text-base-content"
         >
           {{ item.label }}
         </Link>
         <span
           v-else
           :class="[
-            i < items.length - 1 ? 'text-(--color-muted)' : 'text-base-content font-medium',
+            i < items.length - 1 ? 'text-muted' : 'text-base-content font-medium',
           ]"
         >{{ item.label }}</span>
         <Icon

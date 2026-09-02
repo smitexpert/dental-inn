@@ -14,7 +14,7 @@ import Icon from '@/Components/ui/Icon.vue'
       </div>
       <p class="app-section-title mt-5">Error 403</p>
       <h1 class="text-2xl font-semibold text-base-content mt-1">Forbidden</h1>
-      <p class="text-sm text-(--color-muted) mt-2 max-w-sm mx-auto">
+      <p class="text-sm text-muted mt-2 max-w-sm mx-auto">
         You don't have permission to view this page. If you think this is a
         mistake, ask an administrator to update your role.
       </p>

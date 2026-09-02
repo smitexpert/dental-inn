@@ -124,7 +124,7 @@ const breadcrumbs = computed(() => [
         <Card title="Overview">
           <dl class="grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
             <div>
-              <dt class="text-(--color-muted)">Total stock</dt>
+              <dt class="text-muted">Total stock</dt>
               <dd class="mt-0.5">
                 <Badge :variant="product.is_low ? 'danger' : 'success'">
                   {{ product.total_quantity }} {{ product.unit_short }}
@@ -132,38 +132,38 @@ const breadcrumbs = computed(() => [
               </dd>
             </div>
             <div>
-              <dt class="text-(--color-muted)">Reorder level</dt>
+              <dt class="text-muted">Reorder level</dt>
               <dd class="font-medium mt-0.5">{{ product.reorder_level }}</dd>
             </div>
             <div>
-              <dt class="text-(--color-muted)">Reorder qty</dt>
+              <dt class="text-muted">Reorder qty</dt>
               <dd class="font-medium mt-0.5">{{ product.reorder_quantity }}</dd>
             </div>
             <div>
-              <dt class="text-(--color-muted)">Track stock</dt>
+              <dt class="text-muted">Track stock</dt>
               <dd class="font-medium mt-0.5">{{ product.track_stock ? 'Yes' : 'No' }}</dd>
             </div>
             <div>
-              <dt class="text-(--color-muted)">Unit</dt>
+              <dt class="text-muted">Unit</dt>
               <dd class="font-medium mt-0.5">
                 {{ product.unit_label }}
-                <span class="text-(--color-muted)">({{ product.unit_short }})</span>
+                <span class="text-muted">({{ product.unit_short }})</span>
               </dd>
             </div>
             <div>
-              <dt class="text-(--color-muted)">Category</dt>
+              <dt class="text-muted">Category</dt>
               <dd class="font-medium mt-0.5">{{ product.category_label }}</dd>
             </div>
             <div>
-              <dt class="text-(--color-muted)">Cost price</dt>
+              <dt class="text-muted">Cost price</dt>
               <dd class="font-medium mt-0.5">{{ product.cost_price ?? '—' }}</dd>
             </div>
             <div>
-              <dt class="text-(--color-muted)">Selling price</dt>
+              <dt class="text-muted">Selling price</dt>
               <dd class="font-medium mt-0.5">{{ product.selling_price ?? '—' }}</dd>
             </div>
           </dl>
-          <p v-if="product.description" class="text-sm text-(--color-muted) mt-4 whitespace-pre-line">
+          <p v-if="product.description" class="text-sm text-muted mt-4 whitespace-pre-line">
             {{ product.description }}
           </p>
           <div class="mt-5 flex flex-wrap gap-2">
@@ -198,7 +198,7 @@ const breadcrumbs = computed(() => [
                 <tr v-for="l in product.stock_levels" :key="l.id">
                   <td class="text-base-content">{{ l.location_name }}</td>
                   <td class="text-right font-medium">{{ l.quantity }}</td>
-                  <td class="text-right text-(--color-muted) text-xs">{{ l.last_counted_at || '—' }}</td>
+                  <td class="text-right text-muted text-xs">{{ l.last_counted_at || '—' }}</td>
                 </tr>
               </tbody>
             </table>
@@ -219,16 +219,16 @@ const breadcrumbs = computed(() => [
               <Badge :variant="m.quantity >= 0 ? 'success' : 'danger'">
                 {{ m.type_label }}
               </Badge>
-              <p class="text-(--color-muted) text-xs mt-1">
+              <p class="text-muted text-xs mt-1">
                 {{ m.location_name || '—' }} · {{ m.performer_name || '—' }}
               </p>
-              <p v-if="m.reason" class="text-(--color-muted) text-xs">{{ m.reason }}</p>
+              <p v-if="m.reason" class="text-muted text-xs">{{ m.reason }}</p>
             </div>
             <div class="text-right shrink-0">
               <p :class="['font-mono font-medium', m.quantity >= 0 ? 'text-success' : 'text-error']">
                 {{ m.quantity >= 0 ? '+' : '' }}{{ m.quantity }}
               </p>
-              <p class="text-xs text-(--color-muted)">{{ m.created_at }}</p>
+              <p class="text-xs text-muted">{{ m.created_at }}</p>
             </div>
           </li>
         </ul>
@@ -259,7 +259,7 @@ const breadcrumbs = computed(() => [
                     {{ s.name }}
                   </Link>
                 </td>
-                <td class="font-mono text-xs text-(--color-muted)">{{ s.supplier_sku || '—' }}</td>
+                <td class="font-mono text-xs text-muted">{{ s.supplier_sku || '—' }}</td>
                 <td class="text-right">{{ s.unit_cost || '—' }}</td>
                 <td class="text-right">{{ s.lead_time_days ? `${s.lead_time_days} d` : '—' }}</td>
                 <td>

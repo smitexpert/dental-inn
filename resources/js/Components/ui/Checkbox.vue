@@ -43,7 +43,7 @@ defineEmits(['update:modelValue'])
     </span>
     <span v-if="label || description || $slots.default" class="flex flex-col">
       <span v-if="label" class="text-sm font-medium text-base-content leading-5">{{ label }}</span>
-      <span v-if="description" class="text-xs text-(--color-muted)">{{ description }}</span>
+      <span v-if="description" class="text-xs text-muted">{{ description }}</span>
       <slot />
     </span>
   </label>

@@ -29,7 +29,7 @@ function submit() {
   <AuthLayout>
     <div class="mb-6">
       <h1 class="text-xl font-semibold text-base-content">Set a new password</h1>
-      <p class="text-sm text-(--color-muted) mt-1">
+      <p class="text-sm text-muted mt-1">
         Enter a new password for your account.
       </p>
     </div>
@@ -77,7 +77,7 @@ function submit() {
         {{ form.processing ? 'Saving…' : 'Reset password' }}
       </Button>
 
-      <p class="text-sm text-(--color-muted) text-center">
+      <p class="text-sm text-muted text-center">
         <Link href="/login" class="text-primary hover:underline font-medium">
           Back to sign in
         </Link>

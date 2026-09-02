@@ -78,14 +78,14 @@ function statusBadge(s) {
         </template>
         <div class="md:col-span-2">
           <div class="relative">
-            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-(--color-muted) pointer-events-none">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-muted pointer-events-none">
               <Icon name="search" size="sm" />
             </span>
             <input
               v-model="q"
               type="search"
               placeholder="Search by invoice number or patient"
-              class="input-shell h-10 pl-9"
+              class="input-shell h-10 pl-9 pr-9"
             />
           </div>
         </div>
@@ -132,12 +132,12 @@ function statusBadge(s) {
                 </td>
                 <td>
                   <div class="font-medium">{{ i.patient?.name ?? '—' }}</div>
-                  <div v-if="i.patient?.patient_code" class="text-xs text-(--color-muted)">
+                  <div v-if="i.patient?.patient_code" class="text-xs text-muted">
                     {{ i.patient.patient_code }}
                   </div>
                 </td>
-                <td class="text-(--color-muted) whitespace-nowrap">{{ i.invoice_date }}</td>
-                <td class="text-(--color-muted) whitespace-nowrap">{{ i.due_date || '—' }}</td>
+                <td class="text-muted whitespace-nowrap">{{ i.invoice_date }}</td>
+                <td class="text-muted whitespace-nowrap">{{ i.due_date || '—' }}</td>
                 <td class="text-right font-medium tabular-nums whitespace-nowrap">{{ i.total }}</td>
                 <td class="text-right font-medium tabular-nums whitespace-nowrap">{{ i.balance_due }}</td>
                 <td>
@@ -147,7 +147,7 @@ function statusBadge(s) {
                   <div class="inline-flex items-center gap-1">
                     <Link
                       :href="`/billing/invoices/${i.id}`"
-                      class="p-1.5 rounded-md text-(--color-muted) hover:bg-base-200 hover:text-primary transition-colors"
+                      class="p-1.5 rounded-md text-muted hover:bg-base-200 hover:text-primary transition-colors"
                       :aria-label="`View invoice ${i.invoice_number}`"
                       :title="`View invoice`"
                     >
@@ -156,7 +156,7 @@ function statusBadge(s) {
                     <Link
                       v-if="i.status === 'draft'"
                       :href="`/billing/invoices/${i.id}/edit`"
-                      class="p-1.5 rounded-md text-(--color-muted) hover:bg-base-200 hover:text-primary transition-colors"
+                      class="p-1.5 rounded-md text-muted hover:bg-base-200 hover:text-primary transition-colors"
                       :aria-label="`Edit invoice ${i.invoice_number}`"
                       :title="`Edit invoice`"
                     >

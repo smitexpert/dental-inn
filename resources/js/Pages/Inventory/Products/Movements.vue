@@ -56,7 +56,7 @@ const breadcrumbs = computed(() => [
             </thead>
             <tbody>
               <tr v-for="m in movements" :key="m.id">
-                <td class="text-(--color-muted) text-xs">{{ m.created_at }}</td>
+                <td class="text-muted text-xs">{{ m.created_at }}</td>
                 <td>
                   <Badge :variant="m.quantity >= 0 ? 'success' : 'danger'">
                     {{ m.type_label }}
@@ -65,10 +65,10 @@ const breadcrumbs = computed(() => [
                 <td :class="['text-right font-mono font-medium', m.quantity >= 0 ? 'text-success' : 'text-error']">
                   {{ m.quantity >= 0 ? '+' : '' }}{{ m.quantity }}
                 </td>
-                <td class="text-(--color-muted)">{{ m.location_name || '—' }}</td>
-                <td class="text-(--color-muted)">{{ m.performer_name || '—' }}</td>
-                <td class="text-right text-(--color-muted)">{{ m.unit_cost || '—' }}</td>
-                <td class="text-(--color-muted)">{{ m.reason || '—' }}</td>
+                <td class="text-muted">{{ m.location_name || '—' }}</td>
+                <td class="text-muted">{{ m.performer_name || '—' }}</td>
+                <td class="text-right text-muted">{{ m.unit_cost || '—' }}</td>
+                <td class="text-muted">{{ m.reason || '—' }}</td>
               </tr>
             </tbody>
           </table>

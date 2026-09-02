@@ -30,7 +30,7 @@ defineProps({
         <h1 class="text-2xl font-semibold tracking-tight text-base-content leading-tight">
           {{ title }}
         </h1>
-        <p v-if="subtitle" class="text-sm text-(--color-muted) mt-1 max-w-2xl">
+        <p v-if="subtitle" class="text-sm text-muted mt-1 max-w-2xl">
           {{ subtitle }}
         </p>
       </div>

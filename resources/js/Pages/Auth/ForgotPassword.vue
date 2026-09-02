@@ -19,7 +19,7 @@ function submit() {
   <AuthLayout>
     <div class="mb-6">
       <h1 class="text-xl font-semibold text-base-content">Forgot password</h1>
-      <p class="text-sm text-(--color-muted) mt-1">
+      <p class="text-sm text-muted mt-1">
         Enter your email and we'll send a reset link.
       </p>
     </div>
@@ -43,7 +43,7 @@ function submit() {
         {{ form.processing ? 'Sending…' : 'Email reset link' }}
       </Button>
 
-      <p class="text-sm text-(--color-muted) text-center">
+      <p class="text-sm text-muted text-center">
         Remembered it?
         <Link href="/login" class="text-primary hover:underline font-medium">
           Back to sign in

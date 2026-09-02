@@ -17,7 +17,7 @@ defineProps({
   <div class="app-card p-4">
     <div v-if="title || $slots.aside" class="flex items-center justify-between mb-3 gap-3">
       <div class="flex items-center gap-2 text-sm font-medium text-base-content min-w-0">
-        <Icon name="filter" size="sm" class="text-(--color-muted)" />
+        <Icon name="filter" size="sm" class="text-muted" />
         <span class="truncate">{{ title }}</span>
         <slot name="title" />
       </div>

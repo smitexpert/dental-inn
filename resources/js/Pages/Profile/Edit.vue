@@ -64,7 +64,7 @@ function deactivate() {
           <Avatar :name="user.name" size="xl" />
           <div class="min-w-0 flex-1">
             <p class="text-lg font-semibold text-base-content">{{ user.name }}</p>
-            <p class="text-sm text-(--color-muted) mt-0.5">{{ user.email }}</p>
+            <p class="text-sm text-muted mt-0.5">{{ user.email }}</p>
             <div class="mt-2 flex flex-wrap items-center gap-1.5">
               <Badge v-for="r in user.roles || []" :key="r" variant="primary">{{ r }}</Badge>
               <Badge :variant="user.is_active ? 'success' : 'warning'" dot>
@@ -147,7 +147,7 @@ function deactivate() {
         <template #header>
           <div>
             <h3 class="text-base font-semibold text-error">Danger zone</h3>
-            <p class="text-sm text-(--color-muted) mt-0.5">
+            <p class="text-sm text-muted mt-0.5">
               Irreversible actions. Please be careful.
             </p>
           </div>

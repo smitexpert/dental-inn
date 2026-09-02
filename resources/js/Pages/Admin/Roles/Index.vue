@@ -123,7 +123,7 @@ function goPage(n) {
                   <div class="inline-flex items-center gap-1">
                     <Link
                       :href="`/admin/roles/${r.id}/edit`"
-                      class="p-1.5 rounded-md text-(--color-muted) hover:bg-base-200 hover:text-primary transition-colors"
+                      class="p-1.5 rounded-md text-muted hover:bg-base-200 hover:text-primary transition-colors"
                       :aria-label="`Edit ${r.name}`"
                       :title="`Edit ${r.name}`"
                     >
@@ -131,7 +131,7 @@ function goPage(n) {
                     </Link>
                     <button
                       type="button"
-                      class="p-1.5 rounded-md text-(--color-muted) hover:bg-error/10 hover:text-error transition-colors"
+                      class="p-1.5 rounded-md text-muted hover:bg-error/10 hover:text-error transition-colors"
                       :aria-label="`Delete ${r.name}`"
                       :title="`Delete ${r.name}`"
                       @click="destroyRole(r)"
