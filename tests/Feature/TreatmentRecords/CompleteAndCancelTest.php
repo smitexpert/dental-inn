@@ -54,4 +54,49 @@ class CompleteAndCancelTest extends TestCase
         $record->refresh();
         $this->assertSame(TreatmentStatus::Cancelled, $record->status);
     }
+
+    public function test_complete_blocked_on_already_completed_record(): void
+    {
+        $admin = User::factory()->create(['is_active' => true])->assignRole('admin');
+        $patient = Patient::factory()->create();
+        $record = TreatmentRecord::factory()->forPatient($patient)->completed()->create();
+
+        $response = $this->actingAs($admin)->post(
+            "/patients/{$patient->id}/treatment-records/{$record->id}/complete",
+        );
+
+        $response->assertSessionHas('error');
+        $record->refresh();
+        $this->assertSame(TreatmentStatus::Completed, $record->status);
+    }
+
+    public function test_cancel_blocked_on_already_completed_record(): void
+    {
+        $admin = User::factory()->create(['is_active' => true])->assignRole('admin');
+        $patient = Patient::factory()->create();
+        $record = TreatmentRecord::factory()->forPatient($patient)->completed()->create();
+
+        $response = $this->actingAs($admin)->post(
+            "/patients/{$patient->id}/treatment-records/{$record->id}/cancel",
+        );
+
+        $response->assertSessionHas('error');
+        $record->refresh();
+        $this->assertSame(TreatmentStatus::Completed, $record->status);
+    }
+
+    public function test_cancel_blocked_on_already_cancelled_record(): void
+    {
+        $admin = User::factory()->create(['is_active' => true])->assignRole('admin');
+        $patient = Patient::factory()->create();
+        $record = TreatmentRecord::factory()->forPatient($patient)->cancelled()->create();
+
+        $response = $this->actingAs($admin)->post(
+            "/patients/{$patient->id}/treatment-records/{$record->id}/cancel",
+        );
+
+        $response->assertSessionHas('error');
+        $record->refresh();
+        $this->assertSame(TreatmentStatus::Cancelled, $record->status);
+    }
 }

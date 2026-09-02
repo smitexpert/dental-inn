@@ -112,14 +112,14 @@ const breadcrumbs = [
             <Button variant="outline" icon="edit">Edit</Button>
           </Link>
           <Button
-            v-if="can('manage-treatment-records') && record.status === 'in_progress'"
+            v-if="can('manage-treatment-records') && record.is_editable"
             icon-right="check"
             @click="complete"
           >
             Mark completed
           </Button>
           <Button
-            v-if="can('manage-treatment-records') && record.status !== 'cancelled'"
+            v-if="can('manage-treatment-records') && record.is_editable"
             variant="danger"
             icon="x"
             @click="cancel"

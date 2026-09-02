@@ -139,6 +139,13 @@ class TreatmentRecordController extends Controller
     public function complete(Patient $patient, TreatmentRecord $record): RedirectResponse
     {
         $this->ensureBelongs($patient, $record);
+
+        if (! $record->isEditable()) {
+            return redirect()
+                ->route('patients.treatment-records.show', [$patient, $record])
+                ->with('error', 'Only in-progress records can be completed.');
+        }
+
         $this->records->markCompleted($record);
 
         return redirect()
@@ -149,6 +156,13 @@ class TreatmentRecordController extends Controller
     public function cancel(Patient $patient, TreatmentRecord $record): RedirectResponse
     {
         $this->ensureBelongs($patient, $record);
+
+        if (! $record->isEditable()) {
+            return redirect()
+                ->route('patients.treatment-records.show', [$patient, $record])
+                ->with('error', 'Only in-progress records can be cancelled.');
+        }
+
         $this->records->cancel($record);
 
         return redirect()
