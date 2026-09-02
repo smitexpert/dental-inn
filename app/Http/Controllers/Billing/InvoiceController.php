@@ -12,6 +12,7 @@ use App\Http\Requests\Billing\UpdateInvoiceRequest;
 use App\Models\Invoice;
 use App\Repositories\Contracts\InvoiceRepository;
 use App\Services\InvoiceService;
+use App\Settings\ClinicSettings;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -23,6 +24,7 @@ class InvoiceController extends Controller
     public function __construct(
         private readonly InvoiceRepository $invoices,
         private readonly InvoiceService $service,
+        private readonly ClinicSettings $settings,
     ) {}
 
     public function index(): Response
@@ -98,6 +100,28 @@ class InvoiceController extends Controller
 
         return Inertia::render('Billing/Invoices/Show', [
             'invoice' => $this->serialize($invoice),
+        ]);
+    }
+
+    /**
+     * Dedicated printable A4 view for an invoice. Reuses the show()
+     * serializer plus the clinic's currency settings so the printed page
+     * matches the rest of the app. Intentionally has no letterhead,
+     * sidebar, or page chrome — the clinic's letterhead is pre-printed
+     * on the stationery, and the print page must not duplicate it.
+     */
+    public function print(Invoice $invoice): Response
+    {
+        $invoice->load(['patient', 'creator', 'items', 'payments.receiver']);
+
+        return Inertia::render('Billing/Invoices/Print', [
+            'invoice' => $this->serialize($invoice),
+            'currency' => [
+                'symbol' => $this->settings->currency_symbol,
+                'code' => $this->settings->currency_code,
+                'decimals' => $this->settings->currency_decimals,
+                'position' => $this->settings->currency_position,
+            ],
         ]);
     }
 

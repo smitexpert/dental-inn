@@ -28,6 +28,7 @@ Route::middleware(['auth', 'active', 'permission:view-invoices'])
     ->prefix('billing/invoices')->name('billing.invoices.')->group(function (): void {
         Route::get('/', [InvoiceController::class, 'index'])->name('index');
         Route::get('/{invoice}', [InvoiceController::class, 'show'])->name('show');
+        Route::get('/{invoice}/print', [InvoiceController::class, 'print'])->name('print');
     });
 
 Route::middleware(['auth', 'active', 'permission:manage-invoices'])

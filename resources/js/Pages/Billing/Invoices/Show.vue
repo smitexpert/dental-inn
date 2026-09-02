@@ -87,6 +87,9 @@ const breadcrumbs = [
           <Link v-if="invoice.status === 'draft'" :href="`/billing/invoices/${invoice.id}/edit`">
             <Button variant="outline" icon="edit">Edit</Button>
           </Link>
+          <Link :href="`/billing/invoices/${invoice.id}/print`">
+            <Button variant="outline" icon="printer">Print</Button>
+          </Link>
           <Link href="/billing/invoices">
             <Button variant="ghost">Back</Button>
           </Link>
