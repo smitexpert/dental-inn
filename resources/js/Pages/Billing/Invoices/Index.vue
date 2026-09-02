@@ -119,9 +119,9 @@ function statusBadge(s) {
                 <th>Patient</th>
                 <th>Issued</th>
                 <th>Due</th>
-                <th class="text-right">Total</th>
-                <th class="text-right">Balance</th>
-                <th class="w-32">Status</th>
+                <th class="text-right w-24 whitespace-nowrap">Total</th>
+                <th class="text-right w-24 whitespace-nowrap">Balance</th>
+                <th class="w-40 whitespace-nowrap">Status</th>
                 <th class="w-20 text-right">Actions</th>
               </tr>
             </thead>
@@ -136,12 +136,12 @@ function statusBadge(s) {
                     {{ i.patient.patient_code }}
                   </div>
                 </td>
-                <td class="text-(--color-muted)">{{ i.invoice_date }}</td>
-                <td class="text-(--color-muted)">{{ i.due_date || '—' }}</td>
-                <td class="text-right font-medium tabular-nums">{{ i.total }}</td>
-                <td class="text-right font-medium tabular-nums">{{ i.balance_due }}</td>
+                <td class="text-(--color-muted) whitespace-nowrap">{{ i.invoice_date }}</td>
+                <td class="text-(--color-muted) whitespace-nowrap">{{ i.due_date || '—' }}</td>
+                <td class="text-right font-medium tabular-nums whitespace-nowrap">{{ i.total }}</td>
+                <td class="text-right font-medium tabular-nums whitespace-nowrap">{{ i.balance_due }}</td>
                 <td>
-                  <Badge :variant="statusBadge(i.status)" dot>{{ i.status_label }}</Badge>
+                  <Badge :variant="statusBadge(i.status)" dot class="whitespace-nowrap">{{ i.status_label }}</Badge>
                 </td>
                 <td class="text-right">
                   <div class="inline-flex items-center gap-1">
