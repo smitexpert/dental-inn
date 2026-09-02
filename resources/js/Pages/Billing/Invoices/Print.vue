@@ -319,16 +319,14 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
-  text-align: right;
   font-size: 10pt;
   flex: 0 0 auto;
-  white-space: nowrap;
 }
 .date-row {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: baseline;
-  gap: 1rem;
+  gap: 1.5rem;
 }
 .date-label {
   color: #6b7280;
@@ -342,6 +340,7 @@ onMounted(() => {
   color: #111827;
   white-space: nowrap;
   text-align: right;
+  display: inline-block;
 }
 .date-value.status {
   padding: 0.05rem 0.45rem;
