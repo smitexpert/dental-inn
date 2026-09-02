@@ -4,6 +4,8 @@ import AuthenticatedLayout from '@/Layouts/Authenticated.vue'
 import UiCard from '@/Components/ui/Card.vue'
 import UiBadge from '@/Components/ui/Badge.vue'
 import UiButton from '@/Components/ui/Button.vue'
+import Stat from '@/Components/ui/Stat.vue'
+import Icon from '@/Components/ui/Icon.vue'
 import { useCurrentUser } from '@/Composables/useCurrentUser.js'
 
 const props = defineProps({
@@ -11,6 +13,8 @@ const props = defineProps({
   appointments: Array,
   treatment_records: Array,
   duplicates: Array,
+  billing: Object,
+  invoices: Array,
 })
 
 const { can } = useCurrentUser()
@@ -62,6 +66,29 @@ function fmtDateTime(s) {
         </ul>
       </div>
 
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <Stat
+          label="Total invoiced"
+          :value="billing?.total_invoiced ?? '0.00'"
+          :hint="`${billing?.invoice_count ?? 0} invoice${(billing?.invoice_count ?? 0) === 1 ? '' : 's'}`"
+          icon="file-text"
+          tone="primary"
+        />
+        <Stat
+          label="Total paid"
+          :value="billing?.total_paid ?? '0.00'"
+          icon="check-circle"
+          tone="success"
+        />
+        <Stat
+          label="Balance due"
+          :value="billing?.balance_due ?? '0.00'"
+          :hint="`${billing?.open_invoices ?? 0} open`"
+          icon="alert-circle"
+          :tone="(billing?.open_invoices ?? 0) > 0 ? 'warning' : 'neutral'"
+        />
+      </div>
+
       <UiCard title="Contact">
         <div class="grid grid-cols-2 gap-3 text-sm">
           <div><span class="text-base-content/70">Phone:</span> {{ patient.phone || '—' }}</div>
@@ -78,6 +105,48 @@ function fmtDateTime(s) {
           <div class="col-span-2"><span class="text-base-content/70">Emergency contact:</span>
             {{ patient.emergency_contact_name || '—' }} {{ patient.emergency_contact_phone || '' }}
           </div>
+        </div>
+      </UiCard>
+
+      <UiCard title="Invoices">
+        <div v-if="!invoices || invoices.length === 0" class="text-sm text-base-content/70">
+          No invoices issued.
+        </div>
+        <div v-else class="overflow-x-auto">
+          <table class="app-table">
+            <thead class="bg-base-200 text-base-content/70">
+              <tr>
+                <th class="text-left px-4 py-2">Invoice</th>
+                <th class="text-left px-4 py-2">Date</th>
+                <th class="text-left px-4 py-2">Status</th>
+                <th class="text-right px-4 py-2">Total</th>
+                <th class="text-right px-4 py-2">Paid</th>
+                <th class="text-right px-4 py-2">Balance</th>
+                <th class="w-16 text-right px-4 py-2"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="i in invoices" :key="i.id" class="border-b border-base-300 last:border-b-0">
+                <td class="px-4 py-2 font-mono text-xs">{{ i.invoice_number }}</td>
+                <td class="px-4 py-2 text-sm">{{ i.invoice_date }}</td>
+                <td class="px-4 py-2">
+                  <UiBadge :variant="i.status === 'paid' ? 'success' : i.status === 'cancelled' || i.status === 'refunded' ? 'danger' : 'warning'">
+                    {{ i.status_label }}
+                  </UiBadge>
+                </td>
+                <td class="px-4 py-2 text-right tabular-nums">{{ i.total }}</td>
+                <td class="px-4 py-2 text-right tabular-nums">{{ i.paid_amount }}</td>
+                <td class="px-4 py-2 text-right tabular-nums font-medium" :class="parseFloat(i.balance_due) > 0 ? 'text-warning' : 'text-base-content/60'">
+                  {{ i.balance_due }}
+                </td>
+                <td class="px-4 py-2 text-right">
+                  <Link :href="i.show_url" class="p-1.5 rounded-md text-base-content/60 hover:bg-base-200 hover:text-primary inline-flex" aria-label="View invoice" title="View invoice">
+                    <Icon name="external-link" size="sm" />
+                  </Link>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </UiCard>
 

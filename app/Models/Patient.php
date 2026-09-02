@@ -44,6 +44,7 @@ use Spatie\Activitylog\Support\LogOptions;
  * @property ?Carbon $deleted_at
  * @property-read Collection<int, Appointment> $appointments
  * @property-read Collection<int, TreatmentRecord> $treatmentRecords
+ * @property-read Collection<int, Invoice> $invoices
  * @property-read ?User $creator
  */
 class Patient extends Model
@@ -127,6 +128,14 @@ class Patient extends Model
     public function treatmentRecords(): HasMany
     {
         return $this->hasMany(TreatmentRecord::class)->orderByDesc('visited_at');
+    }
+
+    /**
+     * @return HasMany<Invoice, $this>
+     */
+    public function invoices(): HasMany
+    {
+        return $this->hasMany(Invoice::class)->orderByDesc('invoice_date');
     }
 
     public function creator(): BelongsTo

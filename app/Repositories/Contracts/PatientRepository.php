@@ -29,4 +29,14 @@ interface PatientRepository
      * @return Collection<int, Patient>
      */
     public function findDuplicates(?string $phone, ?string $name, ?string $email, ?int $ignoreId = null): Collection;
+
+    /**
+     * Compute patient-scoped billing aggregates (total invoiced, total paid,
+     * balance due, and the count of still-open invoices) from the invoices
+     * table. Summed in cents-off-relationships so partial refunds and rounding
+     * are accurate, formatted as 2-decimal strings for direct display.
+     *
+     * @return array{total_invoiced:string,total_paid:string,balance_due:string,open_invoices:int,invoice_count:int}
+     */
+    public function billingSummary(Patient $patient): array;
 }

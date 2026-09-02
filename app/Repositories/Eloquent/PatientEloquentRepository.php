@@ -8,6 +8,7 @@ use App\Models\Patient;
 use App\Repositories\Contracts\PatientRepository;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
 
 class PatientEloquentRepository implements PatientRepository
 {
@@ -82,5 +83,40 @@ class PatientEloquentRepository implements PatientRepository
             ->orderBy('name')
             ->limit(10)
             ->get();
+    }
+
+    public function billingSummary(Patient $patient): array
+    {
+        /** @var object{total_invoiced?:string|null,total_paid?:string|null,balance_due?:string|null,open_invoices?:int|string|null,invoice_count?:int|string|null}|null $row */
+        $row = DB::table('invoices')
+            ->where('patient_id', $patient->id)
+            ->selectRaw(
+                'COALESCE(SUM(CAST(total AS DECIMAL(18,2))), 0) AS total_invoiced, '
+                .'COALESCE(SUM(CAST(paid_amount AS DECIMAL(18,2))), 0) AS total_paid'
+            )
+            ->first();
+
+        $openRow = DB::table('invoices')
+            ->where('patient_id', $patient->id)
+            ->whereRaw('CAST(total AS DECIMAL(18,2)) > CAST(paid_amount AS DECIMAL(18,2))')
+            ->selectRaw(
+                'COALESCE(SUM(CAST(total AS DECIMAL(18,2)) - CAST(paid_amount AS DECIMAL(18,2))), 0) AS balance_due, '
+                .'COUNT(*) AS open_invoices, '
+                .'(SELECT COUNT(*) FROM invoices WHERE patient_id = ?) AS invoice_count'
+            )
+            ->addBinding($patient->id, 'select')
+            ->first();
+
+        $totalInvoiced = (float) ($row->total_invoiced ?? 0);
+        $totalPaid = (float) ($row->total_paid ?? 0);
+        $balanceDue = (float) ($openRow->balance_due ?? 0);
+
+        return [
+            'total_invoiced' => number_format($totalInvoiced, 2, '.', ''),
+            'total_paid' => number_format($totalPaid, 2, '.', ''),
+            'balance_due' => number_format($balanceDue, 2, '.', ''),
+            'open_invoices' => (int) ($openRow->open_invoices ?? 0),
+            'invoice_count' => (int) ($openRow->invoice_count ?? 0),
+        ];
     }
 }

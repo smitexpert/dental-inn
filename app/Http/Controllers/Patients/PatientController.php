@@ -61,6 +61,7 @@ class PatientController extends Controller
         $patient->load([
             'appointments' => fn ($q) => $q->with('doctor.user')->limit(20),
             'treatmentRecords' => fn ($q) => $q->with('doctor.user')->limit(20),
+            'invoices' => fn ($q) => $q->with('payments')->limit(50),
         ]);
 
         $duplicates = $this->patients->findDuplicates(
@@ -72,6 +73,18 @@ class PatientController extends Controller
 
         return Inertia::render('Patients/Show', [
             'patient' => (new PatientResource($patient))->resolve(),
+            'billing' => $this->patients->billingSummary($patient),
+            'invoices' => $patient->invoices->map(fn ($i) => [
+                'id' => $i->id,
+                'invoice_number' => $i->invoice_number,
+                'invoice_date' => $i->invoice_date->toDateString(),
+                'status' => $i->status->value,
+                'status_label' => $i->status->label(),
+                'total' => (string) $i->total,
+                'paid_amount' => (string) $i->paid_amount,
+                'balance_due' => $i->balance_due,
+                'show_url' => route('billing.invoices.show', $i),
+            ])->all(),
             'appointments' => $patient->appointments->map(fn ($a) => [
                 'id' => $a->id,
                 'doctor_name' => $a->doctor?->user?->name,
