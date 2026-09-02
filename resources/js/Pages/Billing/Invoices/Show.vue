@@ -117,7 +117,7 @@ const breadcrumbs = [
           :value="invoice.invoice_date"
           icon="calendar"
           tone="neutral"
-          hint="Due {{ invoice.due_date }}"
+          :hint="invoice.due_date ? `Due ${invoice.due_date}` : 'No due date'"
         />
       </div>
 
