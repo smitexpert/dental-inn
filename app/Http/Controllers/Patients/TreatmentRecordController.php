@@ -27,7 +27,17 @@ class TreatmentRecordController extends Controller
     public function index(Patient $patient): Response
     {
         $page = $this->records->paginateForPatient($patient, 25);
-        $page->setCollection(TreatmentRecordResource::collection($page->getCollection())->collection);
+
+        // Resource::collection() wraps the response in an AnonymousResourceCollection
+        // which adds a {data: [...]} envelope; resolving each resource to a plain
+        // array keeps the paginator shape Inertia expects (records.data[0].id, not
+        // records.data[0].data.id).
+        $rows = TreatmentRecordResource::collection($page->getCollection())
+            ->collection
+            ->map(fn (TreatmentRecordResource $r): array => $r->resolve())
+            ->values();
+
+        $page->setCollection($rows);
 
         return Inertia::render('Patients/TreatmentRecords/Index', [
             'patient' => [
