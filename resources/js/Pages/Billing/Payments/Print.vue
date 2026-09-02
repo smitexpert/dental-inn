@@ -296,9 +296,9 @@ onMounted(() => {
 }
 .date-row {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: baseline;
-  gap: 1.5rem;
+  gap: 1rem;
 }
 .date-label {
   color: #6b7280;
@@ -306,6 +306,8 @@ onMounted(() => {
   letter-spacing: 0.06em;
   font-size: 8.5pt;
   white-space: nowrap;
+  width: 28mm;
+  flex: 0 0 28mm;
 }
 .date-value {
   font-weight: 600;
