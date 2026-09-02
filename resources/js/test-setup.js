@@ -25,6 +25,14 @@ vi.mock('@inertiajs/vue3', () => ({
     post: vi.fn(),
     reset: vi.fn(),
   }),
+  // Stub <Link> as a plain <a> so components that use it can render in
+  // isolation without pulling the full Inertia runtime.
+  Link: {
+    name: 'Link',
+    props: ['href', 'method', 'as', 'data'],
+    template: '<a :href="href"><slot /></a>',
+  },
+  Head: { name: 'Head', template: '<template><slot /></template>' },
 }))
 
 vi.mock('ziggy-js', () => ({
