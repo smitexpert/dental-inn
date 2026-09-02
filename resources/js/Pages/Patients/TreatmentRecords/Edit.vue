@@ -30,7 +30,7 @@ const form = useForm({
   chief_complaint: props.record.chief_complaint ?? '',
   diagnosis: props.record.diagnosis ?? '',
   treatment_notes: props.record.treatment_notes ?? '',
-  tooth_chart: props.record.tooth_chart ?? {},
+  tooth_chart: props.record.tooth_chart ?? { teeth: [] },
   follow_up_date: props.record.follow_up_date ?? '',
   status: props.record.status ?? 'in_progress',
 })

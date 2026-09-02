@@ -54,28 +54,23 @@ function cancel() {
   })
 }
 
-const toothEntries = () => {
+/**
+ * Normalised teeth list from the stored tooth_chart JSON.
+ *   { teeth: [{ fdi, procedures: [{ code, name, surface? }] }] }
+ */
+const chartTeeth = () => {
   const tc = props.record.tooth_chart
   if (!tc || typeof tc !== 'object') return []
-  return Object.entries(tc)
+  const list = Array.isArray(tc.teeth) ? tc.teeth : []
+  return list
+    .filter((t) => t && typeof t.fdi === 'number')
+    .slice()
+    .sort((a, b) => a.fdi - b.fdi)
 }
 
-const STATUS_LABELS = {
-  healthy: 'Healthy',
-  caries: 'Caries',
-  filled: 'Filled',
-  crown: 'Crown',
-  missing: 'Missing',
-  extraction_needed: 'Extraction needed',
-}
-
-const STATUS_TONE = {
-  healthy: 'success',
-  caries: 'danger',
-  filled: 'primary',
-  crown: 'warning',
-  missing: 'neutral',
-  extraction_needed: 'danger',
+function procedureLabel(p) {
+  if (!p) return ''
+  return p.surface ? `${p.code} · ${p.surface}` : p.code
 }
 
 const breadcrumbs = [
@@ -133,11 +128,11 @@ const breadcrumbs = [
         <Card title="Visit details">
           <dl class="grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
             <div>
-              <dt class="text-(--color-muted)">Visit date</dt>
+              <dt class="text-muted">Visit date</dt>
               <dd class="font-medium mt-0.5">{{ fmtDate(record.visited_at) }}</dd>
             </div>
             <div>
-              <dt class="text-(--color-muted)">Doctor</dt>
+              <dt class="text-muted">Doctor</dt>
               <dd class="font-medium mt-0.5">
                 <span v-if="record.doctor_name" class="inline-flex items-center gap-2">
                   <span
@@ -150,7 +145,7 @@ const breadcrumbs = [
               </dd>
             </div>
             <div>
-              <dt class="text-(--color-muted)">Status</dt>
+              <dt class="text-muted">Status</dt>
               <dd class="mt-0.5">
                 <Badge :variant="recordClass(record.status)" dot>
                   {{ record.status_label }}
@@ -158,11 +153,11 @@ const breadcrumbs = [
               </dd>
             </div>
             <div>
-              <dt class="text-(--color-muted)">Follow-up</dt>
+              <dt class="text-muted">Follow-up</dt>
               <dd class="font-medium mt-0.5">{{ fmtDate(record.follow_up_date) }}</dd>
             </div>
             <div v-if="record.appointment_id" class="col-span-2">
-              <dt class="text-(--color-muted)">Linked appointment</dt>
+              <dt class="text-muted">Linked appointment</dt>
               <dd class="mt-0.5">
                 <Link
                   :href="`/appointments/${record.appointment_id}`"
@@ -176,19 +171,38 @@ const breadcrumbs = [
         </Card>
 
         <Card title="Tooth chart">
-          <div v-if="toothEntries().length === 0" class="text-sm text-(--color-muted) py-4 text-center">
+          <div
+            v-if="chartTeeth().length === 0"
+            class="text-sm text-muted py-4 text-center"
+          >
             No teeth marked.
           </div>
-          <div v-else class="flex flex-wrap gap-2">
+          <div v-else class="space-y-2">
             <div
-              v-for="[num, status] in toothEntries()"
-              :key="num"
-              class="rounded-lg border border-(--color-line) bg-base-100 px-3 py-2 text-xs flex flex-col gap-1 min-w-24"
+              v-for="t in chartTeeth()"
+              :key="t.fdi"
+              class="rounded-lg border border-line bg-base-100 px-3 py-2 text-xs"
             >
-              <div class="font-mono font-semibold text-base-content">Tooth {{ num }}</div>
-              <Badge :variant="STATUS_TONE[status] || 'neutral'" size="sm">
-                {{ STATUS_LABELS[status] || status }}
-              </Badge>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="font-mono font-semibold text-base-content">
+                  Tooth {{ t.fdi }}
+                </span>
+                <Badge variant="primary" size="sm">
+                  {{ (t.procedures || []).length }}
+                  {{ (t.procedures || []).length === 1 ? 'procedure' : 'procedures' }}
+                </Badge>
+              </div>
+              <ul v-if="(t.procedures || []).length > 0" class="space-y-0.5">
+                <li
+                  v-for="(p, idx) in t.procedures"
+                  :key="idx"
+                  class="flex items-center gap-2 text-base-content/80"
+                >
+                  <span class="font-mono text-base-content/70">{{ p.code }}</span>
+                  <span>{{ p.name }}</span>
+                  <Badge v-if="p.surface" variant="neutral" size="sm">{{ p.surface }}</Badge>
+                </li>
+              </ul>
             </div>
           </div>
         </Card>

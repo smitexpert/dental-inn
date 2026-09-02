@@ -27,7 +27,7 @@ const form = useForm({
   chief_complaint: '',
   diagnosis: '',
   treatment_notes: '',
-  tooth_chart: {},
+  tooth_chart: { teeth: [] },
   follow_up_date: '',
   status: 'in_progress',
 })
