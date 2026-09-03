@@ -53,6 +53,17 @@ class PaymentController extends Controller
         $aggregates['outstanding'] = number_format($outstanding, 2, '.', '');
         $aggregates['distinct_invoices_seen'] = $invoiceCount;
 
+        $kpis = [
+            ['id' => 'today', 'label' => 'Total today',
+                'value' => (string) Payment::whereDate('payment_date', today())->sum('amount'), 'format' => 'currency'],
+            ['id' => 'month', 'label' => 'Total this month',
+                'value' => (string) Payment::whereMonth('payment_date', now()->month)->sum('amount'), 'format' => 'currency'],
+            ['id' => 'avg', 'label' => 'Avg ticket',
+                'value' => (string) (Payment::whereMonth('payment_date', now()->month)->avg('amount') ?? '0'), 'format' => 'currency'],
+            ['id' => 'count', 'label' => 'Count',
+                'value' => (string) Payment::whereMonth('payment_date', now()->month)->count(), 'format' => 'number'],
+        ];
+
         return Inertia::render('Billing/Payments/Index', [
             'payments' => $page,
             'filters' => $filters,
@@ -61,6 +72,7 @@ class PaymentController extends Controller
                 'label' => $m->label(),
             ])->all(),
             'aggregates' => $aggregates,
+            'kpis' => $kpis,
         ]);
     }
 
