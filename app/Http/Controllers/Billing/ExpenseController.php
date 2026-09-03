@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Billing\StoreExpenseRequest;
 use App\Http\Requests\Billing\UpdateExpenseRequest;
 use App\Models\Expense;
+use App\Models\ExpenseCategory;
 use App\Repositories\Contracts\ExpenseCategoryRepository;
 use App\Repositories\Contracts\ExpenseRepository;
 use App\Services\ExpenseService;
@@ -34,6 +35,26 @@ class ExpenseController extends Controller
             request()->only(['q', 'status', 'category_id', 'date_from', 'date_to']),
         );
 
+        $topCategoryId = (int) (Expense::where('status', 'approved')
+            ->selectRaw('category_id, SUM(amount) as s')
+            ->groupBy('category_id')
+            ->orderByDesc('s')
+            ->value('category_id') ?? 0);
+        $topCategoryName = $topCategoryId > 0
+            ? (ExpenseCategory::find($topCategoryId)?->name ?? '—')
+            : '—';
+
+        $kpis = [
+            ['id' => 'pending', 'label' => 'Pending approval',
+                'value' => (string) Expense::where('status', 'pending')->count(), 'format' => 'number'],
+            ['id' => 'month', 'label' => 'Approved this month',
+                'value' => (string) Expense::where('status', 'approved')->whereMonth('expense_date', now()->month)->sum('amount'), 'format' => 'currency'],
+            ['id' => 'total', 'label' => 'Total spent',
+                'value' => (string) Expense::where('status', 'approved')->sum('amount'), 'format' => 'currency'],
+            ['id' => 'top', 'label' => 'Top category',
+                'value' => $topCategoryName, 'format' => 'number'],
+        ];
+
         return Inertia::render('Billing/Expenses/Index', [
             'expenses' => $page,
             'filters' => request()->only(['q', 'status', 'category_id', 'date_from', 'date_to']),
@@ -46,6 +67,7 @@ class ExpenseController extends Controller
                 'id' => $c->id,
                 'name' => $c->name,
             ])->all(),
+            'kpis' => $kpis,
         ]);
     }
 

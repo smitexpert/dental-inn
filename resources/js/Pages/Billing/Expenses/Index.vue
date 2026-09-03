@@ -2,16 +2,24 @@
 import { Head, Link, router } from '@inertiajs/vue3'
 import { ref, watch } from 'vue'
 import AuthenticatedLayout from '@/Layouts/Authenticated.vue'
-import PageHeader from '@/Components/ui/PageHeader.vue'
+import PageHeaderSticky from '@/Components/ui/PageHeaderSticky.vue'
+import KpiStrip from '@/Components/ui/KpiStrip.vue'
 import FilterBar from '@/Components/ui/FilterBar.vue'
 import Card from '@/Components/ui/Card.vue'
 import Button from '@/Components/ui/Button.vue'
 import Badge from '@/Components/ui/Badge.vue'
 import EmptyState from '@/Components/ui/EmptyState.vue'
 import Pagination from '@/Components/ui/Pagination.vue'
+import ResponsiveTable from '@/Components/ui/ResponsiveTable.vue'
 import Icon from '@/Components/ui/Icon.vue'
 
-const props = defineProps({ expenses: Object, filters: Object, statuses: Array, categories: Array })
+const props = defineProps({
+  expenses: Object,
+  filters: Object,
+  statuses: Array,
+  categories: Array,
+  kpis: { type: Array, default: () => [] },
+})
 
 const q = ref(props.filters.q ?? '')
 const status = ref(props.filters.status ?? '')
@@ -51,24 +59,37 @@ function goPage(n) {
     { preserveState: true },
   )
 }
+
+const columns = [
+  { key: 'expense_date', label: 'Date' },
+  { key: 'category', label: 'Category' },
+  { key: 'vendor', label: 'Vendor' },
+  { key: 'amount', label: 'Amount' },
+  { key: 'payment_method_label', label: 'Method' },
+  { key: 'status', label: 'Status' },
+  { key: 'actions', label: '' },
+]
 </script>
 
 <template>
   <Head title="Expenses" />
   <AuthenticatedLayout>
-    <div class="space-y-5">
-      <PageHeader
+    <template #pageHeader>
+      <PageHeaderSticky
         title="Expenses"
-        subtitle="Track clinic expenses, vendors, and approval status."
-        icon="wallet"
-        eyebrow="Billing"
+        :breadcrumb="[{ label: 'Billing' }, { label: 'Expenses' }]"
+        meta="Track clinic expenses, vendors, and approval status."
       >
         <template #actions>
           <Link href="/billing/expenses/create">
             <Button icon="plus">Submit expense</Button>
           </Link>
         </template>
-      </PageHeader>
+      </PageHeaderSticky>
+    </template>
+
+    <div class="space-y-5 pt-5">
+      <KpiStrip :tiles="kpis" />
 
       <FilterBar title="Filters">
         <template #aside>
@@ -115,43 +136,49 @@ function goPage(n) {
           </template>
         </EmptyState>
 
-        <div v-else class="overflow-x-auto">
-          <table class="app-table">
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Category</th>
-                <th>Vendor</th>
-                <th class="text-right">Amount</th>
-                <th>Method</th>
-                <th class="w-32">Status</th>
-                <th class="w-20 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="e in expenses.data" :key="e.id">
-                <td class="text-muted">{{ e.expense_date }}</td>
-                <td class="font-medium">{{ e.category.name }}</td>
-                <td class="text-muted">{{ e.vendor ?? '—' }}</td>
-                <td class="text-right font-medium tabular-nums">{{ e.amount }} {{ e.currency_code }}</td>
-                <td class="text-muted">{{ e.payment_method_label }}</td>
-                <td>
-                  <Badge :variant="e.status_color" dot>{{ e.status_label }}</Badge>
-                </td>
-                <td class="text-right">
-                  <Link
-                    :href="`/billing/expenses/${e.id}`"
-                    class="p-1.5 rounded-md text-muted hover:bg-base-200 hover:text-primary transition-colors inline-flex"
-                    aria-label="View expense"
-                    title="View expense"
-                  >
-                    <Icon name="eye" size="sm" />
-                  </Link>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        <ResponsiveTable v-else :columns="columns" :rows="expenses.data">
+          <template #cell:expense_date="{ row }">
+            <span class="text-muted">{{ row.expense_date }}</span>
+          </template>
+          <template #cell:category="{ row }">
+            <span class="font-medium">{{ row.category.name }}</span>
+          </template>
+          <template #cell:vendor="{ row }">
+            <span class="text-muted">{{ row.vendor ?? '—' }}</span>
+          </template>
+          <template #cell:amount="{ row }">
+            <div class="text-right font-medium tabular-nums">{{ row.amount }} {{ row.currency_code }}</div>
+          </template>
+          <template #cell:payment_method_label="{ row }">
+            <span class="text-muted">{{ row.payment_method_label }}</span>
+          </template>
+          <template #cell:status="{ row }">
+            <Badge :variant="row.status_color" dot>{{ row.status_label }}</Badge>
+          </template>
+          <template #cell:actions="{ row }">
+            <div class="text-right">
+              <Link
+                :href="`/billing/expenses/${row.id}`"
+                class="p-1.5 rounded-md text-muted hover:bg-base-200 hover:text-primary transition-colors inline-flex"
+                aria-label="View expense"
+                title="View expense"
+              >
+                <Icon name="eye" size="sm" />
+              </Link>
+            </div>
+          </template>
+          <template #card="{ row }">
+            <div class="app-card p-4 space-y-2">
+              <div class="text-sm text-muted">{{ row.expense_date }}</div>
+              <div class="font-medium">{{ row.category.name }}</div>
+              <div class="text-sm text-muted">{{ row.vendor ?? '—' }}</div>
+              <div class="flex items-center justify-between">
+                <Badge :variant="row.status_color" dot>{{ row.status_label }}</Badge>
+                <span class="font-semibold tabular-nums">{{ row.amount }} {{ row.currency_code }}</span>
+              </div>
+            </div>
+          </template>
+        </ResponsiveTable>
 
         <div class="px-5 pb-4">
           <Pagination
