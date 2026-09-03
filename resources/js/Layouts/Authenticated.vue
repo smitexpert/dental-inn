@@ -73,7 +73,8 @@ const settings = usePage().props.settings
         :is-mobile-open="sidebarOpen"
         @toggle-sidebar="toggleSidebar"
       />
-      <main class="flex-1 px-6 py-6 overflow-x-hidden">
+      <slot name="pageHeader" />
+      <main class="flex-1 px-6 overflow-x-hidden">
         <div class="max-w-7xl mx-auto">
           <slot />
         </div>
