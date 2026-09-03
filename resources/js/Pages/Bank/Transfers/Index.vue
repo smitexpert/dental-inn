@@ -2,16 +2,24 @@
 import { Head, Link, router } from '@inertiajs/vue3'
 import { ref, watch } from 'vue'
 import AuthenticatedLayout from '@/Layouts/Authenticated.vue'
-import PageHeader from '@/Components/ui/PageHeader.vue'
+import PageHeaderSticky from '@/Components/ui/PageHeaderSticky.vue'
+import KpiStrip from '@/Components/ui/KpiStrip.vue'
 import FilterBar from '@/Components/ui/FilterBar.vue'
 import Card from '@/Components/ui/Card.vue'
 import Button from '@/Components/ui/Button.vue'
 import Badge from '@/Components/ui/Badge.vue'
 import EmptyState from '@/Components/ui/EmptyState.vue'
 import Pagination from '@/Components/ui/Pagination.vue'
+import ResponsiveTable from '@/Components/ui/ResponsiveTable.vue'
 import Icon from '@/Components/ui/Icon.vue'
 
-const props = defineProps({ transfers: Object, accounts: Array, filters: Object, currency: String })
+const props = defineProps({
+  transfers: Object,
+  accounts: Array,
+  filters: Object,
+  currency: String,
+  kpis: { type: Array, default: () => [] },
+})
 
 const dateFrom = ref(props.filters?.date_from ?? '')
 const dateTo = ref(props.filters?.date_to ?? '')
@@ -46,24 +54,36 @@ function clearFilters() {
 }
 
 const fmt = (n) => Number(n ?? 0).toLocaleString(undefined, { minimumFractionDigits: 2 })
+
+const columns = [
+  { key: 'occurred_at', label: 'Date' },
+  { key: 'from_account', label: 'From' },
+  { key: 'to_account', label: 'To' },
+  { key: 'amount', label: 'Amount' },
+  { key: 'reference', label: 'Reference' },
+  { key: 'actions', label: '' },
+]
 </script>
 
 <template>
   <Head title="Transfers" />
   <AuthenticatedLayout>
-    <div class="space-y-5">
-      <PageHeader
+    <template #pageHeader>
+      <PageHeaderSticky
         title="Transfers"
-        subtitle="Move funds between bank, cash and external accounts."
-        icon="arrow-right"
-        eyebrow="Finance"
+        :breadcrumb="[{ label: 'Finance' }, { label: 'Transfers' }]"
+        meta="Move funds between bank, cash and external accounts."
       >
         <template #actions>
           <Link :href="route('bank.transfers.create')">
             <Button icon="plus">New transfer</Button>
           </Link>
         </template>
-      </PageHeader>
+      </PageHeaderSticky>
+    </template>
+
+    <div class="space-y-5 pt-5">
+      <KpiStrip :tiles="kpis" />
 
       <FilterBar title="Search">
         <template #aside>
@@ -94,90 +114,92 @@ const fmt = (n) => Number(n ?? 0).toLocaleString(undefined, { minimumFractionDig
       </FilterBar>
 
       <Card :padded="false">
-        <div class="overflow-x-auto">
-          <table class="app-table">
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>From</th>
-                <th></th>
-                <th>To</th>
-                <th class="text-right">Amount</th>
-                <th>Reference</th>
-                <th class="w-20 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="t in transfers.data" :key="t.id">
-                <td class="text-muted">{{ t.occurred_at }}</td>
-                <td>
-                  <div class="flex items-center gap-2.5">
-                    <span
-                      class="h-8 w-8 rounded-lg bg-error/10 text-error inline-flex items-center justify-center shrink-0"
-                    >
-                      <Icon name="arrow-up" size="sm" />
-                    </span>
-                    <div class="min-w-0">
-                      <p class="font-medium text-base-content">
-                        {{ t.from_account?.name || '—' }}
-                      </p>
-                      <p v-if="t.from_account?.bank_name" class="text-xs text-muted">
-                        {{ t.from_account.bank_name }}
-                      </p>
-                    </div>
-                  </div>
-                </td>
-                <td>
-                  <Icon name="arrow-right" size="sm" class="text-muted" />
-                </td>
-                <td>
-                  <div class="flex items-center gap-2.5">
-                    <span
-                      class="h-8 w-8 rounded-lg bg-success/10 text-success inline-flex items-center justify-center shrink-0"
-                    >
-                      <Icon name="arrow-down" size="sm" />
-                    </span>
-                    <div class="min-w-0">
-                      <p class="font-medium text-base-content">
-                        {{ t.to_account?.name || '—' }}
-                      </p>
-                      <p v-if="t.to_account?.bank_name" class="text-xs text-muted">
-                        {{ t.to_account.bank_name }}
-                      </p>
-                    </div>
-                  </div>
-                </td>
-                <td class="text-right font-semibold tabular-nums">
-                  {{ fmt(t.amount) }} {{ currency }}
-                </td>
-                <td class="text-muted">{{ t.reference || '—' }}</td>
-                <td class="text-right">
-                  <Link
-                    :href="route('bank.transfers.show', t.id)"
-                    class="p-1.5 rounded-md text-muted hover:bg-base-200 hover:text-primary transition-colors"
-                    :aria-label="`View transfer ${t.id}`"
-                    :title="`View transfer ${t.id}`"
-                  >
-                    <Icon name="eye" size="sm" />
-                  </Link>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+        <EmptyState
+          v-if="transfers.data.length === 0"
+          icon="arrow-right"
+          title="No transfers yet"
+          description="Record your first inter-account transfer to track fund movements."
+        >
+          <template #action>
+            <Link :href="route('bank.transfers.create')">
+              <Button icon="plus">New transfer</Button>
+            </Link>
+          </template>
+        </EmptyState>
 
-          <EmptyState
-            v-if="transfers.data.length === 0"
-            icon="arrow-right"
-            title="No transfers yet"
-            description="Record your first inter-account transfer to track fund movements."
-          >
-            <template #action>
-              <Link :href="route('bank.transfers.create')">
-                <Button icon="plus">New transfer</Button>
+        <ResponsiveTable v-else :columns="columns" :rows="transfers.data">
+          <template #cell:occurred_at="{ row }">
+            <span class="text-muted">{{ row.occurred_at }}</span>
+          </template>
+          <template #cell:from_account="{ row }">
+            <div class="flex items-center gap-2.5">
+              <span
+                class="h-8 w-8 rounded-lg bg-error/10 text-error inline-flex items-center justify-center shrink-0"
+              >
+                <Icon name="arrow-up" size="sm" />
+              </span>
+              <div class="min-w-0">
+                <p class="font-medium text-base-content">
+                  {{ row.from_account?.name || '—' }}
+                </p>
+                <p v-if="row.from_account?.bank_name" class="text-xs text-muted">
+                  {{ row.from_account.bank_name }}
+                </p>
+              </div>
+            </div>
+          </template>
+          <template #cell:to_account="{ row }">
+            <div class="flex items-center gap-2.5">
+              <span
+                class="h-8 w-8 rounded-lg bg-success/10 text-success inline-flex items-center justify-center shrink-0"
+              >
+                <Icon name="arrow-down" size="sm" />
+              </span>
+              <div class="min-w-0">
+                <p class="font-medium text-base-content">
+                  {{ row.to_account?.name || '—' }}
+                </p>
+                <p v-if="row.to_account?.bank_name" class="text-xs text-muted">
+                  {{ row.to_account.bank_name }}
+                </p>
+              </div>
+            </div>
+          </template>
+          <template #cell:amount="{ row }">
+            <div class="text-right font-semibold tabular-nums">
+              {{ fmt(row.amount) }} {{ currency }}
+            </div>
+          </template>
+          <template #cell:reference="{ row }">
+            <span class="text-muted">{{ row.reference || '—' }}</span>
+          </template>
+          <template #cell:actions="{ row }">
+            <div class="text-right">
+              <Link
+                :href="route('bank.transfers.show', row.id)"
+                class="p-1.5 rounded-md text-muted hover:bg-base-200 hover:text-primary transition-colors"
+                :aria-label="`View transfer ${row.id}`"
+                :title="`View transfer ${row.id}`"
+              >
+                <Icon name="eye" size="sm" />
               </Link>
-            </template>
-          </EmptyState>
-        </div>
+            </div>
+          </template>
+          <template #card="{ row }">
+            <div class="app-card p-4 space-y-2">
+              <div class="text-sm text-muted">{{ row.occurred_at }}</div>
+              <div class="flex items-center gap-2">
+                <span class="text-sm">{{ row.from_account?.name || '—' }}</span>
+                <Icon name="arrow-right" size="sm" class="text-muted" />
+                <span class="text-sm">{{ row.to_account?.name || '—' }}</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-xs text-muted">{{ row.reference || '—' }}</span>
+                <span class="font-semibold tabular-nums">{{ fmt(row.amount) }} {{ currency }}</span>
+              </div>
+            </div>
+          </template>
+        </ResponsiveTable>
 
         <div class="px-5 pb-4">
           <Pagination

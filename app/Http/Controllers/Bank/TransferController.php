@@ -26,6 +26,15 @@ class TransferController extends Controller
 
     public function index(): Response
     {
+        $kpis = [
+            ['id' => 'today', 'label' => 'Transfers today',
+                'value' => (string) Transfer::whereDate('occurred_at', today())->count(), 'format' => 'number'],
+            ['id' => 'volume', 'label' => 'Total volume today',
+                'value' => (string) Transfer::whereDate('occurred_at', today())->sum('amount'), 'format' => 'currency'],
+            ['id' => 'largest', 'label' => 'Largest',
+                'value' => (string) (Transfer::max('amount') ?? '0'), 'format' => 'currency'],
+        ];
+
         return Inertia::render('Bank/Transfers/Index', [
             'transfers' => $this->transfers->paginate(
                 request()->integer('per_page', 25),
@@ -37,6 +46,7 @@ class TransferController extends Controller
                 'name' => $a->name,
                 'type' => $a->type,
             ])->values(),
+            'kpis' => $kpis,
         ]);
     }
 
