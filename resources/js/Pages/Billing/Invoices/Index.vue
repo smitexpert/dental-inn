@@ -2,16 +2,23 @@
 import { Head, Link, router } from '@inertiajs/vue3'
 import { ref, watch } from 'vue'
 import AuthenticatedLayout from '@/Layouts/Authenticated.vue'
-import PageHeader from '@/Components/ui/PageHeader.vue'
+import PageHeaderSticky from '@/Components/ui/PageHeaderSticky.vue'
+import KpiStrip from '@/Components/ui/KpiStrip.vue'
 import FilterBar from '@/Components/ui/FilterBar.vue'
 import Card from '@/Components/ui/Card.vue'
 import Button from '@/Components/ui/Button.vue'
 import Badge from '@/Components/ui/Badge.vue'
 import EmptyState from '@/Components/ui/EmptyState.vue'
 import Pagination from '@/Components/ui/Pagination.vue'
+import ResponsiveTable from '@/Components/ui/ResponsiveTable.vue'
 import Icon from '@/Components/ui/Icon.vue'
 
-const props = defineProps({ invoices: Object, filters: Object, statuses: Array })
+const props = defineProps({
+  invoices: Object,
+  filters: Object,
+  statuses: Array,
+  kpis: { type: Array, default: () => [] },
+})
 
 const q = ref(props.filters.q ?? '')
 const status = ref(props.filters.status ?? '')
@@ -51,24 +58,38 @@ function statusBadge(s) {
   }
   return m[s] ?? 'neutral'
 }
+
+const columns = [
+  { key: 'invoice_number', label: 'Number' },
+  { key: 'patient', label: 'Patient' },
+  { key: 'invoice_date', label: 'Issued' },
+  { key: 'due_date', label: 'Due' },
+  { key: 'total', label: 'Total' },
+  { key: 'balance_due', label: 'Balance' },
+  { key: 'status', label: 'Status' },
+  { key: 'actions', label: '' },
+]
 </script>
 
 <template>
   <Head title="Invoices" />
   <AuthenticatedLayout>
-    <div class="space-y-5">
-      <PageHeader
+    <template #pageHeader>
+      <PageHeaderSticky
         title="Invoices"
-        subtitle="Track issued invoices, balances, and collection status across all patients."
-        icon="receipt-text"
-        eyebrow="Billing"
+        :breadcrumb="[{ label: 'Billing' }, { label: 'Invoices' }]"
+        meta="Track issued invoices, balances, and collection status across all patients."
       >
         <template #actions>
           <Link href="/billing/invoices/create">
             <Button icon="plus">New invoice</Button>
           </Link>
         </template>
-      </PageHeader>
+      </PageHeaderSticky>
+    </template>
+
+    <div class="space-y-5 pt-5">
+      <KpiStrip :tiles="kpis" />
 
       <FilterBar title="Filters">
         <template #aside>
@@ -111,63 +132,64 @@ function statusBadge(s) {
           </template>
         </EmptyState>
 
-        <div v-else class="overflow-x-auto">
-          <table class="app-table">
-            <thead>
-              <tr>
-                <th>Number</th>
-                <th>Patient</th>
-                <th>Issued</th>
-                <th>Due</th>
-                <th class="text-right w-24 whitespace-nowrap">Total</th>
-                <th class="text-right w-24 whitespace-nowrap">Balance</th>
-                <th class="w-40 whitespace-nowrap">Status</th>
-                <th class="w-20 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="i in invoices.data" :key="i.id">
-                <td>
-                  <div class="font-medium font-mono text-xs">{{ i.invoice_number }}</div>
-                </td>
-                <td>
-                  <div class="font-medium">{{ i.patient?.name ?? '—' }}</div>
-                  <div v-if="i.patient?.patient_code" class="text-xs text-muted">
-                    {{ i.patient.patient_code }}
-                  </div>
-                </td>
-                <td class="text-muted whitespace-nowrap">{{ i.invoice_date }}</td>
-                <td class="text-muted whitespace-nowrap">{{ i.due_date || '—' }}</td>
-                <td class="text-right font-medium tabular-nums whitespace-nowrap">{{ i.total }}</td>
-                <td class="text-right font-medium tabular-nums whitespace-nowrap">{{ i.balance_due }}</td>
-                <td>
-                  <Badge :variant="statusBadge(i.status)" dot class="whitespace-nowrap">{{ i.status_label }}</Badge>
-                </td>
-                <td class="text-right">
-                  <div class="inline-flex items-center gap-1">
-                    <Link
-                      :href="`/billing/invoices/${i.id}`"
-                      class="p-1.5 rounded-md text-muted hover:bg-base-200 hover:text-primary transition-colors"
-                      :aria-label="`View invoice ${i.invoice_number}`"
-                      :title="`View invoice`"
-                    >
-                      <Icon name="eye" size="sm" />
-                    </Link>
-                    <Link
-                      v-if="i.status === 'draft'"
-                      :href="`/billing/invoices/${i.id}/edit`"
-                      class="p-1.5 rounded-md text-muted hover:bg-base-200 hover:text-primary transition-colors"
-                      :aria-label="`Edit invoice ${i.invoice_number}`"
-                      :title="`Edit invoice`"
-                    >
-                      <Icon name="edit" size="sm" />
-                    </Link>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        <ResponsiveTable v-else :columns="columns" :rows="invoices.data">
+          <template #cell:invoice_number="{ row }">
+            <div class="font-medium font-mono text-xs">{{ row.invoice_number }}</div>
+          </template>
+          <template #cell:patient="{ row }">
+            <div class="font-medium">{{ row.patient?.name ?? '—' }}</div>
+            <div v-if="row.patient?.patient_code" class="text-xs text-muted">
+              {{ row.patient.patient_code }}
+            </div>
+          </template>
+          <template #cell:invoice_date="{ row }">
+            <span class="text-muted whitespace-nowrap">{{ row.invoice_date }}</span>
+          </template>
+          <template #cell:due_date="{ row }">
+            <span class="text-muted whitespace-nowrap">{{ row.due_date || '—' }}</span>
+          </template>
+          <template #cell:total="{ row }">
+            <div class="text-right font-medium tabular-nums whitespace-nowrap">{{ row.total }}</div>
+          </template>
+          <template #cell:balance_due="{ row }">
+            <div class="text-right font-medium tabular-nums whitespace-nowrap">{{ row.balance_due }}</div>
+          </template>
+          <template #cell:status="{ row }">
+            <Badge :variant="statusBadge(row.status)" dot class="whitespace-nowrap">{{ row.status_label }}</Badge>
+          </template>
+          <template #cell:actions="{ row }">
+            <div class="inline-flex items-center gap-1 justify-end">
+              <Link
+                :href="`/billing/invoices/${row.id}`"
+                class="p-1.5 rounded-md text-muted hover:bg-base-200 hover:text-primary transition-colors"
+                :aria-label="`View invoice ${row.invoice_number}`"
+                :title="`View invoice`"
+              >
+                <Icon name="eye" size="sm" />
+              </Link>
+              <Link
+                v-if="row.status === 'draft'"
+                :href="`/billing/invoices/${row.id}/edit`"
+                class="p-1.5 rounded-md text-muted hover:bg-base-200 hover:text-primary transition-colors"
+                :aria-label="`Edit invoice ${row.invoice_number}`"
+                :title="`Edit invoice`"
+              >
+                <Icon name="edit" size="sm" />
+              </Link>
+            </div>
+          </template>
+          <template #card="{ row }">
+            <div class="app-card p-4 space-y-2">
+              <div class="font-medium font-mono text-xs">{{ row.invoice_number }}</div>
+              <div class="font-medium">{{ row.patient?.name ?? '—' }}</div>
+              <div class="text-sm text-muted">Issued {{ row.invoice_date }}</div>
+              <div class="flex items-center justify-between">
+                <Badge :variant="statusBadge(row.status)" dot class="whitespace-nowrap">{{ row.status_label }}</Badge>
+                <span class="font-semibold tabular-nums">{{ row.balance_due }}</span>
+              </div>
+            </div>
+          </template>
+        </ResponsiveTable>
 
         <div class="px-5 pb-4">
           <Pagination

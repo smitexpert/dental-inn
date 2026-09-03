@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Billing\StoreInvoiceRequest;
 use App\Http\Requests\Billing\UpdateInvoiceRequest;
 use App\Models\Invoice;
+use App\Models\Payment;
 use App\Repositories\Contracts\InvoiceRepository;
 use App\Services\InvoiceService;
 use App\Settings\ClinicSettings;
@@ -50,6 +51,18 @@ class InvoiceController extends Controller
             'balance_due' => $i->balance_due,
         ])->all();
 
+        $kpis = [
+            ['id' => 'outstanding', 'label' => 'Outstanding',
+                'value' => (string) Invoice::open()->sum('total'),
+                'format' => 'currency'],
+            ['id' => 'paid_today', 'label' => 'Collected today',
+                'value' => (string) Payment::whereDate('payment_date', today())->sum('amount'),
+                'format' => 'currency'],
+            ['id' => 'overdue', 'label' => 'Overdue', 'value' => (string) Invoice::overdueCandidates()->count(), 'format' => 'number'],
+            ['id' => 'issued_month', 'label' => 'Issued this month',
+                'value' => (string) Invoice::whereMonth('invoice_date', now()->month)->count(), 'format' => 'number'],
+        ];
+
         return Inertia::render('Billing/Invoices/Index', [
             'invoices' => [
                 'data' => $rows,
@@ -65,6 +78,7 @@ class InvoiceController extends Controller
                 'value' => $s->value,
                 'label' => $s->label(),
             ])->all(),
+            'kpis' => $kpis,
         ]);
     }
 
