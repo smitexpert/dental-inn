@@ -25,12 +25,24 @@ class AccountController extends Controller
 
     public function index(): Response
     {
+        $kpis = [
+            ['id' => 'balance', 'label' => 'Total balance',
+                'value' => (string) BankAccount::active()->sum('balance'), 'format' => 'currency'],
+            ['id' => 'active', 'label' => 'Active accounts',
+                'value' => (string) BankAccount::active()->count(), 'format' => 'number'],
+            ['id' => 'recon', 'label' => 'Reconciled today',
+                'value' => (string) BankAccount::whereDate('last_reconciled_at', today())->count(), 'format' => 'number'],
+            ['id' => 'pending', 'label' => 'Pending reconcile',
+                'value' => (string) BankAccount::active()->whereNull('last_reconciled_at')->count(), 'format' => 'number'],
+        ];
+
         return Inertia::render('Bank/Accounts/Index', [
             'accounts' => $this->accounts->paginate(
                 request()->integer('per_page', 25),
                 request()->only(['q', 'type']),
             ),
             'filters' => request()->only(['q', 'type']),
+            'kpis' => $kpis,
         ]);
     }
 

@@ -2,16 +2,23 @@
 import { Head, Link, router } from '@inertiajs/vue3'
 import { ref, watch } from 'vue'
 import AuthenticatedLayout from '@/Layouts/Authenticated.vue'
-import PageHeader from '@/Components/ui/PageHeader.vue'
+import PageHeaderSticky from '@/Components/ui/PageHeaderSticky.vue'
+import KpiStrip from '@/Components/ui/KpiStrip.vue'
 import FilterBar from '@/Components/ui/FilterBar.vue'
 import Card from '@/Components/ui/Card.vue'
 import Button from '@/Components/ui/Button.vue'
 import Badge from '@/Components/ui/Badge.vue'
 import EmptyState from '@/Components/ui/EmptyState.vue'
 import Pagination from '@/Components/ui/Pagination.vue'
+import ResponsiveTable from '@/Components/ui/ResponsiveTable.vue'
 import Icon from '@/Components/ui/Icon.vue'
 
-const props = defineProps({ accounts: Object, filters: Object, currency: String })
+const props = defineProps({
+  accounts: Object,
+  filters: Object,
+  currency: String,
+  kpis: { type: Array, default: () => [] },
+})
 
 const q = ref(props.filters?.q ?? '')
 const type = ref(props.filters?.type ?? '')
@@ -64,24 +71,37 @@ const typeTone = (t) =>
   ({ cash: 'success', bank: 'primary', external: 'info' })[t] || 'neutral'
 
 const fmt = (n) => Number(n ?? 0).toLocaleString(undefined, { minimumFractionDigits: 2 })
+
+const columns = [
+  { key: 'name', label: 'Name' },
+  { key: 'type', label: 'Type' },
+  { key: 'bank_name', label: 'Bank' },
+  { key: 'account_number', label: 'Account #' },
+  { key: 'balance', label: 'Balance' },
+  { key: 'is_active', label: 'Status' },
+  { key: 'actions', label: '' },
+]
 </script>
 
 <template>
   <Head title="Bank accounts" />
   <AuthenticatedLayout>
-    <div class="space-y-5">
-      <PageHeader
+    <template #pageHeader>
+      <PageHeaderSticky
         title="Bank accounts"
-        subtitle="Manage bank, cash and external accounts."
-        icon="banknote"
-        eyebrow="Finance"
+        :breadcrumb="[{ label: 'Finance' }, { label: 'Bank accounts' }]"
+        meta="Manage bank, cash and external accounts."
       >
         <template #actions>
           <Link :href="route('bank.accounts.create')">
             <Button icon="plus">New account</Button>
           </Link>
         </template>
-      </PageHeader>
+      </PageHeaderSticky>
+    </template>
+
+    <div class="space-y-5 pt-5">
+      <KpiStrip :tiles="kpis" />
 
       <FilterBar title="Search">
         <template #aside>
@@ -117,85 +137,102 @@ const fmt = (n) => Number(n ?? 0).toLocaleString(undefined, { minimumFractionDig
       </FilterBar>
 
       <Card :padded="false">
-        <div class="overflow-x-auto">
-          <table class="app-table">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Type</th>
-                <th>Bank</th>
-                <th>Account #</th>
-                <th class="text-right">Balance</th>
-                <th class="w-28">Status</th>
-                <th class="w-24 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="a in accounts.data" :key="a.id">
-                <td>
-                  <div class="flex items-center gap-2.5">
-                    <span
-                      :class="[
-                        'h-8 w-8 rounded-lg inline-flex items-center justify-center shrink-0',
-                        a.type === 'cash'
-                          ? 'bg-success/10 text-success'
-                          : a.type === 'bank'
-                            ? 'bg-primary/10 text-primary'
-                            : 'bg-info/10 text-info',
-                      ]"
-                    >
-                      <Icon :name="typeIcon(a.type)" size="sm" />
-                    </span>
-                    <div class="min-w-0">
-                      <p class="font-medium text-base-content">{{ a.name }}</p>
-                      <p class="text-xs text-muted">
-                        {{ a.account_name || a.branch || '—' }}
-                      </p>
-                    </div>
-                  </div>
-                </td>
-                <td>
-                  <Badge :variant="typeTone(a.type)">{{ a.type }}</Badge>
-                </td>
-                <td class="text-muted">{{ a.bank_name || '—' }}</td>
-                <td class="text-muted font-mono text-xs">
-                  {{ a.account_number || '—' }}
-                </td>
-                <td class="text-right font-semibold tabular-nums">
-                  {{ fmt(a.balance) }} {{ currency }}
-                </td>
-                <td>
-                  <Badge :variant="a.is_active ? 'success' : 'warning'" dot>
-                    {{ a.is_active ? 'Active' : 'Inactive' }}
-                  </Badge>
-                </td>
-                <td class="text-right">
-                  <Link
-                    :href="route('bank.accounts.edit', a.id)"
-                    class="p-1.5 rounded-md text-muted hover:bg-base-200 hover:text-primary transition-colors"
-                    :aria-label="`Edit ${a.name}`"
-                    :title="`Edit ${a.name}`"
-                  >
-                    <Icon name="edit" size="sm" />
-                  </Link>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+        <EmptyState
+          v-if="accounts.data.length === 0"
+          icon="banknote"
+          title="No accounts found"
+          description="Try adjusting filters or add your first bank or cash account."
+        >
+          <template #action>
+            <Link :href="route('bank.accounts.create')">
+              <Button icon="plus">New account</Button>
+            </Link>
+          </template>
+        </EmptyState>
 
-          <EmptyState
-            v-if="accounts.data.length === 0"
-            icon="banknote"
-            title="No accounts found"
-            description="Try adjusting filters or add your first bank or cash account."
-          >
-            <template #action>
-              <Link :href="route('bank.accounts.create')">
-                <Button icon="plus">New account</Button>
+        <ResponsiveTable v-else :columns="columns" :rows="accounts.data">
+          <template #cell:name="{ row }">
+            <div class="flex items-center gap-2.5">
+              <span
+                :class="[
+                  'h-8 w-8 rounded-lg inline-flex items-center justify-center shrink-0',
+                  row.type === 'cash'
+                    ? 'bg-success/10 text-success'
+                    : row.type === 'bank'
+                      ? 'bg-primary/10 text-primary'
+                      : 'bg-info/10 text-info',
+                ]"
+              >
+                <Icon :name="typeIcon(row.type)" size="sm" />
+              </span>
+              <div class="min-w-0">
+                <p class="font-medium text-base-content">{{ row.name }}</p>
+                <p class="text-xs text-muted">
+                  {{ row.account_name || row.branch || '—' }}
+                </p>
+              </div>
+            </div>
+          </template>
+          <template #cell:type="{ row }">
+            <Badge :variant="typeTone(row.type)">{{ row.type }}</Badge>
+          </template>
+          <template #cell:bank_name="{ row }">
+            <span class="text-muted">{{ row.bank_name || '—' }}</span>
+          </template>
+          <template #cell:account_number="{ row }">
+            <span class="text-muted font-mono text-xs">{{ row.account_number || '—' }}</span>
+          </template>
+          <template #cell:balance="{ row }">
+            <div class="text-right font-semibold tabular-nums">
+              {{ fmt(row.balance) }} {{ currency }}
+            </div>
+          </template>
+          <template #cell:is_active="{ row }">
+            <Badge :variant="row.is_active ? 'success' : 'warning'" dot>
+              {{ row.is_active ? 'Active' : 'Inactive' }}
+            </Badge>
+          </template>
+          <template #cell:actions="{ row }">
+            <div class="text-right">
+              <Link
+                :href="route('bank.accounts.edit', row.id)"
+                class="p-1.5 rounded-md text-muted hover:bg-base-200 hover:text-primary transition-colors"
+                :aria-label="`Edit ${row.name}`"
+                :title="`Edit ${row.name}`"
+              >
+                <Icon name="edit" size="sm" />
               </Link>
-            </template>
-          </EmptyState>
-        </div>
+            </div>
+          </template>
+          <template #card="{ row }">
+            <div class="app-card p-4 space-y-2">
+              <div class="flex items-center gap-2.5">
+                <span
+                  :class="[
+                    'h-8 w-8 rounded-lg inline-flex items-center justify-center shrink-0',
+                    row.type === 'cash'
+                      ? 'bg-success/10 text-success'
+                      : row.type === 'bank'
+                        ? 'bg-primary/10 text-primary'
+                        : 'bg-info/10 text-info',
+                  ]"
+                >
+                  <Icon :name="typeIcon(row.type)" size="sm" />
+                </span>
+                <div class="min-w-0">
+                  <p class="font-medium">{{ row.name }}</p>
+                  <p class="text-xs text-muted">{{ row.bank_name || '—' }}</p>
+                </div>
+              </div>
+              <div class="flex items-center justify-between">
+                <Badge :variant="row.is_active ? 'success' : 'warning'" dot>
+                  {{ row.is_active ? 'Active' : 'Inactive' }}
+                </Badge>
+                <span class="font-semibold tabular-nums">{{ fmt(row.balance) }} {{ currency }}</span>
+              </div>
+            </div>
+          </template>
+        </ResponsiveTable>
 
         <div class="px-5 pb-4">
           <Pagination
