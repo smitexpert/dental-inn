@@ -2,16 +2,23 @@
 import { Head, Link, router } from '@inertiajs/vue3'
 import { ref, watch } from 'vue'
 import AuthenticatedLayout from '@/Layouts/Authenticated.vue'
-import PageHeader from '@/Components/ui/PageHeader.vue'
+import PageHeaderSticky from '@/Components/ui/PageHeaderSticky.vue'
+import KpiStrip from '@/Components/ui/KpiStrip.vue'
 import FilterBar from '@/Components/ui/FilterBar.vue'
 import Card from '@/Components/ui/Card.vue'
 import Button from '@/Components/ui/Button.vue'
 import Badge from '@/Components/ui/Badge.vue'
 import EmptyState from '@/Components/ui/EmptyState.vue'
 import Pagination from '@/Components/ui/Pagination.vue'
+import ResponsiveTable from '@/Components/ui/ResponsiveTable.vue'
 import Icon from '@/Components/ui/Icon.vue'
 
-const props = defineProps({ doctors: Object, specializations: Array, filters: Object })
+const props = defineProps({
+  doctors: Object,
+  specializations: Array,
+  filters: Object,
+  kpis: { type: Array, default: () => [] },
+})
 
 const q = ref(props.filters.q ?? '')
 const specialization = ref(props.filters.specialization ?? null)
@@ -40,22 +47,34 @@ function goPage(n) {
     { preserveState: true },
   )
 }
+
+const columns = [
+  { key: 'doctor', label: 'Doctor' },
+  { key: 'specialization', label: 'Specialization' },
+  { key: 'license_number', label: 'License' },
+  { key: 'consultation_fee', label: 'Fee' },
+  { key: 'is_active', label: 'Status' },
+  { key: 'actions', label: '' },
+]
 </script>
 
 <template>
   <Head title="Doctors" />
   <AuthenticatedLayout>
-    <div class="space-y-5">
-      <PageHeader
+    <template #pageHeader>
+      <PageHeaderSticky
         title="Doctors"
-        subtitle="Manage the clinical team, schedules and availability."
-        icon="user-round"
-        eyebrow="Team"
+        :breadcrumb="[{ label: 'Team' }, { label: 'Doctors' }]"
+        meta="Manage the clinical team, schedules and availability."
       >
         <template #actions>
           <Link href="/doctors/create"><Button icon="plus">New doctor</Button></Link>
         </template>
-      </PageHeader>
+      </PageHeaderSticky>
+    </template>
+
+    <div class="space-y-5 pt-5">
+      <KpiStrip :tiles="kpis" />
 
       <FilterBar title="Search">
         <template #aside>
@@ -89,88 +108,100 @@ function goPage(n) {
       </FilterBar>
 
       <Card :padded="false">
-        <div class="overflow-x-auto">
-          <table class="app-table">
-            <thead>
-              <tr>
-                <th>Doctor</th>
-                <th>Specialization</th>
-                <th>License</th>
-                <th class="w-28">Fee</th>
-                <th class="w-40">Status</th>
-                <th class="w-32 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="d in doctors.data" :key="d.id">
-                <td>
-                  <div class="flex items-center gap-2.5">
-                    <span
-                      class="h-8 w-8 rounded-full inline-flex items-center justify-center text-xs font-semibold shrink-0 ring-2 ring-base-100"
-                      :style="{ backgroundColor: d.color, color: '#fff' }"
-                    >
-                      {{ d.name?.split(' ').map((s) => s[0]).slice(0, 2).join('').toUpperCase() }}
-                    </span>
-                    <div class="min-w-0">
-                      <div class="font-medium">{{ d.name }}</div>
-                      <div class="text-xs text-muted">{{ d.email }}</div>
-                    </div>
-                  </div>
-                </td>
-                <td class="text-muted">{{ d.specialization || '—' }}</td>
-                <td class="text-muted font-mono text-xs">{{ d.license_number || '—' }}</td>
-                <td class="text-muted">
-                  {{ d.consultation_fee != null ? '$' + Number(d.consultation_fee).toFixed(2) : '—' }}
-                </td>
-                <td>
-                  <Badge :variant="d.is_active ? 'success' : 'warning'" dot>
-                    {{ d.is_active ? 'Active' : 'Inactive' }}
-                  </Badge>
-                </td>
-                <td class="text-right">
-                  <div class="inline-flex items-center gap-1">
-                    <Link
-                      :href="`/doctors/${d.id}`"
-                      class="p-1.5 rounded-md text-muted hover:bg-base-200 hover:text-primary transition-colors"
-                      :aria-label="`View ${d.name}`"
-                      :title="`View ${d.name}`"
-                    >
-                      <Icon name="eye" size="sm" />
-                    </Link>
-                    <Link
-                      :href="`/doctors/${d.id}/edit`"
-                      class="p-1.5 rounded-md text-muted hover:bg-base-200 hover:text-primary transition-colors"
-                      :aria-label="`Edit ${d.name}`"
-                      :title="`Edit ${d.name}`"
-                    >
-                      <Icon name="edit" size="sm" />
-                    </Link>
-                    <button
-                      type="button"
-                      class="p-1.5 rounded-md text-muted hover:bg-base-200 hover:text-primary transition-colors"
-                      :aria-label="`Toggle availability for ${d.name}`"
-                      :title="`Toggle availability for ${d.name}`"
-                      @click="toggleAvailable(d)"
-                    >
-                      <Icon :name="d.is_available ? 'user-x' : 'user-check'" size="sm" />
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+        <EmptyState
+          v-if="doctors.data.length === 0"
+          icon="user-round"
+          title="No doctors found"
+          description="Add your first doctor to start managing schedules and appointments."
+        >
+          <template #action>
+            <Link href="/doctors/create"><Button icon="plus">New doctor</Button></Link>
+          </template>
+        </EmptyState>
 
-          <EmptyState
-            v-if="doctors.data.length === 0"
-            icon="user-round"
-            title="No doctors found"
-            description="Add your first doctor to start managing schedules and appointments."
-          >
-            <template #action>
-              <Link href="/doctors/create"><Button icon="plus">New doctor</Button></Link>
-            </template>
-          </EmptyState>
-        </div>
+        <ResponsiveTable v-else :columns="columns" :rows="doctors.data">
+          <template #cell:doctor="{ row }">
+            <div class="flex items-center gap-2.5">
+              <span
+                class="h-8 w-8 rounded-full inline-flex items-center justify-center text-xs font-semibold shrink-0 ring-2 ring-base-100"
+                :style="{ backgroundColor: row.color, color: '#fff' }"
+              >
+                {{ row.name?.split(' ').map((s) => s[0]).slice(0, 2).join('').toUpperCase() }}
+              </span>
+              <div class="min-w-0">
+                <div class="font-medium">{{ row.name }}</div>
+                <div class="text-xs text-muted">{{ row.email }}</div>
+              </div>
+            </div>
+          </template>
+          <template #cell:specialization="{ row }">
+            <span class="text-muted">{{ row.specialization || '—' }}</span>
+          </template>
+          <template #cell:license_number="{ row }">
+            <span class="text-muted font-mono text-xs">{{ row.license_number || '—' }}</span>
+          </template>
+          <template #cell:consultation_fee="{ row }">
+            <span class="text-muted">
+              {{ row.consultation_fee != null ? '$' + Number(row.consultation_fee).toFixed(2) : '—' }}
+            </span>
+          </template>
+          <template #cell:is_active="{ row }">
+            <Badge :variant="row.is_active ? 'success' : 'warning'" dot>
+              {{ row.is_active ? 'Active' : 'Inactive' }}
+            </Badge>
+          </template>
+          <template #cell:actions="{ row }">
+            <div class="inline-flex items-center gap-1 justify-end">
+              <Link
+                :href="`/doctors/${row.id}`"
+                class="p-1.5 rounded-md text-muted hover:bg-base-200 hover:text-primary transition-colors"
+                :aria-label="`View ${row.name}`"
+                :title="`View ${row.name}`"
+              >
+                <Icon name="eye" size="sm" />
+              </Link>
+              <Link
+                :href="`/doctors/${row.id}/edit`"
+                class="p-1.5 rounded-md text-muted hover:bg-base-200 hover:text-primary transition-colors"
+                :aria-label="`Edit ${row.name}`"
+                :title="`Edit ${row.name}`"
+              >
+                <Icon name="edit" size="sm" />
+              </Link>
+              <button
+                type="button"
+                class="p-1.5 rounded-md text-muted hover:bg-base-200 hover:text-primary transition-colors"
+                :aria-label="`Toggle availability for ${row.name}`"
+                :title="`Toggle availability for ${row.name}`"
+                @click="toggleAvailable(row)"
+              >
+                <Icon :name="row.is_available ? 'user-x' : 'user-check'" size="sm" />
+              </button>
+            </div>
+          </template>
+          <template #card="{ row }">
+            <div class="app-card p-4 space-y-2">
+              <div class="flex items-center gap-2.5">
+                <span
+                  class="h-8 w-8 rounded-full inline-flex items-center justify-center text-xs font-semibold shrink-0 ring-2 ring-base-100"
+                  :style="{ backgroundColor: row.color, color: '#fff' }"
+                >
+                  {{ row.name?.split(' ').map((s) => s[0]).slice(0, 2).join('').toUpperCase() }}
+                </span>
+                <div class="min-w-0">
+                  <div class="font-medium">{{ row.name }}</div>
+                  <div class="text-xs text-muted">{{ row.email }}</div>
+                </div>
+              </div>
+              <div class="text-sm text-muted">{{ row.specialization || '—' }}</div>
+              <div class="flex items-center gap-1">
+                <Badge :variant="row.is_active ? 'success' : 'warning'" dot>
+                  {{ row.is_active ? 'Active' : 'Inactive' }}
+                </Badge>
+              </div>
+            </div>
+          </template>
+        </ResponsiveTable>
 
         <div class="px-5 pb-4">
           <Pagination

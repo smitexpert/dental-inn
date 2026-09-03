@@ -9,6 +9,7 @@ use App\Http\Requests\Doctors\StoreDoctorRequest;
 use App\Http\Requests\Doctors\UpdateDoctorRequest;
 use App\Http\Resources\DoctorResource;
 use App\Models\Doctor;
+use App\Models\DoctorSchedule;
 use App\Repositories\Contracts\DoctorRepository;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
@@ -24,6 +25,15 @@ class DoctorController extends Controller
             request()->integer('per_page', 15),
             request()->only(['q', 'specialization']),
         );
+
+        $kpis = [
+            ['id' => 'total', 'label' => 'Total', 'value' => (string) Doctor::count()],
+            ['id' => 'available', 'label' => 'Available', 'value' => (string) Doctor::where('is_available', true)->count()],
+            ['id' => 'today', 'label' => 'On schedule today',
+                'value' => (string) DoctorSchedule::where('day_of_week', now()->dayOfWeek)->where('is_active', true)->distinct('doctor_id')->count('doctor_id')],
+            ['id' => 'new_month', 'label' => 'New this month',
+                'value' => (string) Doctor::whereMonth('created_at', now()->month)->count()],
+        ];
 
         return Inertia::render('Doctors/Index', [
             'doctors' => [
@@ -42,6 +52,7 @@ class DoctorController extends Controller
                 ->filter()
                 ->values(),
             'filters' => request()->only(['q', 'specialization']),
+            'kpis' => $kpis,
         ]);
     }
 
