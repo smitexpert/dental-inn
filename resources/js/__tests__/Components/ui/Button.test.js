@@ -8,17 +8,22 @@ describe('UiButton', () => {
   it('renders default primary variant classes', () => {
     const wrapper = factory()
     const html = wrapper.html()
-    expect(html).toContain('btn-primary')
+    expect(html).toContain('cta-gradient')
   })
 
   it('renders secondary variant', () => {
     const wrapper = factory({ variant: 'secondary' })
-    expect(wrapper.html()).toContain('btn-neutral')
+    expect(wrapper.html()).toContain('bg-base-100')
   })
 
   it('renders danger variant', () => {
     const wrapper = factory({ variant: 'danger' })
-    expect(wrapper.html()).toContain('btn-error')
+    expect(wrapper.html()).toContain('bg-error')
+  })
+
+  it('renders gradient variant', () => {
+    const wrapper = factory({ variant: 'gradient' })
+    expect(wrapper.html()).toContain('cta-gradient')
   })
 
   it('renders size sm', () => {

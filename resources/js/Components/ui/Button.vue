@@ -13,7 +13,7 @@ const props = defineProps({
   variant: {
     type: String,
     default: 'primary',
-    validator: (v) => ['primary', 'secondary', 'ghost', 'danger', 'soft', 'outline'].includes(v),
+    validator: (v) => ['primary', 'secondary', 'ghost', 'danger', 'soft', 'outline', 'gradient'].includes(v),
   },
   size: {
     type: String,
@@ -41,16 +41,17 @@ const sizeClass = {
 }
 
 const variantClass = {
-  primary: 'btn-primary',
-  secondary: 'btn-neutral',
-  ghost: 'btn-ghost',
-  danger: 'btn-error',
-  soft: 'bg-primary/10 text-primary hover:bg-primary/15 border-0',
-  outline: 'btn-outline btn-primary',
+  primary:   'cta-gradient text-primary-content shadow-(--shadow-card) hover:shadow-(--shadow-pop)',
+  secondary: 'bg-base-100 text-base-content border border-(--color-line-strong) hover:bg-base-200',
+  ghost:     'text-base-content hover:bg-base-200',
+  danger:    'bg-error text-error-content hover:bg-error/90',
+  soft:      'bg-primary/10 text-primary hover:bg-primary/15',
+  outline:   'border border-primary/40 text-primary hover:bg-primary/5',
+  gradient:  'cta-gradient text-primary-content shadow-(--shadow-card) hover:shadow-(--shadow-pop)',
 }
 
 const classes = computed(() => [
-  'btn gap-2 rounded-lg font-medium normal-case shadow-none border-0',
+  'btn gap-2 rounded-xl font-medium normal-case shadow-none border-0',
   sizeClass[props.size],
   variantClass[props.variant],
   props.block ? 'w-full' : '',
