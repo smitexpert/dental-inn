@@ -26,6 +26,13 @@ class UserController extends Controller
             request()->only(['q', 'role']),
         );
 
+        $kpis = [
+            ['id' => 'total', 'label' => 'Total', 'value' => (string) User::count()],
+            ['id' => 'active', 'label' => 'Active', 'value' => (string) User::where('is_active', true)->count()],
+            ['id' => 'doctors', 'label' => 'Doctors', 'value' => (string) User::role('doctor')->count()],
+            ['id' => 'inactive', 'label' => 'Inactive', 'value' => (string) User::where('is_active', false)->count()],
+        ];
+
         return Inertia::render('Admin/Users/Index', [
             'users' => [
                 'data' => UserResource::collection($page->getCollection())->resolve(),
@@ -38,6 +45,7 @@ class UserController extends Controller
             ],
             'roles' => Role::pluck('name'),
             'filters' => request()->only(['q', 'role']),
+            'kpis' => $kpis,
         ]);
     }
 

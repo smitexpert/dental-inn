@@ -1,7 +1,8 @@
 <script setup>
 import { Head, Link, router, usePage } from '@inertiajs/vue3'
 import AuthenticatedLayout from '@/Layouts/Authenticated.vue'
-import PageHeader from '@/Components/ui/PageHeader.vue'
+import PageHeaderSticky from '@/Components/ui/PageHeaderSticky.vue'
+import KpiStrip from '@/Components/ui/KpiStrip.vue'
 import FilterBar from '@/Components/ui/FilterBar.vue'
 import Card from '@/Components/ui/Card.vue'
 import Button from '@/Components/ui/Button.vue'
@@ -10,6 +11,7 @@ import Input from '@/Components/ui/Input.vue'
 import Select from '@/Components/ui/Select.vue'
 import EmptyState from '@/Components/ui/EmptyState.vue'
 import Pagination from '@/Components/ui/Pagination.vue'
+import ResponsiveTable from '@/Components/ui/ResponsiveTable.vue'
 import Avatar from '@/Components/ui/Avatar.vue'
 import Icon from '@/Components/ui/Icon.vue'
 import { useConfirm } from '@/Composables/useConfirm.js'
@@ -19,6 +21,7 @@ const props = defineProps({
   users: { type: Object, required: true },
   roles: { type: Array, required: true },
   filters: { type: Object, required: true },
+  kpis: { type: Array, default: () => [] },
 })
 
 const confirm = useConfirm()
@@ -68,6 +71,14 @@ function goPage(n) {
   )
 }
 
+const columns = [
+  { key: 'name', label: 'Name' },
+  { key: 'email', label: 'Email' },
+  { key: 'roles', label: 'Roles' },
+  { key: 'status', label: 'Status' },
+  { key: 'actions', label: '' },
+]
+
 // Normalise a role entry — supports both `{ name: 'admin' }` (Spatie model
 // serialised) and the simple `'admin'` string shape returned by UserResource.
 function roleLabel(r) {
@@ -79,12 +90,11 @@ function roleLabel(r) {
 <template>
   <Head title="Users" />
   <AuthenticatedLayout>
-    <div class="space-y-5">
-      <PageHeader
+    <template #pageHeader>
+      <PageHeaderSticky
         title="Users"
-        subtitle="Manage staff accounts, roles and access."
-        icon="users-round"
-        eyebrow="Admin"
+        :breadcrumb="[{ label: 'Admin' }, { label: 'Users' }]"
+        meta="Manage staff accounts, roles and access."
       >
         <template #actions>
           <Link href="/admin/roles">
@@ -94,7 +104,11 @@ function roleLabel(r) {
             <Button icon="plus">New user</Button>
           </Link>
         </template>
-      </PageHeader>
+      </PageHeaderSticky>
+    </template>
+
+    <div class="space-y-5 pt-5">
+      <KpiStrip :tiles="kpis" />
 
       <FilterBar title="Search">
         <template #aside>
@@ -113,99 +127,109 @@ function roleLabel(r) {
       </FilterBar>
 
       <Card :padded="false">
-        <div v-if="users.data.length === 0">
-          <EmptyState
-            icon="users-round"
-            title="No users found"
-            description="Adjust your filters or add your first staff member."
-          >
-            <template #action>
-              <Link href="/admin/users/create">
-                <Button icon="plus">New user</Button>
+        <EmptyState
+          v-if="users.data.length === 0"
+          icon="users-round"
+          title="No users found"
+          description="Adjust your filters or add your first staff member."
+        >
+          <template #action>
+            <Link href="/admin/users/create">
+              <Button icon="plus">New user</Button>
+            </Link>
+          </template>
+        </EmptyState>
+
+        <ResponsiveTable v-else :columns="columns" :rows="users.data">
+          <template #cell:name="{ row }">
+            <div class="flex items-center gap-2.5">
+              <Avatar :name="row.name" size="sm" />
+              <div class="min-w-0">
+                <p class="font-medium">{{ row.name }}</p>
+                <p v-if="row.id === currentUserId" class="text-xs text-primary">
+                  (you)
+                </p>
+              </div>
+            </div>
+          </template>
+          <template #cell:email="{ row }">
+            <span class="text-muted">{{ row.email }}</span>
+          </template>
+          <template #cell:roles="{ row }">
+            <div class="flex flex-wrap gap-1">
+              <Badge
+                v-for="r in row.roles"
+                :key="roleLabel(r)"
+                variant="primary"
+              >
+                {{ roleLabel(r) }}
+              </Badge>
+            </div>
+          </template>
+          <template #cell:status="{ row }">
+            <Badge :variant="row.is_active ? 'success' : 'danger'" dot>
+              {{ row.is_active ? 'Active' : 'Inactive' }}
+            </Badge>
+          </template>
+          <template #cell:actions="{ row }">
+            <div class="inline-flex items-center gap-1 justify-end">
+              <Link
+                :href="`/admin/users/${row.id}/edit`"
+                class="p-1.5 rounded-md text-muted hover:bg-base-200 hover:text-primary transition-colors"
+                :aria-label="`Edit ${row.name}`"
+                :title="`Edit ${row.name}`"
+              >
+                <Icon name="edit" size="sm" />
               </Link>
-            </template>
-          </EmptyState>
-        </div>
-        <div v-else class="overflow-x-auto">
-          <table class="app-table">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Roles</th>
-                <th>Status</th>
-                <th class="text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="u in users.data" :key="u.id">
-                <td>
-                  <div class="flex items-center gap-2.5">
-                    <Avatar :name="u.name" size="sm" />
-                    <div class="min-w-0">
-                      <p class="font-medium">{{ u.name }}</p>
-                      <p v-if="u.id === currentUserId" class="text-xs text-primary">
-                        (you)
-                      </p>
-                    </div>
-                  </div>
-                </td>
-                <td class="text-muted">{{ u.email }}</td>
-                <td>
-                  <div class="flex flex-wrap gap-1">
-                    <Badge
-                      v-for="r in u.roles"
-                      :key="roleLabel(r)"
-                      variant="primary"
-                    >
-                      {{ roleLabel(r) }}
-                    </Badge>
-                  </div>
-                </td>
-                <td>
-                  <Badge :variant="u.is_active ? 'success' : 'danger'" dot>
-                    {{ u.is_active ? 'Active' : 'Inactive' }}
-                  </Badge>
-                </td>
-                <td class="text-right">
-                  <div class="inline-flex items-center gap-1">
-                    <Link
-                      :href="`/admin/users/${u.id}/edit`"
-                      class="p-1.5 rounded-md text-muted hover:bg-base-200 hover:text-primary transition-colors"
-                      :aria-label="`Edit ${u.name}`"
-                      :title="`Edit ${u.name}`"
-                    >
-                      <Icon name="edit" size="sm" />
-                    </Link>
-                    <button
-                      v-if="u.id !== currentUserId"
-                      type="button"
-                      class="p-1.5 rounded-md text-muted hover:bg-base-200 hover:text-base-content transition-colors"
-                      :aria-label="u.is_active ? `Deactivate ${u.name}` : `Reactivate ${u.name}`"
-                      :title="u.is_active ? 'Toggle active' : 'Reactivate'"
-                      @click="toggleActive(u)"
-                    >
-                      <Icon
-                        :name="u.is_active ? 'lock' : 'key'"
-                        size="sm"
-                      />
-                    </button>
-                    <button
-                      v-if="u.id !== currentUserId"
-                      type="button"
-                      class="p-1.5 rounded-md text-muted hover:bg-error/10 hover:text-error transition-colors"
-                      :aria-label="`Delete ${u.name}`"
-                      :title="`Delete ${u.name}`"
-                      @click="destroyUser(u)"
-                    >
-                      <Icon name="trash" size="sm" />
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+              <button
+                v-if="row.id !== currentUserId"
+                type="button"
+                class="p-1.5 rounded-md text-muted hover:bg-base-200 hover:text-base-content transition-colors"
+                :aria-label="row.is_active ? `Deactivate ${row.name}` : `Reactivate ${row.name}`"
+                :title="row.is_active ? 'Toggle active' : 'Reactivate'"
+                @click="toggleActive(row)"
+              >
+                <Icon
+                  :name="row.is_active ? 'lock' : 'key'"
+                  size="sm"
+                />
+              </button>
+              <button
+                v-if="row.id !== currentUserId"
+                type="button"
+                class="p-1.5 rounded-md text-muted hover:bg-error/10 hover:text-error transition-colors"
+                :aria-label="`Delete ${row.name}`"
+                :title="`Delete ${row.name}`"
+                @click="destroyUser(row)"
+              >
+                <Icon name="trash" size="sm" />
+              </button>
+            </div>
+          </template>
+          <template #card="{ row }">
+            <div class="app-card p-4 space-y-2">
+              <div class="flex items-center gap-2.5">
+                <Avatar :name="row.name" size="sm" />
+                <div class="min-w-0">
+                  <p class="font-medium">{{ row.name }}</p>
+                  <p class="text-xs text-muted">{{ row.email }}</p>
+                </div>
+              </div>
+              <div class="flex flex-wrap items-center gap-1">
+                <Badge
+                  v-for="r in row.roles"
+                  :key="roleLabel(r)"
+                  variant="primary"
+                >
+                  {{ roleLabel(r) }}
+                </Badge>
+                <Badge :variant="row.is_active ? 'success' : 'danger'" dot>
+                  {{ row.is_active ? 'Active' : 'Inactive' }}
+                </Badge>
+              </div>
+            </div>
+          </template>
+        </ResponsiveTable>
 
         <div class="px-5 pb-4">
           <Pagination
