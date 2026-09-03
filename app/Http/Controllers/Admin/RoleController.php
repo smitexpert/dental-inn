@@ -32,9 +32,16 @@ class RoleController extends Controller
             ];
         });
 
+        $kpis = [
+            ['id' => 'roles', 'label' => 'Roles', 'value' => (string) Role::count()],
+            ['id' => 'permissions', 'label' => 'Permissions', 'value' => (string) Permission::count()],
+            ['id' => 'assigned', 'label' => 'Users assigned', 'value' => (string) \DB::table('model_has_roles')->distinct('model_id')->count('model_id')],
+        ];
+
         return Inertia::render('Admin/Roles/Index', [
             'roles' => $roles,
             'filters' => request()->only(['q']),
+            'kpis' => $kpis,
         ]);
     }
 
