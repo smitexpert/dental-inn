@@ -27,8 +27,8 @@ function isActive(item) {
 
 <template>
   <aside
-    class="bg-base-100 border-r border-(--color-line) flex flex-col h-screen transition-[width] duration-200 ease-(--ease-out-soft) overflow-hidden"
-    :class="collapsed ? 'w-16' : 'w-64'"
+    class="bg-base-100 border-r border-(--color-line) flex flex-col h-screen transition-[width] duration-200 ease-(--ease-out-soft) overflow-hidden shadow-[1px_0_24px_rgba(15,23,42,0.04)] dark:shadow-[1px_0_24px_rgba(0,0,0,0.3)]"
+    :class="collapsed ? 'w-16' : 'w-[260px]'"
   >
     <!-- Brand wordmark -->
     <div
@@ -66,9 +66,10 @@ function isActive(item) {
     <!-- Footer -->
     <div
       v-if="!collapsed"
-      class="px-4 py-3 border-t border-(--color-line) text-xs text-(--color-subtle) shrink-0"
+      class="px-4 py-3 border-t border-(--color-line) text-xs text-(--color-subtle) shrink-0 flex items-center justify-between"
     >
-      v1.0 · Caremint Dental
+      <span>v1.0 · Caremint Dental</span>
+      <slot name="footer" />
     </div>
   </aside>
 </template>

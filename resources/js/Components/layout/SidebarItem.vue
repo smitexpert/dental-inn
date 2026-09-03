@@ -41,18 +41,21 @@ const childLink = (href) =>
       type="button"
       :class="wrap"
       :aria-expanded="open"
+      :aria-current="active ? 'page' : undefined"
       :title="collapsed ? label : null"
       @click="open = !open"
     >
-      <Icon v-if="icon" :name="icon" size="md" />
-      <span v-if="!collapsed" class="flex-1 truncate text-left">{{ label }}</span>
-      <Badge v-if="badge && !collapsed" variant="warning">{{ badge }}</Badge>
-      <Icon
-        v-if="!collapsed"
-        :name="open ? 'chevron-down' : 'chevron-right'"
-        size="sm"
-        class="opacity-60"
-      />
+      <div :class="[ 'flex items-center w-full', collapsed ? 'justify-center' : 'gap-3' ]">
+        <Icon v-if="icon" :name="icon" size="md" />
+        <span v-if="!collapsed" class="flex-1 truncate text-left">{{ label }}</span>
+        <Badge v-if="badge && !collapsed" variant="warning">{{ badge }}</Badge>
+        <Icon
+          v-if="!collapsed"
+          :name="open ? 'chevron-down' : 'chevron-right'"
+          size="sm"
+          class="opacity-60"
+        />
+      </div>
     </button>
     <ul
       v-if="open && !collapsed"
@@ -71,14 +74,29 @@ const childLink = (href) =>
       </li>
     </ul>
   </div>
-  <Link v-else-if="!comingSoon" :href="href" :class="wrap" :title="collapsed ? label : null">
-    <Icon v-if="icon" :name="icon" size="md" />
-    <span v-if="!collapsed" class="flex-1 truncate text-left">{{ label }}</span>
-    <Badge v-if="badge && !collapsed" variant="warning">{{ badge }}</Badge>
+  <Link
+    v-else-if="!comingSoon"
+    :href="href"
+    :class="wrap"
+    :aria-current="active ? 'page' : undefined"
+    :title="collapsed ? label : null"
+  >
+    <div :class="[ 'flex items-center w-full', collapsed ? 'justify-center' : 'gap-3' ]">
+      <Icon v-if="icon" :name="icon" size="md" />
+      <span v-if="!collapsed" class="flex-1 truncate text-left">{{ label }}</span>
+      <Badge v-if="badge && !collapsed" variant="warning">{{ badge }}</Badge>
+    </div>
   </Link>
-  <span v-else :class="wrap" :title="collapsed ? label : null">
-    <Icon v-if="icon" :name="icon" size="md" />
-    <span v-if="!collapsed" class="flex-1 truncate text-left">{{ label }}</span>
-    <Badge v-if="!collapsed" variant="neutral">Soon</Badge>
+  <span
+    v-else
+    :class="wrap"
+    :aria-current="active ? 'page' : undefined"
+    :title="collapsed ? label : null"
+  >
+    <div :class="[ 'flex items-center w-full', collapsed ? 'justify-center' : 'gap-3' ]">
+      <Icon v-if="icon" :name="icon" size="md" />
+      <span v-if="!collapsed" class="flex-1 truncate text-left">{{ label }}</span>
+      <Badge v-if="!collapsed" variant="neutral">Soon</Badge>
+    </div>
   </span>
 </template>
