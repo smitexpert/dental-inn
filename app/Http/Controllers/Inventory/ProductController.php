@@ -34,9 +34,21 @@ class ProductController extends Controller
             request()->only(['q', 'category', 'is_active', 'low_stock']),
         );
 
+        $kpis = [
+            ['id' => 'total', 'label' => 'Total SKUs',
+                'value' => (string) Product::count(), 'format' => 'number'],
+            ['id' => 'low', 'label' => 'Low stock',
+                'value' => (string) app(ProductRepository::class)->lowStockCount(), 'format' => 'number'],
+            ['id' => 'out', 'label' => 'Out of stock',
+                'value' => (string) Product::whereHas('stockLevels', fn ($q) => $q->where('quantity', 0))->count(), 'format' => 'number'],
+            ['id' => 'value', 'label' => 'Inventory value',
+                'value' => '0', 'format' => 'currency' /* TODO: unit-cost calc — placeholder for v1 */],
+        ];
+
         return Inertia::render('Inventory/Products/Index', [
             'products' => $page,
             'filters' => request()->only(['q', 'category', 'is_active', 'low_stock']),
+            'kpis' => $kpis,
         ]);
     }
 

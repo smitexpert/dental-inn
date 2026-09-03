@@ -2,16 +2,22 @@
 import { Head, Link, router } from '@inertiajs/vue3'
 import { ref, watch } from 'vue'
 import AuthenticatedLayout from '@/Layouts/Authenticated.vue'
-import PageHeader from '@/Components/ui/PageHeader.vue'
+import PageHeaderSticky from '@/Components/ui/PageHeaderSticky.vue'
+import KpiStrip from '@/Components/ui/KpiStrip.vue'
 import FilterBar from '@/Components/ui/FilterBar.vue'
 import Card from '@/Components/ui/Card.vue'
 import Button from '@/Components/ui/Button.vue'
 import Badge from '@/Components/ui/Badge.vue'
 import EmptyState from '@/Components/ui/EmptyState.vue'
 import Pagination from '@/Components/ui/Pagination.vue'
+import ResponsiveTable from '@/Components/ui/ResponsiveTable.vue'
 import Icon from '@/Components/ui/Icon.vue'
 
-const props = defineProps({ products: Object, filters: Object })
+const props = defineProps({
+  products: Object,
+  filters: Object,
+  kpis: { type: Array, default: () => [] },
+})
 
 const q = ref(props.filters.q ?? '')
 const category = ref(props.filters.category ?? '')
@@ -77,17 +83,26 @@ function goPage(n) {
     { preserveState: true },
   )
 }
+
+const columns = [
+  { key: 'sku', label: 'SKU' },
+  { key: 'name', label: 'Name' },
+  { key: 'category', label: 'Category' },
+  { key: 'total_quantity', label: 'Stock' },
+  { key: 'reorder_level', label: 'Reorder' },
+  { key: 'is_active', label: 'Status' },
+  { key: 'actions', label: '' },
+]
 </script>
 
 <template>
   <Head title="Inventory — Products" />
   <AuthenticatedLayout>
-    <div class="space-y-5">
-      <PageHeader
+    <template #pageHeader>
+      <PageHeaderSticky
         title="Products"
-        subtitle="Manage catalog, stock levels, and reorder thresholds."
-        icon="boxes"
-        eyebrow="Inventory"
+        :breadcrumb="[{ label: 'Inventory' }, { label: 'Products' }]"
+        meta="Manage catalog, stock levels, and reorder thresholds."
       >
         <template #actions>
           <Link href="/inventory/low-stock">
@@ -97,7 +112,11 @@ function goPage(n) {
             <Button icon="plus">New product</Button>
           </Link>
         </template>
-      </PageHeader>
+      </PageHeaderSticky>
+    </template>
+
+    <div class="space-y-5 pt-5">
+      <KpiStrip :tiles="kpis" />
 
       <FilterBar title="Search">
         <template #aside>
@@ -136,66 +155,72 @@ function goPage(n) {
       </FilterBar>
 
       <Card :padded="false">
-        <div class="overflow-x-auto">
-          <table class="app-table">
-            <thead>
-              <tr>
-                <th class="w-32">SKU</th>
-                <th>Name</th>
-                <th>Category</th>
-                <th class="w-36 text-right">Stock</th>
-                <th class="w-24 text-right">Reorder</th>
-                <th class="w-28">Status</th>
-                <th class="w-28 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="p in products.data" :key="p.id">
-                <td class="font-mono text-xs text-muted">{{ p.sku }}</td>
-                <td>
-                  <Link :href="`/inventory/products/${p.id}`" class="font-medium text-base-content hover:text-primary transition-colors">
-                    {{ p.name }}
-                  </Link>
-                </td>
-                <td class="text-muted">{{ p.category_label || p.category }}</td>
-                <td class="text-right">
-                  <Badge :variant="p.is_low ? 'danger' : 'success'">
-                    {{ p.total_quantity }} {{ p.unit_short || p.unit }}
-                  </Badge>
-                </td>
-                <td class="text-right text-muted">{{ p.reorder_level }}</td>
-                <td>
-                  <Badge :variant="p.is_active ? 'success' : 'warning'" dot>
-                    {{ p.is_active ? 'Active' : 'Inactive' }}
-                  </Badge>
-                </td>
-                <td class="text-right">
-                  <div class="inline-flex items-center gap-1">
-                    <Link :href="`/inventory/products/${p.id}`" class="p-1.5 rounded-md text-muted hover:bg-base-200 hover:text-primary transition-colors" :aria-label="`View ${p.name}`" :title="`View ${p.name}`">
-                      <Icon name="eye" size="sm" />
-                    </Link>
-                    <Link :href="`/inventory/products/${p.id}/edit`" class="p-1.5 rounded-md text-muted hover:bg-base-200 hover:text-primary transition-colors" :aria-label="`Edit ${p.name}`" :title="`Edit ${p.name}`">
-                      <Icon name="edit" size="sm" />
-                    </Link>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+        <EmptyState
+          v-if="products.data.length === 0"
+          icon="boxes"
+          title="No products found"
+          description="Try adjusting your filters or add a new product to the catalog."
+        >
+          <template #action>
+            <Link href="/inventory/products/create">
+              <Button icon="plus">New product</Button>
+            </Link>
+          </template>
+        </EmptyState>
 
-          <EmptyState
-            v-if="products.data.length === 0"
-            icon="boxes"
-            title="No products found"
-            description="Try adjusting your filters or add a new product to the catalog."
-          >
-            <template #action>
-              <Link href="/inventory/products/create">
-                <Button icon="plus">New product</Button>
+        <ResponsiveTable v-else :columns="columns" :rows="products.data">
+          <template #cell:sku="{ row }">
+            <span class="font-mono text-xs text-muted">{{ row.sku }}</span>
+          </template>
+          <template #cell:name="{ row }">
+            <Link :href="`/inventory/products/${row.id}`" class="font-medium text-base-content hover:text-primary transition-colors">
+              {{ row.name }}
+            </Link>
+          </template>
+          <template #cell:category="{ row }">
+            <span class="text-muted">{{ row.category_label || row.category }}</span>
+          </template>
+          <template #cell:total_quantity="{ row }">
+            <div class="text-right">
+              <Badge :variant="row.is_low ? 'danger' : 'success'">
+                {{ row.total_quantity }} {{ row.unit_short || row.unit }}
+              </Badge>
+            </div>
+          </template>
+          <template #cell:reorder_level="{ row }">
+            <div class="text-right text-muted">{{ row.reorder_level }}</div>
+          </template>
+          <template #cell:is_active="{ row }">
+            <Badge :variant="row.is_active ? 'success' : 'warning'" dot>
+              {{ row.is_active ? 'Active' : 'Inactive' }}
+            </Badge>
+          </template>
+          <template #cell:actions="{ row }">
+            <div class="inline-flex items-center gap-1 justify-end">
+              <Link :href="`/inventory/products/${row.id}`" class="p-1.5 rounded-md text-muted hover:bg-base-200 hover:text-primary transition-colors" :aria-label="`View ${row.name}`" :title="`View ${row.name}`">
+                <Icon name="eye" size="sm" />
               </Link>
-            </template>
-          </EmptyState>
-        </div>
+              <Link :href="`/inventory/products/${row.id}/edit`" class="p-1.5 rounded-md text-muted hover:bg-base-200 hover:text-primary transition-colors" :aria-label="`Edit ${row.name}`" :title="`Edit ${row.name}`">
+                <Icon name="edit" size="sm" />
+              </Link>
+            </div>
+          </template>
+          <template #card="{ row }">
+            <div class="app-card p-4 space-y-2">
+              <div class="text-xs font-mono text-muted">{{ row.sku }}</div>
+              <div class="font-medium">{{ row.name }}</div>
+              <div class="text-sm text-muted">{{ row.category_label || row.category }}</div>
+              <div class="flex items-center justify-between">
+                <Badge :variant="row.is_active ? 'success' : 'warning'" dot>
+                  {{ row.is_active ? 'Active' : 'Inactive' }}
+                </Badge>
+                <Badge :variant="row.is_low ? 'danger' : 'success'">
+                  {{ row.total_quantity }} {{ row.unit_short || row.unit }}
+                </Badge>
+              </div>
+            </div>
+          </template>
+        </ResponsiveTable>
 
         <div class="px-5 pb-4">
           <Pagination
