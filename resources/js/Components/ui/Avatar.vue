@@ -31,11 +31,11 @@ const sizes = {
 }
 
 const toneClass = {
-  primary: 'bg-primary/15 text-primary',
-  secondary: 'bg-secondary/15 text-secondary',
-  success: 'bg-success/15 text-success',
-  warning: 'bg-warning/15 text-warning',
-  info: 'bg-info/15 text-info',
+  primary: 'bg-gradient-to-br from-primary/15 to-primary/25 text-primary',
+  secondary: 'bg-gradient-to-br from-secondary/15 to-secondary/25 text-secondary',
+  success: 'bg-gradient-to-br from-success/15 to-success/25 text-success',
+  warning: 'bg-gradient-to-br from-warning/15 to-warning/25 text-warning',
+  info: 'bg-gradient-to-br from-info/15 to-info/25 text-info',
 }
 
 const initials = computed(() => {
@@ -53,7 +53,7 @@ const initials = computed(() => {
 <template>
   <div
     :class="[
-      'inline-flex items-center justify-center rounded-full font-medium overflow-hidden',
+      'inline-flex items-center justify-center rounded-full font-semibold overflow-hidden',
       sizes[size],
       toneClass[tone],
     ]"

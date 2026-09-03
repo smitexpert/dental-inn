@@ -25,11 +25,11 @@ const props = defineProps({
 
 const variantClass = {
   neutral: 'bg-base-200 text-base-content/70 border-(--color-line)',
-  primary: 'bg-primary/10 text-primary border-primary/30',
-  success: 'bg-success/10 text-success border-success/30',
-  warning: 'bg-warning/10 text-warning border-warning/30',
-  danger: 'bg-error/10 text-error border-error/30',
-  info: 'bg-info/10 text-info border-info/30',
+  primary: 'bg-primary/10 text-primary border-primary/35',
+  success: 'bg-success/10 text-success border-success/35',
+  warning: 'bg-warning/10 text-warning border-warning/35',
+  danger: 'bg-error/10 text-error border-error/35',
+  info: 'bg-info/10 text-info border-info/35',
 }
 
 const dotClass = {
@@ -42,7 +42,7 @@ const dotClass = {
 }
 
 const sizeClass = computed(() =>
-  props.size === 'sm' ? 'text-[11px] px-1.5 py-0' : 'text-xs px-2 py-0.5',
+  props.size === 'sm' ? 'text-[11px] px-2 py-0.5' : 'text-xs px-2.5 py-0.5',
 )
 </script>
 

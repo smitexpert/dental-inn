@@ -23,7 +23,7 @@ const wrapperClass = computed(() => {
     case 'elevated':
       return 'app-card shadow-(--shadow-pop)'
     case 'outlined':
-      return 'rounded-xl border border-(--color-line-strong) bg-transparent'
+      return 'rounded-2xl border border-(--color-line-strong) bg-transparent'
     case 'accent':
       return 'app-card border-primary/30 bg-primary/5'
     default:
@@ -36,7 +36,7 @@ const wrapperClass = computed(() => {
   <div :class="wrapperClass">
     <div
       v-if="title || $slots.header || $slots.actions"
-      class="px-4 py-3 border-b border-(--color-line) flex items-start justify-between gap-3"
+      class="px-5 py-4 border-b border-(--color-line) flex items-start justify-between gap-3"
     >
       <slot name="header">
         <div>
@@ -53,7 +53,7 @@ const wrapperClass = computed(() => {
     </div>
     <div
       v-if="$slots.footer"
-      class="px-4 py-3 border-t border-(--color-line) bg-base-200/40"
+      class="px-5 py-4 border-t border-(--color-line) bg-base-200/40"
     >
       <slot name="footer" />
     </div>
