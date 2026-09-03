@@ -28,6 +28,15 @@ class PatientController extends Controller
             request()->only(['q', 'is_active']),
         );
 
+        $kpis = [
+            ['id' => 'total', 'label' => 'Total', 'value' => (string) Patient::count()],
+            ['id' => 'new_month', 'label' => 'New this month',
+                'value' => (string) Patient::whereMonth('created_at', now()->month)->count()],
+            ['id' => 'active', 'label' => 'Active', 'value' => (string) Patient::where('is_active', true)->count()],
+            ['id' => 'allergies', 'label' => 'With allergies',
+                'value' => (string) Patient::whereNotNull('medical_history')->where('medical_history', '!=', '')->count()],
+        ];
+
         return Inertia::render('Patients/Index', [
             'patients' => [
                 'data' => PatientResource::collection($page->getCollection())->resolve(),
@@ -39,6 +48,7 @@ class PatientController extends Controller
                 'to' => $page->lastItem(),
             ],
             'filters' => request()->only(['q', 'is_active']),
+            'kpis' => $kpis,
         ]);
     }
 
