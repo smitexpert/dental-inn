@@ -2,16 +2,22 @@
 import { Head, Link, router } from '@inertiajs/vue3'
 import { ref, watch } from 'vue'
 import AuthenticatedLayout from '@/Layouts/Authenticated.vue'
-import PageHeader from '@/Components/ui/PageHeader.vue'
+import PageHeaderSticky from '@/Components/ui/PageHeaderSticky.vue'
+import KpiStrip from '@/Components/ui/KpiStrip.vue'
 import FilterBar from '@/Components/ui/FilterBar.vue'
 import Card from '@/Components/ui/Card.vue'
 import Button from '@/Components/ui/Button.vue'
 import Badge from '@/Components/ui/Badge.vue'
 import EmptyState from '@/Components/ui/EmptyState.vue'
 import Pagination from '@/Components/ui/Pagination.vue'
+import ResponsiveTable from '@/Components/ui/ResponsiveTable.vue'
 import Icon from '@/Components/ui/Icon.vue'
 
-const props = defineProps({ suppliers: Object, filters: Object })
+const props = defineProps({
+  suppliers: Object,
+  filters: Object,
+  kpis: { type: Array, default: () => [] },
+})
 
 const q = ref(props.filters.q ?? '')
 const isActive = ref(
@@ -52,24 +58,36 @@ function goPage(n) {
     { preserveState: true },
   )
 }
+
+const columns = [
+  { key: 'name', label: 'Name' },
+  { key: 'contact_person', label: 'Contact' },
+  { key: 'phone', label: 'Phone' },
+  { key: 'email', label: 'Email' },
+  { key: 'is_active', label: 'Status' },
+  { key: 'actions', label: '' },
+]
 </script>
 
 <template>
   <Head title="Inventory — Suppliers" />
   <AuthenticatedLayout>
-    <div class="space-y-5">
-      <PageHeader
+    <template #pageHeader>
+      <PageHeaderSticky
         title="Suppliers"
-        subtitle="Manage vendor contacts and ordering information."
-        icon="send"
-        eyebrow="Inventory"
+        :breadcrumb="[{ label: 'Inventory' }, { label: 'Suppliers' }]"
+        meta="Manage vendor contacts and ordering information."
       >
         <template #actions>
           <Link href="/inventory/suppliers/create">
             <Button icon="plus">New supplier</Button>
           </Link>
         </template>
-      </PageHeader>
+      </PageHeaderSticky>
+    </template>
+
+    <div class="space-y-5 pt-5">
+      <KpiStrip :tiles="kpis" />
 
       <FilterBar title="Search">
         <template #aside>
@@ -96,60 +114,62 @@ function goPage(n) {
       </FilterBar>
 
       <Card :padded="false">
-        <div class="overflow-x-auto">
-          <table class="app-table">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Contact</th>
-                <th>Phone</th>
-                <th>Email</th>
-                <th class="w-28">Status</th>
-                <th class="w-28 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="s in suppliers.data" :key="s.id">
-                <td>
-                  <Link :href="`/inventory/suppliers/${s.id}`" class="font-medium text-base-content hover:text-primary transition-colors">
-                    {{ s.name }}
-                  </Link>
-                </td>
-                <td class="text-muted">{{ s.contact_person || '—' }}</td>
-                <td class="text-muted">{{ s.phone || '—' }}</td>
-                <td class="text-muted">{{ s.email || '—' }}</td>
-                <td>
-                  <Badge :variant="s.is_active ? 'success' : 'warning'" dot>
-                    {{ s.is_active ? 'Active' : 'Inactive' }}
-                  </Badge>
-                </td>
-                <td class="text-right">
-                  <div class="inline-flex items-center gap-1">
-                    <Link :href="`/inventory/suppliers/${s.id}`" class="p-1.5 rounded-md text-muted hover:bg-base-200 hover:text-primary transition-colors" :aria-label="`View ${s.name}`" :title="`View ${s.name}`">
-                      <Icon name="eye" size="sm" />
-                    </Link>
-                    <Link :href="`/inventory/suppliers/${s.id}/edit`" class="p-1.5 rounded-md text-muted hover:bg-base-200 hover:text-primary transition-colors" :aria-label="`Edit ${s.name}`" :title="`Edit ${s.name}`">
-                      <Icon name="edit" size="sm" />
-                    </Link>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+        <EmptyState
+          v-if="suppliers.data.length === 0"
+          icon="send"
+          title="No suppliers yet"
+          description="Add your first supplier to start tracking cost, lead time and orders."
+        >
+          <template #action>
+            <Link href="/inventory/suppliers/create">
+              <Button icon="plus">New supplier</Button>
+            </Link>
+          </template>
+        </EmptyState>
 
-          <EmptyState
-            v-if="suppliers.data.length === 0"
-            icon="send"
-            title="No suppliers yet"
-            description="Add your first supplier to start tracking cost, lead time and orders."
-          >
-            <template #action>
-              <Link href="/inventory/suppliers/create">
-                <Button icon="plus">New supplier</Button>
+        <ResponsiveTable v-else :columns="columns" :rows="suppliers.data">
+          <template #cell:name="{ row }">
+            <Link :href="`/inventory/suppliers/${row.id}`" class="font-medium text-base-content hover:text-primary transition-colors">
+              {{ row.name }}
+            </Link>
+          </template>
+          <template #cell:contact_person="{ row }">
+            <span class="text-muted">{{ row.contact_person || '—' }}</span>
+          </template>
+          <template #cell:phone="{ row }">
+            <span class="text-muted">{{ row.phone || '—' }}</span>
+          </template>
+          <template #cell:email="{ row }">
+            <span class="text-muted">{{ row.email || '—' }}</span>
+          </template>
+          <template #cell:is_active="{ row }">
+            <Badge :variant="row.is_active ? 'success' : 'warning'" dot>
+              {{ row.is_active ? 'Active' : 'Inactive' }}
+            </Badge>
+          </template>
+          <template #cell:actions="{ row }">
+            <div class="inline-flex items-center gap-1 justify-end">
+              <Link :href="`/inventory/suppliers/${row.id}`" class="p-1.5 rounded-md text-muted hover:bg-base-200 hover:text-primary transition-colors" :aria-label="`View ${row.name}`" :title="`View ${row.name}`">
+                <Icon name="eye" size="sm" />
               </Link>
-            </template>
-          </EmptyState>
-        </div>
+              <Link :href="`/inventory/suppliers/${row.id}/edit`" class="p-1.5 rounded-md text-muted hover:bg-base-200 hover:text-primary transition-colors" :aria-label="`Edit ${row.name}`" :title="`Edit ${row.name}`">
+                <Icon name="edit" size="sm" />
+              </Link>
+            </div>
+          </template>
+          <template #card="{ row }">
+            <div class="app-card p-4 space-y-2">
+              <div class="font-medium">{{ row.name }}</div>
+              <div class="text-sm text-muted">{{ row.contact_person || '—' }}</div>
+              <div class="text-sm text-muted">{{ row.phone || '—' }} · {{ row.email || '—' }}</div>
+              <div class="flex items-center gap-1">
+                <Badge :variant="row.is_active ? 'success' : 'warning'" dot>
+                  {{ row.is_active ? 'Active' : 'Inactive' }}
+                </Badge>
+              </div>
+            </div>
+          </template>
+        </ResponsiveTable>
 
         <div class="px-5 pb-4">
           <Pagination

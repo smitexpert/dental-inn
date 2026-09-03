@@ -24,9 +24,19 @@ class SupplierController extends Controller
             request()->only(['q', 'is_active']),
         );
 
+        $kpis = [
+            ['id' => 'total', 'label' => 'Total suppliers',
+                'value' => (string) Supplier::count(), 'format' => 'number'],
+            ['id' => 'active', 'label' => 'Active',
+                'value' => (string) Supplier::where('is_active', true)->count(), 'format' => 'number'],
+            ['id' => 'top', 'label' => 'Top supplier',
+                'value' => Supplier::orderByDesc('id')->value('name') ?? '—'],
+        ];
+
         return Inertia::render('Inventory/Suppliers/Index', [
             'suppliers' => $page,
             'filters' => request()->only(['q', 'is_active']),
+            'kpis' => $kpis,
         ]);
     }
 
