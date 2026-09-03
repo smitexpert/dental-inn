@@ -32,17 +32,15 @@ const iconTone = computed(() => toneClass[props.tone])
 </script>
 
 <template>
-  <div class="flex flex-col items-center justify-center text-center p-8">
-    <div
-      :class="['h-12 w-12 rounded-xl inline-flex items-center justify-center mb-3', iconTone]"
-    >
-      <Icon :name="icon" size="lg" />
+  <div class="app-card p-10 flex flex-col items-center justify-center text-center gap-3">
+    <div class="h-14 w-14 rounded-2xl bg-base-200 text-base-content/70 inline-flex items-center justify-center">
+      <slot name="icon">
+        <Icon :name="icon" size="lg" />
+      </slot>
     </div>
     <h3 class="text-base font-semibold text-base-content">{{ title }}</h3>
-    <p v-if="description" class="text-sm text-muted mt-1 max-w-sm">
-      {{ description }}
-    </p>
-    <div v-if="$slots.action" class="mt-4">
+    <p v-if="description" class="text-sm text-muted max-w-md">{{ description }}</p>
+    <div v-if="$slots.action" class="mt-2">
       <slot name="action" />
     </div>
   </div>

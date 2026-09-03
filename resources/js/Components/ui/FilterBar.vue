@@ -14,8 +14,8 @@ defineProps({
 </script>
 
 <template>
-  <div class="app-card p-4">
-    <div v-if="title || $slots.aside" class="flex items-center justify-between mb-3 gap-3">
+  <div class="app-card p-4 flex flex-wrap items-end gap-3">
+    <div v-if="title || $slots.aside" class="w-full flex items-center justify-between mb-1">
       <div class="flex items-center gap-2 text-sm font-medium text-base-content min-w-0">
         <Icon name="filter" size="sm" class="text-muted" />
         <span class="truncate">{{ title }}</span>
@@ -25,7 +25,7 @@ defineProps({
         <slot name="aside" />
       </div>
     </div>
-    <div class="grid gap-3 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+    <div class="w-full grid gap-3 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
       <slot />
     </div>
   </div>
