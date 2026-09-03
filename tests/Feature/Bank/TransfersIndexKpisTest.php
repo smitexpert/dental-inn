@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Bank;
 
+use App\Models\BankAccount;
 use App\Models\Transfer;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -26,8 +27,8 @@ class TransfersIndexKpisTest extends TestCase
     {
         $admin = User::factory()->create(['is_active' => true])->assignRole('admin');
 
-        $from = \App\Models\BankAccount::factory()->create();
-        $to = \App\Models\BankAccount::factory()->create();
+        $from = BankAccount::factory()->create();
+        $to = BankAccount::factory()->create();
 
         Transfer::factory()->create([
             'from_account_id' => $from->id,

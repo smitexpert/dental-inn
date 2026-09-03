@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Billing;
 
-use App\Enums\ExpenseStatus;
 use App\Models\User;
 use Database\Seeders\ChartOfAccountsSeeder;
 use Database\Seeders\ExpenseCategorySeeder;
