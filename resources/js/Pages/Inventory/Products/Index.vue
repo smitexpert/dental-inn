@@ -2,7 +2,7 @@
 import { Head, Link, router } from '@inertiajs/vue3'
 import { ref, watch } from 'vue'
 import AuthenticatedLayout from '@/Layouts/Authenticated.vue'
-import PageHeaderSticky from '@/Components/ui/PageHeaderSticky.vue'
+import PageHeader from '@/Components/ui/PageHeader.vue'
 import KpiStrip from '@/Components/ui/KpiStrip.vue'
 import FilterBar from '@/Components/ui/FilterBar.vue'
 import Card from '@/Components/ui/Card.vue'
@@ -98,11 +98,12 @@ const columns = [
 <template>
   <Head title="Inventory — Products" />
   <AuthenticatedLayout>
-    <template #pageHeader>
-      <PageHeaderSticky
+    <div class="space-y-5">
+      <PageHeader
         title="Products"
-        :breadcrumb="[{ label: 'Inventory' }, { label: 'Products' }]"
-        meta="Manage catalog, stock levels, and reorder thresholds."
+        subtitle="Manage catalog, stock levels, and reorder thresholds."
+        icon="package"
+        eyebrow="Inventory"
       >
         <template #actions>
           <Link href="/inventory/low-stock">
@@ -112,10 +113,7 @@ const columns = [
             <Button icon="plus">New product</Button>
           </Link>
         </template>
-      </PageHeaderSticky>
-    </template>
-
-    <div class="space-y-5 pt-5">
+      </PageHeader>
       <KpiStrip :tiles="kpis" />
 
       <FilterBar title="Search">

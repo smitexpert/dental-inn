@@ -17,7 +17,7 @@ defineProps({
 </script>
 
 <template>
-  <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+  <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mt-4">
     <div class="min-w-0 flex items-start gap-3">
       <div
         v-if="icon"

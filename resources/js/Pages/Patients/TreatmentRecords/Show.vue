@@ -84,7 +84,7 @@ const breadcrumbs = [
 <template>
   <Head :title="`Record — ${patient.name}`" />
   <AuthenticatedLayout>
-    <div class="space-y-5 max-w-5xl">
+    <div class="space-y-5 max-w-5xl my-4">
       <Breadcrumbs :items="breadcrumbs" />
 
       <PageHeader

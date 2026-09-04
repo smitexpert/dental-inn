@@ -44,7 +44,7 @@ function submit() {
 <template>
   <Head title="New patient" />
   <AuthenticatedLayout>
-    <div class="max-w-3xl">
+    <div class="max-w-3xl my-4">
       <UiCard title="New patient">
         <UiForm @submit.prevent="submit">
           <div class="grid grid-cols-2 gap-3">

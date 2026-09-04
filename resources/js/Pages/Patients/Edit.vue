@@ -46,7 +46,7 @@ function submit() {
 <template>
   <Head :title="`Edit ${patient.name}`" />
   <AuthenticatedLayout>
-    <div class="max-w-3xl">
+    <div class="max-w-3xl my-4">
       <UiCard :title="`Edit ${patient.name}`">
         <UiForm @submit.prevent="submit">
           <div class="grid grid-cols-2 gap-3">

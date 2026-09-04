@@ -2,7 +2,7 @@
 import { Head, Link, router } from '@inertiajs/vue3'
 import { ref, watch } from 'vue'
 import AuthenticatedLayout from '@/Layouts/Authenticated.vue'
-import PageHeaderSticky from '@/Components/ui/PageHeaderSticky.vue'
+import PageHeader from '@/Components/ui/PageHeader.vue'
 import KpiStrip from '@/Components/ui/KpiStrip.vue'
 import FilterBar from '@/Components/ui/FilterBar.vue'
 import Card from '@/Components/ui/Card.vue'
@@ -74,21 +74,19 @@ const columns = [
 <template>
   <Head title="Expenses" />
   <AuthenticatedLayout>
-    <template #pageHeader>
-      <PageHeaderSticky
+    <div class="space-y-5">
+      <PageHeader
         title="Expenses"
-        :breadcrumb="[{ label: 'Billing' }, { label: 'Expenses' }]"
-        meta="Track clinic expenses, vendors, and approval status."
+        subtitle="Track clinic expenses, vendors, and approval status."
+        icon="wallet"
+        eyebrow="Billing"
       >
         <template #actions>
           <Link href="/billing/expenses/create">
             <Button icon="plus">Submit expense</Button>
           </Link>
         </template>
-      </PageHeaderSticky>
-    </template>
-
-    <div class="space-y-5 pt-5">
+      </PageHeader>
       <KpiStrip :tiles="kpis" />
 
       <FilterBar title="Filters">

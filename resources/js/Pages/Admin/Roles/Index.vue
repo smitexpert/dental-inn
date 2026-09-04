@@ -1,7 +1,7 @@
 <script setup>
 import { Head, Link, router } from '@inertiajs/vue3'
 import AuthenticatedLayout from '@/Layouts/Authenticated.vue'
-import PageHeaderSticky from '@/Components/ui/PageHeaderSticky.vue'
+import PageHeader from '@/Components/ui/PageHeader.vue'
 import KpiStrip from '@/Components/ui/KpiStrip.vue'
 import FilterBar from '@/Components/ui/FilterBar.vue'
 import Card from '@/Components/ui/Card.vue'
@@ -58,11 +58,12 @@ const columns = [
 <template>
   <Head title="Roles" />
   <AuthenticatedLayout>
-    <template #pageHeader>
-      <PageHeaderSticky
+    <div class="space-y-5">
+      <PageHeader
         title="Roles"
-        :breadcrumb="[{ label: 'Admin' }, { label: 'Roles' }]"
-        meta="Group permissions and assign them to staff."
+        subtitle="Group permissions and assign them to staff."
+        icon="shield"
+        eyebrow="Admin"
       >
         <template #actions>
           <Link href="/admin/users">
@@ -72,10 +73,7 @@ const columns = [
             <Button icon="plus">New role</Button>
           </Link>
         </template>
-      </PageHeaderSticky>
-    </template>
-
-    <div class="space-y-5 pt-5">
+      </PageHeader>
       <KpiStrip :tiles="kpis" />
 
       <FilterBar title="Search">

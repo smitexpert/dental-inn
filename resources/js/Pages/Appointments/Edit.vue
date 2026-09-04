@@ -51,7 +51,7 @@ const breadcrumbs = [
 <template>
   <Head title="Edit appointment" />
   <AuthenticatedLayout>
-    <div class="max-w-3xl space-y-5">
+    <div class="max-w-3xl space-y-5 my-4">
       <Breadcrumbs :items="breadcrumbs" />
       <PageHeader
         title="Edit appointment"

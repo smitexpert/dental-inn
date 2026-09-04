@@ -2,7 +2,7 @@
 import { Head, Link, router } from '@inertiajs/vue3'
 import { ref, watch } from 'vue'
 import AuthenticatedLayout from '@/Layouts/Authenticated.vue'
-import PageHeaderSticky from '@/Components/ui/PageHeaderSticky.vue'
+import PageHeader from '@/Components/ui/PageHeader.vue'
 import KpiStrip from '@/Components/ui/KpiStrip.vue'
 import FilterBar from '@/Components/ui/FilterBar.vue'
 import Card from '@/Components/ui/Card.vue'
@@ -86,21 +86,20 @@ const columns = [
 <template>
   <Head title="Bank accounts" />
   <AuthenticatedLayout>
-    <template #pageHeader>
-      <PageHeaderSticky
+    <div class="space-y-5">
+      <PageHeader
         title="Bank accounts"
-        :breadcrumb="[{ label: 'Finance' }, { label: 'Bank accounts' }]"
-        meta="Manage bank, cash and external accounts."
+        subtitle="Manage bank, cash and external accounts."
+        icon="building"
+        eyebrow="Finance"
       >
         <template #actions>
           <Link :href="route('bank.accounts.create')">
             <Button icon="plus">New account</Button>
           </Link>
         </template>
-      </PageHeaderSticky>
-    </template>
+      </PageHeader>
 
-    <div class="space-y-5 pt-5">
       <KpiStrip :tiles="kpis" />
 
       <FilterBar title="Search">

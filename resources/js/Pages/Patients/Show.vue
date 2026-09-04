@@ -39,7 +39,7 @@ function fmtDateTime(s) {
   <Head :title="`${patient.name} (${patient.patient_code})`" />
   <AuthenticatedLayout>
     <div class="space-y-4 max-w-5xl">
-      <div class="flex items-center justify-between">
+      <div class="flex items-center justify-between mt-4">
         <div>
           <h2 class="text-xl font-semibold text-base-content">{{ patient.name }}</h2>
           <p class="text-sm text-base-content/70 font-mono">{{ patient.patient_code }}</p>

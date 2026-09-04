@@ -1,7 +1,7 @@
 <script setup>
 import { Head, Link, router, usePage } from '@inertiajs/vue3'
 import AuthenticatedLayout from '@/Layouts/Authenticated.vue'
-import PageHeaderSticky from '@/Components/ui/PageHeaderSticky.vue'
+import PageHeader from '@/Components/ui/PageHeader.vue'
 import KpiStrip from '@/Components/ui/KpiStrip.vue'
 import FilterBar from '@/Components/ui/FilterBar.vue'
 import Card from '@/Components/ui/Card.vue'
@@ -90,11 +90,12 @@ function roleLabel(r) {
 <template>
   <Head title="Users" />
   <AuthenticatedLayout>
-    <template #pageHeader>
-      <PageHeaderSticky
+    <div class="space-y-5">
+      <PageHeader
         title="Users"
-        :breadcrumb="[{ label: 'Admin' }, { label: 'Users' }]"
-        meta="Manage staff accounts, roles and access."
+        subtitle="Manage staff accounts, roles and access."
+        icon="shield"
+        eyebrow="Admin"
       >
         <template #actions>
           <Link href="/admin/roles">
@@ -104,10 +105,7 @@ function roleLabel(r) {
             <Button icon="plus">New user</Button>
           </Link>
         </template>
-      </PageHeaderSticky>
-    </template>
-
-    <div class="space-y-5 pt-5">
+      </PageHeader>
       <KpiStrip :tiles="kpis" />
 
       <FilterBar title="Search">
