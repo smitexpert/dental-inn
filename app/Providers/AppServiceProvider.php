@@ -73,6 +73,7 @@ use App\Services\ReconciliationService;
 use App\Services\TransferService;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Inertia\Inertia;
 
@@ -255,5 +256,9 @@ class AppServiceProvider extends ServiceProvider
                 'patient' => session('patient'),
             ],
         ]);
+
+        if ($this->app->environment('production')) {
+            URL::forceScheme('https');
+        }
     }
 }
