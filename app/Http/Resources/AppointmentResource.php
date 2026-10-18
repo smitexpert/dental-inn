@@ -74,6 +74,21 @@ class AppointmentResource extends JsonResource
                     ])->all()
                     : [],
             ])->all()),
+            'prescriptions' => $this->whenLoaded('prescriptions', fn () => $this->prescriptions->map(fn ($p) => [
+                'id' => $p->id,
+                'prescription_number' => $p->prescription_number,
+                'status' => $p->status->value,
+                'status_label' => $p->status->label(),
+                'status_label_bn' => $p->status->labelBn(),
+                'issued_at' => $p->issued_at?->toIso8601String(),
+                'item_count' => $p->relationLoaded('items') ? $p->items->count() : null,
+                'show_url' => $p->patient_id
+                    ? route('patients.prescriptions.show', [$p->patient_id, $p])
+                    : null,
+                'print_url' => $p->patient_id
+                    ? route('patients.prescriptions.print', [$p->patient_id, $p])
+                    : null,
+            ])->all()),
         ];
     }
 }

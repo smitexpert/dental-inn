@@ -33,6 +33,7 @@ use Spatie\Activitylog\Support\LogOptions;
  * @property-read ?Doctor $doctor
  * @property-read ?User $creator
  * @property-read Collection<int, Invoice> $invoices
+ * @property-read Collection<int, Prescription> $prescriptions
  */
 class Appointment extends Model
 {
@@ -85,6 +86,14 @@ class Appointment extends Model
     public function invoices(): HasMany
     {
         return $this->hasMany(Invoice::class);
+    }
+
+    /**
+     * @return HasMany<Prescription, $this>
+     */
+    public function prescriptions(): HasMany
+    {
+        return $this->hasMany(Prescription::class);
     }
 
     public function endAt(): Carbon

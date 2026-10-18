@@ -86,8 +86,8 @@ onUnmounted(() => {
       @close="close"
       @click="onBackdropClick"
     >
-      <div :class="['modal-box app-card p-0 overflow-hidden', sizeClass[size]]">
-        <div class="px-5 py-4 border-b border-(--color-line) flex items-center gap-3">
+      <div :class="['modal-box app-card p-0 overflow-hidden flex flex-col max-h-[90vh]', sizeClass[size]]">
+        <div class="px-5 py-4 border-b border-(--color-line) flex items-center gap-3 shrink-0">
           <div
             v-if="icon"
             class="h-9 w-9 rounded-xl bg-primary/10 text-primary inline-flex items-center justify-center shrink-0"
@@ -109,12 +109,12 @@ onUnmounted(() => {
             <Icon name="x" size="sm" />
           </button>
         </div>
-        <div class="px-5 py-4">
+        <div class="px-5 py-4 overflow-y-auto flex-1 min-h-0">
           <slot />
         </div>
         <div
           v-if="$slots.footer"
-          class="px-5 py-3 border-t border-(--color-line) bg-base-200/40 flex items-center justify-end gap-2"
+          class="px-5 py-3 border-t border-(--color-line) bg-base-200/40 flex items-center justify-end gap-2 shrink-0"
         >
           <slot name="footer" />
         </div>

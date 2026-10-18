@@ -33,6 +33,7 @@ use App\Repositories\Contracts\ExpenseRepository;
 use App\Repositories\Contracts\InvoiceRepository;
 use App\Repositories\Contracts\PatientRepository;
 use App\Repositories\Contracts\PaymentRepository;
+use App\Repositories\Contracts\PrescriptionRepository;
 use App\Repositories\Contracts\ProductRepository;
 use App\Repositories\Contracts\RoleRepository;
 use App\Repositories\Contracts\StockLocationRepository;
@@ -53,6 +54,7 @@ use App\Repositories\Eloquent\ExpenseEloquentRepository;
 use App\Repositories\Eloquent\InvoiceEloquentRepository;
 use App\Repositories\Eloquent\PatientEloquentRepository;
 use App\Repositories\Eloquent\PaymentEloquentRepository;
+use App\Repositories\Eloquent\PrescriptionEloquentRepository;
 use App\Repositories\Eloquent\ProductEloquentRepository;
 use App\Repositories\Eloquent\RoleEloquentRepository;
 use App\Repositories\Eloquent\StockLocationEloquentRepository;
@@ -119,6 +121,11 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             TreatmentRecordRepository::class,
             TreatmentRecordEloquentRepository::class,
+        );
+
+        $this->app->bind(
+            PrescriptionRepository::class,
+            PrescriptionEloquentRepository::class,
         );
 
         $this->app->bind(

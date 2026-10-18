@@ -12,6 +12,7 @@ const props = defineProps({
   patient: Object,
   appointments: Array,
   treatment_records: Array,
+  prescriptions: { type: Array, default: () => [] },
   duplicates: Array,
   billing: Object,
   invoices: Array,
@@ -50,6 +51,9 @@ function fmtDateTime(s) {
           </Link>
           <Link v-if="can('manage-patients')" :href="`/patients/${patient.id}/treatment-records/create`">
             <UiButton>New treatment record</UiButton>
+          </Link>
+          <Link v-if="can('manage-prescriptions')" :href="`/patients/${patient.id}/prescriptions/create`">
+            <UiButton variant="outline" icon="pill">New prescription</UiButton>
           </Link>
         </div>
       </div>
@@ -217,6 +221,32 @@ function fmtDateTime(s) {
             </div>
             <div class="text-xs text-base-content/70">
               {{ fmtDate(r.visited_at) }} · {{ r.doctor_name || 'No doctor' }}
+            </div>
+          </li>
+        </ol>
+      </UiCard>
+
+      <UiCard title="Prescriptions">
+        <div v-if="!prescriptions || prescriptions.length === 0" class="text-sm text-base-content/70">
+          No prescriptions yet.
+        </div>
+        <ol v-else class="relative border-l-2 border-base-300 ml-2 space-y-3 pl-4">
+          <li v-for="p in prescriptions" :key="p.id" class="relative">
+            <span class="absolute -left-[1.4rem] top-1 h-3 w-3 rounded-full bg-success ring-2 ring-surface" />
+            <div class="flex items-center justify-between gap-2 flex-wrap">
+              <Link
+                :href="`/patients/${patient.id}/prescriptions/${p.id}`"
+                class="font-mono font-medium text-base-content hover:underline"
+              >
+                {{ p.prescription_number }}
+              </Link>
+              <UiBadge :variant="p.status === 'issued' ? 'success' : p.status === 'cancelled' ? 'danger' : 'warning'">
+                {{ p.status_label }}
+              </UiBadge>
+            </div>
+            <div class="text-xs text-base-content/70">
+              {{ p.doctor_name || 'No doctor' }} · Issued {{ fmtDate(p.issued_at) }}
+              <span v-if="p.item_count !== null && p.item_count !== undefined"> · {{ p.item_count }} medicines</span>
             </div>
           </li>
         </ol>

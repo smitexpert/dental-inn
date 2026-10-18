@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Appointments;
 
 use App\Enums\AppointmentStatus;
+use App\Enums\DosageFrequency;
+use App\Enums\MealRelation;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Appointments\StoreAppointmentRequest;
 use App\Http\Requests\Appointments\UpdateAppointmentRequest;
@@ -85,10 +87,19 @@ class AppointmentController extends Controller
 
     public function show(Appointment $appointment): Response
     {
-        $appointment->load(['doctor.user', 'creator', 'invoices.items', 'invoices.payments']);
+        $appointment->load([
+            'doctor.user',
+            'creator',
+            'invoices.items',
+            'invoices.payments',
+            'prescriptions.items',
+        ]);
 
         return Inertia::render('Appointments/Show', [
             'appointment' => (new AppointmentResource($appointment))->resolve(),
+            'doctors' => $this->doctors->listActive(),
+            'frequencyOptions' => DosageFrequency::options(),
+            'mealRelationOptions' => MealRelation::options(),
         ]);
     }
 

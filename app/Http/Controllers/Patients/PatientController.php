@@ -71,6 +71,7 @@ class PatientController extends Controller
         $patient->load([
             'appointments' => fn ($q) => $q->with('doctor.user')->limit(20),
             'treatmentRecords' => fn ($q) => $q->with('doctor.user')->limit(20),
+            'prescriptions' => fn ($q) => $q->with(['items', 'doctor.user'])->limit(20),
             'invoices' => fn ($q) => $q->with('payments')->limit(50),
         ]);
 
@@ -110,6 +111,15 @@ class PatientController extends Controller
                 'chief_complaint' => $r->chief_complaint,
                 'status' => $r->status->value,
                 'status_label' => $r->status->label(),
+            ])->all(),
+            'prescriptions' => $patient->prescriptions->map(fn ($p) => [
+                'id' => $p->id,
+                'prescription_number' => $p->prescription_number,
+                'doctor_name' => $p->doctor?->user?->name,
+                'issued_at' => $p->issued_at?->toIso8601String(),
+                'status' => $p->status->value,
+                'status_label' => $p->status->label(),
+                'item_count' => $p->relationLoaded('items') ? $p->items->count() : null,
             ])->all(),
             'duplicates' => $duplicates->map(fn (Patient $p) => [
                 'id' => $p->id,

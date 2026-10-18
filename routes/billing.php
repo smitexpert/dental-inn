@@ -9,11 +9,7 @@ use App\Http\Controllers\Billing\PaymentController;
 use Illuminate\Support\Facades\Route;
 
 // Chart of accounts
-Route::middleware(['auth', 'active', 'permission:view-invoices'])
-    ->prefix('billing/accounts')->name('billing.accounts.')->group(function (): void {
-        Route::get('/', [AccountController::class, 'index'])->name('index');
-        Route::get('/{account}', [AccountController::class, 'show'])->name('show');
-    });
+
 
 Route::middleware(['auth', 'active', 'permission:manage-chart-of-accounts'])
     ->prefix('billing/accounts')->name('billing.accounts.')->group(function (): void {
@@ -21,6 +17,12 @@ Route::middleware(['auth', 'active', 'permission:manage-chart-of-accounts'])
         Route::post('/', [AccountController::class, 'store'])->name('store');
         Route::get('/{account}/edit', [AccountController::class, 'edit'])->name('edit');
         Route::patch('/{account}', [AccountController::class, 'update'])->name('update');
+    });
+
+Route::middleware(['auth', 'active', 'permission:view-invoices'])
+    ->prefix('billing/accounts')->name('billing.accounts.')->group(function (): void {
+        Route::get('/', [AccountController::class, 'index'])->name('index');
+        Route::get('/{account}', [AccountController::class, 'show'])->name('show');
     });
 
 // Invoices

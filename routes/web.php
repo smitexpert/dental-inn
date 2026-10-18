@@ -18,6 +18,7 @@ require __DIR__.'/billing.php';
 require __DIR__.'/reports.php';
 require __DIR__.'/bank.php';
 require __DIR__.'/notifications.php';
+require __DIR__.'/prescriptions.php';
 
 Route::middleware(['auth', 'active'])->group(function () {
     Route::get('/', fn () => redirect()->route('dashboard'));

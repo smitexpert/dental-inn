@@ -1,6 +1,6 @@
 <script setup>
 import { Head, Link, router } from '@inertiajs/vue3'
-import { ref, computed } from 'vue'
+import { computed, ref } from 'vue'
 import AuthenticatedLayout from '@/Layouts/Authenticated.vue'
 import PageHeader from '@/Components/ui/PageHeader.vue'
 import Breadcrumbs from '@/Components/ui/Breadcrumbs.vue'
@@ -9,10 +9,18 @@ import Badge from '@/Components/ui/Badge.vue'
 import Button from '@/Components/ui/Button.vue'
 import Icon from '@/Components/ui/Icon.vue'
 import EmptyState from '@/Components/ui/EmptyState.vue'
+import PrescriptionCreateDialog from '@/Components/PrescriptionCreateDialog.vue'
+import { useCurrentUser } from '@/Composables/useCurrentUser.js'
 import { useConfirm } from '@/Composables/useConfirm.js'
 
-const props = defineProps({ appointment: Object })
+const props = defineProps({
+  appointment: Object,
+  doctors: { type: Array, default: () => [] },
+  frequencyOptions: { type: Array, default: () => [] },
+  mealRelationOptions: { type: Array, default: () => [] },
+})
 const confirm = useConfirm()
+const { can } = useCurrentUser()
 
 function fmt(iso) {
   if (!iso) return '—'
@@ -34,6 +42,25 @@ function statusVariant(s) {
     overdue: 'danger',
     refunded: 'neutral',
   }[s] || 'neutral'
+}
+
+function prescriptionStatusVariant(s) {
+  return { draft: 'warning', issued: 'success', cancelled: 'danger' }[s] || 'neutral'
+}
+
+const prescriptionDialogOpen = ref(false)
+const appointmentPatient = computed(() => props.appointment.patient ?? null)
+
+function openPrescriptionModal() {
+  if (!appointmentPatient.value) return
+  prescriptionDialogOpen.value = true
+}
+
+// After the dialog saves, the server's standard redirect would leave the
+// appointment page. Instead we stay here and refresh props so the new
+// Rx appears in the list immediately.
+function onPrescriptionCreated() {
+  router.reload({ only: ['appointment'] })
 }
 
 function money(n) {
@@ -205,6 +232,69 @@ const breadcrumbs = [
       </Card>
 
       <!--
+        Prescriptions issued for this appointment. Each row links to the
+        printable Rx view; clicking "Write prescription" takes the doctor
+        to the create form with appointment_id pre-filled so the Rx
+        auto-links back to this visit.
+      -->
+      <Card
+        title="Prescriptions"
+        :eyebrow="appointment.prescriptions && appointment.prescriptions.length > 0
+          ? `${appointment.prescriptions.length} ${appointment.prescriptions.length === 1 ? 'prescription' : 'prescriptions'}`
+          : 'No prescriptions yet'"
+        :padded="false"
+      >
+        <div v-if="!appointment.prescriptions || appointment.prescriptions.length === 0" class="px-5 pb-5">
+          <EmptyState
+            icon="pill"
+            title="No prescription written yet"
+            description="Use the button below to write one — it'll be linked back to this appointment."
+          />
+          <div v-if="appointment.patient && can('manage-prescriptions')" class="flex justify-end mt-3">
+            <Button icon="pill" @click="openPrescriptionModal">Write prescription</Button>
+          </div>
+        </div>
+        <div v-else class="divide-y divide-(--color-line)">
+          <div
+            v-for="p in appointment.prescriptions"
+            :key="p.id"
+            class="p-5 flex items-start gap-4"
+          >
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-1 flex-wrap">
+                <Link
+                  v-if="p.show_url"
+                  :href="p.show_url"
+                  class="font-mono text-base-content hover:text-primary hover:underline font-medium"
+                >
+                  {{ p.prescription_number }}
+                </Link>
+                <Badge :variant="prescriptionStatusVariant(p.status)" dot>{{ p.status_label }}</Badge>
+                <Badge v-if="p.item_count !== null && p.item_count !== undefined" variant="neutral" size="sm">
+                  {{ p.item_count }} {{ p.item_count === 1 ? 'medicine' : 'medicines' }}
+                </Badge>
+              </div>
+              <div class="text-xs text-muted">
+                <span v-if="p.issued_at">Issued {{ new Date(p.issued_at).toLocaleString() }}</span>
+                <span v-else>Draft — not issued yet</span>
+              </div>
+            </div>
+            <div class="flex flex-col sm:flex-row gap-2">
+              <Link v-if="p.show_url" :href="p.show_url">
+                <Button variant="outline" size="sm" icon="eye">Open</Button>
+              </Link>
+              <Link v-if="p.print_url" :href="p.print_url">
+                <Button variant="outline" size="sm" icon="printer">Print</Button>
+              </Link>
+            </div>
+          </div>
+          <div v-if="appointment.patient && can('manage-prescriptions')" class="p-4 flex justify-end border-t border-(--color-line)">
+            <Button variant="outline" icon="plus" @click="openPrescriptionModal">Write another prescription</Button>
+          </div>
+        </div>
+      </Card>
+
+      <!--
         Invoices linked to this appointment via the appointment_id FK.
         Auto-drafted the first time the appointment reaches Completed;
         additional invoices can be linked here too if a visit spans
@@ -281,5 +371,17 @@ const breadcrumbs = [
         </div>
       </Card>
     </div>
+
+    <PrescriptionCreateDialog
+      v-if="appointmentPatient"
+      v-model="prescriptionDialogOpen"
+      :patient="appointmentPatient"
+      :appointment-id="appointment.id"
+      :doctor-id="appointment.doctor_id"
+      :doctors="doctors"
+      :frequency-options="frequencyOptions"
+      :meal-relation-options="mealRelationOptions"
+      @created="onPrescriptionCreated"
+    />
   </AuthenticatedLayout>
 </template>

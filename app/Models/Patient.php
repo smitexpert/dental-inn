@@ -45,6 +45,7 @@ use Spatie\Activitylog\Support\LogOptions;
  * @property-read Collection<int, Appointment> $appointments
  * @property-read Collection<int, TreatmentRecord> $treatmentRecords
  * @property-read Collection<int, Invoice> $invoices
+ * @property-read Collection<int, Prescription> $prescriptions
  * @property-read ?User $creator
  */
 class Patient extends Model
@@ -136,6 +137,14 @@ class Patient extends Model
     public function invoices(): HasMany
     {
         return $this->hasMany(Invoice::class)->orderByDesc('invoice_date');
+    }
+
+    /**
+     * @return HasMany<Prescription, $this>
+     */
+    public function prescriptions(): HasMany
+    {
+        return $this->hasMany(Prescription::class)->orderByDesc('created_at');
     }
 
     public function creator(): BelongsTo

@@ -25,7 +25,10 @@ class ShowPatientTest extends TestCase
     public function test_shows_patient_profile(): void
     {
         $admin = User::factory()->create(['is_active' => true])->assignRole('admin');
-        $patient = Patient::factory()->create();
+        // Use a fixed name without apostrophes so assertSee isn't tripped up
+        // by Inertia's JSON page payload (which embeds the raw name) versus
+        // assertSee's HTML-entity-escaped search term.
+        $patient = Patient::factory()->create(['name' => 'Test Patient']);
 
         $response = $this->actingAs($admin)->get("/patients/{$patient->id}");
         $response->assertOk();
