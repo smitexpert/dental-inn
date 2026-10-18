@@ -113,7 +113,7 @@ After the existing `--shadow-*` block, append:
 
 - [ ] **Step 3: Refresh light-theme palette to pastels**
 
-Replace the `@plugin "daisyui/theme"` block named `caremint` (lines 18-60) so the brand colours are softer. Use these values (only the changed ones shown):
+Replace the `@plugin "daisyui/theme"` block named `dental` (lines 18-60) so the brand colours are softer. Use these values (only the changed ones shown):
 
 ```css
 --color-primary: oklch(72% 0.10 175);     /* pastel mint */
@@ -130,7 +130,7 @@ Replace the `@plugin "daisyui/theme"` block named `caremint` (lines 18-60) so th
 
 - [ ] **Step 4: Refresh dark-theme palette**
 
-Replace the `@plugin "daisyui/theme"` block named `caremint-dark` (lines 63-105) with:
+Replace the `@plugin "daisyui/theme"` block named `dental-dark` (lines 63-105) with:
 
 ```css
 --color-base-100: oklch(22% 0.018 220);
@@ -179,7 +179,7 @@ Expected: build succeeds, no warnings about unknown tokens.
 
 ```bash
 git add resources/css/app.css
-git commit -m "style(tokens): refresh caremint radii, shadows, palette for soft look"
+git commit -m "style(tokens): refresh dental radii, shadows, palette for soft look"
 ```
 
 ---
@@ -1053,7 +1053,7 @@ Replace the footer (lines 67-72):
   v-if="!collapsed"
   class="px-4 py-3 border-t border-(--color-line) text-xs text-(--color-subtle) shrink-0 flex items-center justify-between"
 >
-  <span>v1.0 · Caremint Dental</span>
+  <span>v1.0 · Dental Inn</span>
   <slot name="footer" />
 </div>
 ```

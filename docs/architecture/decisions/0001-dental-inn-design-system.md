@@ -1,4 +1,4 @@
-# 0001 — Caremint design system: daisyUI + Tailwind v4 tokens
+# 0001 — Dental Inn design system: daisyUI + Tailwind v4 tokens
 
 **Date:** 2026-08-13 (original PrimeVue decision), revised 2026-09-02
 **Status:** Accepted (supersedes the original PrimeVue unstyled pick)
@@ -14,8 +14,8 @@ In practice, maintaining that wrapper layer cost more than it saved — pass-thr
 
 We chose **daisyUI 5** as a Tailwind v4 plugin, configured in `resources/css/app.css` with two custom themes:
 
-- `caremint` — default light theme (soft clinical teal-mint primary, warm coral secondary, OKLCH palette).
-- `caremint-dark` — `prefersdark` automatic dark variant of the same palette.
+- `dental` — default light theme (soft clinical teal-mint primary, warm coral secondary, OKLCH palette).
+- `dental-dark` — `prefersdark` automatic dark variant of the same palette.
 
 Spacing, radius, shadow, and ease are defined as CSS custom properties inside the same `@theme` block, so every component reads from one source. The wrapper layer in `resources/js/Components/ui/` is now built directly on daisyUI classes (`.btn`, `.input`, `.modal`, `.table`, …) plus the semantic tokens (`--color-line`, `--color-muted`, `--shadow-card/pop/ring`, `--ease-out-soft`). Icons are inline SVG copied from icones.js.org (Lucide collection), removing the icon-library dependency.
 

@@ -14,7 +14,7 @@
 2. Replace ad-hoc CSS in pages with reusable wrapper components — add **5 new components** and **refresh 7 existing ones** so every list page shares one skeleton.
 3. Add a **KPI strip** (variant B — number + sparkline/bar) above the table on every list page that has backing data.
 4. Add a **sticky page header** with breadcrumb above every authenticated page, replacing today's `<PageHeader>` placement.
-5. Add **dark mode parity** for the new design — `caremint-dark` token refresh, every new component works in both themes.
+5. Add **dark mode parity** for the new design — `dental-dark` token refresh, every new component works in both themes.
 6. Introduce a **responsive table** that gracefully degrades to a card list on `<md`.
 
 ## 2. Non-goals
@@ -32,7 +32,7 @@
 
 ### 3.1 The single biggest lever: design tokens
 
-Update `resources/css/app.css` to define new caremint tokens inside the `@theme` block. Components that reference these tokens explicitly (via Tailwind utilities or daisyUI classes) automatically inherit the new values. Components that hard-code classes keep their current look until individually refreshed.
+Update `resources/css/app.css` to define new dental tokens inside the `@theme` block. Components that reference these tokens explicitly (via Tailwind utilities or daisyUI classes) automatically inherit the new values. Components that hard-code classes keep their current look until individually refreshed.
 
 #### Token refresh table
 
@@ -45,8 +45,8 @@ Update `resources/css/app.css` to define new caremint tokens inside the `@theme`
 | `--shadow-sm` | hard `0 1px 2px` | `--shadow-soft` (below) | layered soft |
 | `--shadow-md` | hard `0 4px 8px` | `--shadow-pop` | layered soft |
 | `--shadow-lg` | hard `0 10px 24px` | `--shadow-ring` | focus/hover halo |
-| daisyUI theme `caremint` | mid-saturation mint | pastel mint primary (`oklch(0.78 0.10 175)`), warm coral secondary (`oklch(0.78 0.13 35)`) | full OKLCH palette update |
-| daisyUI theme `caremint-dark` | generic dark | deep navy surfaces (slate-900 family), pastel mint accents, slate borders | parity with light theme |
+| daisyUI theme `dental` | mid-saturation mint | pastel mint primary (`oklch(0.78 0.10 175)`), warm coral secondary (`oklch(0.78 0.13 35)`) | full OKLCH palette update |
+| daisyUI theme `dental-dark` | generic dark | deep navy surfaces (slate-900 family), pastel mint accents, slate borders | parity with light theme |
 | Spacing / typography | unchanged | unchanged | layouts must not shift |
 
 New shadow tokens defined in `@theme`:

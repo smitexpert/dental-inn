@@ -33,7 +33,7 @@ const settings = computed(() => usePage().props.settings ?? {})
             <Icon name="tooth" size="lg" />
           </span>
           <span class="brand-gradient text-2xl font-bold tracking-tight">
-            Caremint
+            Dental Inn
           </span>
         </Link>
         <p v-if="settings.clinic_tagline" class="text-sm text-muted mt-2">

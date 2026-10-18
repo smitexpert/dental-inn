@@ -43,7 +43,7 @@ function isActive(item) {
         v-if="!collapsed"
         class="brand-gradient text-lg font-bold tracking-tight whitespace-nowrap"
       >
-        Caremint
+        Dental Inn
       </span>
     </div>
 
@@ -68,7 +68,7 @@ function isActive(item) {
       v-if="!collapsed"
       class="px-4 py-3 border-t border-(--color-line) text-xs text-(--color-subtle) shrink-0 flex items-center justify-between"
     >
-      <span>v1.0 · Caremint Dental</span>
+      <span>v1.0 · Dental Inn</span>
       <slot name="footer" />
     </div>
   </aside>

@@ -20,7 +20,7 @@ The system is decomposed into 7 phases. Each one ships with its own design doc +
 
 - Laravel 13 (PHP 8.4), MySQL
 - Inertia.js 3 + Vue 3 (plain JavaScript, no TypeScript)
-- daisyUI 5 themed via Tailwind v4 design tokens (`caremint` + `caremint-dark`)
+- daisyUI 5 themed via Tailwind v4 design tokens (`dental` + `dental-dark`)
 - PHPUnit (backend), Vitest (frontend)
 
 ## Local development

@@ -2,10 +2,10 @@ import { ref, watch, onMounted } from 'vue'
 
 const STORAGE_KEY = 'dental-color-mode'
 
-// DaisyUI theme names. `caremint` is the light theme; `caremint-dark` is the
+// DaisyUI theme names. `dental` is the light theme; `dental-dark` is the
 // dark theme (configured in resources/css/app.css).
-const LIGHT = 'caremint'
-const DARK = 'caremint-dark'
+const LIGHT = 'dental'
+const DARK = 'dental-dark'
 
 const mode = ref(LIGHT)
 let initialized = false

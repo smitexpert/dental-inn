@@ -1,5 +1,5 @@
 /* ---------------------------------------------------------------------------
- * Caremint design system
+ * Dental Inn design system
  * --------------------------------------------------------------------------
  * Two DaisyUI themes — light (default) and dark (auto when system is dark).
  * Palette is a soft, clinical teal-mint with a warm coral accent for CTAs
@@ -10,13 +10,13 @@
 @import 'tailwindcss';
 
 @plugin "daisyui" {
-  themes: caremint --default, caremint-dark --prefersdark;
+  themes: dental --default, dental-dark --prefersdark;
   logs: false;
 }
 
 /* -- Brand palette (light) ----------------------------------------------- */
 @plugin "daisyui/theme" {
-  name: 'caremint';
+  name: 'dental';
   default: true;
   prefersdark: false;
   color-scheme: light;
@@ -61,7 +61,7 @@
 
 /* -- Brand palette (dark) ------------------------------------------------ */
 @plugin "daisyui/theme" {
-  name: 'caremint-dark';
+  name: 'dental-dark';
   default: false;
   prefersdark: true;
   color-scheme: dark;

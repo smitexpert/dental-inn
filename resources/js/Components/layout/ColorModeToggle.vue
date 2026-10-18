@@ -9,8 +9,8 @@ const { mode, toggle } = useColorMode()
   <button
     type="button"
     class="h-9 w-9 inline-flex items-center justify-center rounded-lg text-base-content hover:bg-base-200 transition-colors app-focus-ring"
-    :aria-label="mode === 'caremint-dark' ? 'Switch to light mode' : 'Switch to dark mode'"
-    :title="mode === 'caremint-dark' ? 'Light mode' : 'Dark mode'"
+    :aria-label="mode === 'dental-dark' ? 'Switch to light mode' : 'Switch to dark mode'"
+    :title="mode === 'dental-dark' ? 'Light mode' : 'Dark mode'"
     @click="toggle"
   >
     <Transition
@@ -21,7 +21,7 @@ const { mode, toggle } = useColorMode()
       leave-to-class="opacity-0 rotate-90"
     >
       <Icon
-        v-if="mode === 'caremint-dark'"
+        v-if="mode === 'dental-dark'"
         key="sun"
         name="sun"
         size="md"
