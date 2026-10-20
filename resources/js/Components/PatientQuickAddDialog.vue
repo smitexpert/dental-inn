@@ -51,7 +51,7 @@ const form = useForm({
   name: '',
   phone: '',
   email: '',
-  date_of_birth: '',
+  age: '',
   gender: null,
 })
 
@@ -152,12 +152,17 @@ function submitNew() {
             <p v-if="form.errors.email" class="text-xs text-error mt-1">{{ form.errors.email }}</p>
           </div>
           <div>
-            <label class="text-sm font-medium">Date of birth</label>
-            <input
-              v-model="form.date_of_birth"
-              type="date"
-              class="mt-1 h-10 w-full rounded-md border border-base-300 bg-base-100 px-3 text-sm"
+            <label class="text-sm font-medium">Age</label>
+            <UiInput
+              v-model="form.age"
+              type="number"
+              min="0"
+              max="130"
+              suffix="Years"
+              placeholder="e.g. 20"
+              class="mt-1"
             />
+            <p v-if="form.errors.age" class="text-xs text-error mt-1">{{ form.errors.age }}</p>
           </div>
           <div>
             <label class="text-sm font-medium">Gender</label>

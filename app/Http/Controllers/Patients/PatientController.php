@@ -59,7 +59,9 @@ class PatientController extends Controller
 
     public function store(StorePatientRequest $request): RedirectResponse
     {
-        $data = $request->validated();
+        // `age` is an input-only field: the FormRequest has already converted
+        // it into the approximate `date_of_birth` the table stores.
+        $data = $request->safe()->except('age');
         $data['created_by'] = $request->user()->id;
         $patient = $this->patients->create($data);
 
@@ -140,7 +142,7 @@ class PatientController extends Controller
 
     public function update(UpdatePatientRequest $request, Patient $patient): RedirectResponse
     {
-        $this->patients->update($patient, $request->validated());
+        $this->patients->update($patient, $request->safe()->except('age'));
 
         return redirect()->route('patients.show', $patient)->with('success', 'Patient updated.');
     }
@@ -164,16 +166,11 @@ class PatientController extends Controller
 
     public function quickStore(QuickStorePatientRequest $request): RedirectResponse
     {
-        $data = $request->validated();
+        // `age` is an input-only field: the FormRequest has already converted
+        // it into the approximate `date_of_birth` the table stores, so the
+        // cashier only has to ask for an age during a walk-in booking.
+        $data = $request->safe()->except('age');
         $data['created_by'] = $request->user()->id;
-
-        // When the front-end dialog only knows the patient's age, derive
-        // an approximate date_of_birth so the cashier doesn't have to
-        // ask for the full DOB during a walk-in booking.
-        if (isset($data['age']) && $data['age'] !== null && $data['age'] !== '' && empty($data['date_of_birth'])) {
-            $data['date_of_birth'] = now()->subYears((int) $data['age'])->toDateString();
-        }
-        unset($data['age']);
 
         $patient = $this->patients->create($data);
 

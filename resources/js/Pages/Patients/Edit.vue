@@ -16,7 +16,7 @@ const form = useForm({
   name: props.patient.name ?? '',
   phone: props.patient.phone ?? '',
   email: props.patient.email ?? '',
-  date_of_birth: props.patient.date_of_birth ?? '',
+  age: props.patient.age ?? '',
   gender: props.patient.gender ?? null,
   address_line_1: props.patient.address_line_1 ?? '',
   address_line_2: props.patient.address_line_2 ?? '',
@@ -59,11 +59,14 @@ function submit() {
             <UiField label="Email" :error="form.errors.email"
               ><UiInput v-model="form.email" type="email"
             /></UiField>
-            <UiField label="Date of birth" :error="form.errors.date_of_birth"
-              ><input
-                v-model="form.date_of_birth"
-                type="date"
-                class="h-10 w-full rounded-md border border-base-300 bg-base-100 px-3 text-sm"
+            <UiField label="Age" :error="form.errors.age" hint="Used to derive the date of birth"
+              ><UiInput
+                v-model="form.age"
+                type="number"
+                min="0"
+                max="130"
+                suffix="Years"
+                placeholder="e.g. 20"
             /></UiField>
             <UiField label="Gender" :error="form.errors.gender"
               ><UiSelect v-model="form.gender" :options="genderOptions" placeholder="Select gender" />

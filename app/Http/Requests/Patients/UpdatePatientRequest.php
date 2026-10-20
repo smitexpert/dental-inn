@@ -4,14 +4,22 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Patients;
 
+use App\Http\Requests\Patients\Concerns\DerivesDateOfBirthFromAge;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class UpdatePatientRequest extends FormRequest
 {
+    use DerivesDateOfBirthFromAge;
+
     public function authorize(): bool
     {
         return $this->user()->can('manage-patients');
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $this->applyAgeToDateOfBirth();
     }
 
     public function rules(): array
@@ -22,6 +30,7 @@ class UpdatePatientRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'phone' => ['nullable', 'string', 'max:32'],
             'email' => ['nullable', 'email', 'max:255'],
+            'age' => $this->ageRules(),
             'date_of_birth' => ['nullable', 'date'],
             'gender' => ['nullable', 'in:male,female,other'],
             'address_line_1' => ['nullable', 'string', 'max:255'],

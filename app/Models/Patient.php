@@ -39,6 +39,7 @@ use Spatie\Activitylog\Support\LogOptions;
  * @property ?string $notes
  * @property bool $is_active
  * @property ?int $created_by
+ * @property-read ?int $age
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  * @property ?Carbon $deleted_at

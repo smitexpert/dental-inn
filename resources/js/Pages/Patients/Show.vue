@@ -97,8 +97,7 @@ function fmtDateTime(s) {
         <div class="grid grid-cols-2 gap-3 text-sm">
           <div><span class="text-base-content/70">Phone:</span> {{ patient.phone || '—' }}</div>
           <div><span class="text-base-content/70">Email:</span> {{ patient.email || '—' }}</div>
-          <div><span class="text-base-content/70">Date of birth:</span> {{ fmtDate(patient.date_of_birth) }}</div>
-          <div><span class="text-base-content/70">Age:</span> {{ patient.age ?? '—' }}</div>
+          <div><span class="text-base-content/70">Age:</span> {{ patient.age != null ? `${patient.age} years` : '—' }}</div>
           <div><span class="text-base-content/70">Gender:</span> {{ patient.gender_label || '—' }}</div>
           <div><span class="text-base-content/70">Status:</span>
             <UiBadge :variant="patient.is_active ? 'success' : 'warning'">

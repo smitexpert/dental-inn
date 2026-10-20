@@ -73,7 +73,7 @@ function goBack() {
             <div class="text-lg font-bold">{{ patient.name }}</div>
             <div class="text-xs text-muted font-mono">{{ patient.patient_code }}</div>
             <div class="text-xs mt-1">
-              <span v-if="patient.age">বয়স: {{ patient.age }}</span>
+              <span v-if="patient.age != null">বয়স: {{ patient.age }}</span>
               <span v-if="patient.gender"> · {{ patient.gender }}</span>
               <span v-if="patient.phone"> · {{ patient.phone }}</span>
             </div>

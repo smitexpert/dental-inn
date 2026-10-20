@@ -2,10 +2,10 @@
 /**
  * Input
  * -----
- * Text input wrapped in `.input-shell` with optional left-side icon. Falls
- * through HTML attributes via `$attrs` so callers can pass `id`, `name`,
- * `placeholder`, `autocomplete`, `autofocus`, etc. without each one being
- * declared.
+ * Text input wrapped in `.input-shell` with optional left-side icon and
+ * right-side unit label. Falls through HTML attributes via `$attrs` so
+ * callers can pass `id`, `name`, `placeholder`, `autocomplete`, `autofocus`,
+ * etc. without each one being declared.
  */
 import Icon from './Icon.vue'
 
@@ -21,6 +21,8 @@ defineProps({
   autofocus: { type: Boolean, default: false },
   autocomplete: { type: String, default: null },
   prefixIcon: { type: String, default: null },
+  /** Unit label shown inside the field, e.g. "Years". */
+  suffix: { type: String, default: null },
 })
 
 defineEmits(['update:modelValue', 'blur', 'focus'])
@@ -34,6 +36,12 @@ defineEmits(['update:modelValue', 'blur', 'focus'])
     >
       <Icon :name="prefixIcon" size="sm" />
     </span>
+    <span
+      v-if="suffix"
+      class="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-base-content/50 pointer-events-none select-none"
+    >
+      {{ suffix }}
+    </span>
     <input
       v-bind="$attrs"
       :type="type"
@@ -43,7 +51,12 @@ defineEmits(['update:modelValue', 'blur', 'focus'])
       :readonly="readonly"
       :autofocus="autofocus"
       :autocomplete="autocomplete ?? undefined"
-      :class="['input-shell w-full', prefixIcon ? 'pl-9' : '', invalid ? 'input-shell-error' : '']"
+      :class="[
+        'input-shell w-full',
+        prefixIcon ? 'pl-9' : '',
+        suffix ? 'pr-16' : '',
+        invalid ? 'input-shell-error' : '',
+      ]"
       @input="$emit('update:modelValue', $event.target.value)"
       @blur="$emit('blur', $event)"
       @focus="$emit('focus', $event)"

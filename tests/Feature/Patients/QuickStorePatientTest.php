@@ -118,4 +118,58 @@ class QuickStorePatientTest extends TestCase
         $response->assertSessionHasErrors('age');
         $this->assertSame(0, Patient::count());
     }
+
+    public function test_quick_store_persists_email_and_gender(): void
+    {
+        $admin = User::factory()->create(['is_active' => true])->assignRole('admin');
+
+        // The quick-add dialog collects email and gender, but the request
+        // used to validate neither, so validated() silently dropped them and
+        // walk-in patients lost whatever the cashier typed.
+        $response = $this->actingAs($admin)
+            ->from('/appointments/create')
+            ->post('/patients/quick', [
+                'name' => 'Walk-in Patient',
+                'email' => 'walkin@example.com',
+                'gender' => 'female',
+                'age' => 30,
+            ]);
+
+        $response->assertRedirect('/appointments/create');
+
+        $patient = Patient::first();
+        $this->assertSame('walkin@example.com', $patient->email);
+        $this->assertSame('female', $patient->gender->value);
+        $this->assertSame(30, $patient->age);
+    }
+
+    public function test_quick_store_rejects_invalid_email(): void
+    {
+        $admin = User::factory()->create(['is_active' => true])->assignRole('admin');
+
+        $response = $this->actingAs($admin)
+            ->from('/appointments/create')
+            ->post('/patients/quick', [
+                'name' => 'Walk-in Patient',
+                'email' => 'not-an-email',
+            ]);
+
+        $response->assertSessionHasErrors('email');
+        $this->assertSame(0, Patient::count());
+    }
+
+    public function test_quick_store_rejects_invalid_gender(): void
+    {
+        $admin = User::factory()->create(['is_active' => true])->assignRole('admin');
+
+        $response = $this->actingAs($admin)
+            ->from('/appointments/create')
+            ->post('/patients/quick', [
+                'name' => 'Walk-in Patient',
+                'gender' => 'not_a_gender',
+            ]);
+
+        $response->assertSessionHasErrors('gender');
+        $this->assertSame(0, Patient::count());
+    }
 }
