@@ -9,6 +9,8 @@ import Input from '@/Components/ui/Input.vue'
 import Select from '@/Components/ui/Select.vue'
 import Textarea from '@/Components/ui/Textarea.vue'
 import Breadcrumbs from '@/Components/ui/Breadcrumbs.vue'
+import Field from '@/Components/ui/Form/Field.vue'
+import FormError from '@/Components/ui/Form/FormError.vue'
 import MedicinePickerDialog from '@/Components/MedicinePickerDialog.vue'
 import Icon from '@/Components/ui/Icon.vue'
 
@@ -122,6 +124,14 @@ function reorder() {
   form.items.forEach((it, idx) => (it.sort_order = idx))
 }
 
+/**
+ * Filter the form errors down to per-row keys (`items.0.dosage`, …) — Laravel
+ * gives them a path-style key, so we always look up the row's exact scope.
+ */
+function itemError(idx, field) {
+  return form.errors[`items.${idx}.${field}`] ?? null
+}
+
 function submit() {
   reorder()
   form.post(`/patients/${props.patient.id}/prescriptions`)
@@ -140,107 +150,147 @@ function submit() {
         eyebrow="Add prescription"
       />
 
+      <FormError :errors="form.errors" />
+
       <Card title="Prescription details">
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label class="text-xs font-medium text-base-content/70">ডাক্তার (Doctor)</label>
+          <Field
+            label="ডাক্তার (Doctor)"
+            :error="form.errors.doctor_id"
+          >
             <Select
               v-model="form.doctor_id"
               :options="doctorOptions"
               placeholder="ডাক্তার নির্বাচন করুন"
+              :invalid="Boolean(form.errors.doctor_id)"
             />
-            <p v-if="form.errors.doctor_id" class="text-xs text-error mt-1">{{ form.errors.doctor_id }}</p>
-          </div>
-          <div>
-            <label class="text-xs font-medium text-base-content/70">রোগ নির্ণয় (Diagnosis)</label>
+          </Field>
+          <Field
+            label="রোগ নির্ণয় (Diagnosis)"
+            :error="form.errors.diagnosis_text"
+          >
             <Input
               v-model="form.diagnosis_text"
               placeholder="যেমন: Acute pulpitis — tooth #26"
+              :invalid="Boolean(form.errors.diagnosis_text)"
             />
-          </div>
+          </Field>
           <div class="sm:col-span-2">
-            <label class="text-xs font-medium text-base-content/70">সাধারণ পরামর্শ (General advice)</label>
-            <Textarea
-              v-model="form.general_advice"
-              :rows="2"
-              placeholder="যেমন: গরম/ঠান্ডা এড়িয়ে চলুন, ২ দিন পর ফলো-আপ।"
-            />
+            <Field
+              label="সাধারণ পরামর্শ (General advice)"
+              :error="form.errors.general_advice"
+            >
+              <Textarea
+                v-model="form.general_advice"
+                :rows="2"
+                placeholder="যেমন: গরম/ঠান্ডা এড়িয়ে চলুন, ২ দিন পর ফলো-আপ।"
+                :invalid="Boolean(form.errors.general_advice)"
+              />
+            </Field>
           </div>
         </div>
       </Card>
 
       <Card title="ওষুধের তালিকা (Medicines)">
+        <p class="text-xs text-muted mb-2">
+          <span class="text-error">*</span> চিহ্নিত ফিল্ডগুলো আবশ্যক।
+        </p>
         <div class="space-y-3">
           <div
             v-for="(item, idx) in form.items"
             :key="idx"
             class="rounded-lg border border-base-300 bg-base-100 p-3"
+            :class="{ 'border-error ring-1 ring-error/30': itemError(idx, 'medicine_name') || itemError(idx, 'dosage') || itemError(idx, 'frequency') || itemError(idx, 'meal_relation') }"
           >
             <div class="flex items-start gap-3 flex-wrap">
               <!-- Medicine picker trigger -->
               <div class="flex-1 min-w-[180px]">
-                <label class="text-xs font-medium text-base-content/70">ওষুধ (Medicine)</label>
-                <button
-                  type="button"
-                  class="w-full text-left rounded-md border border-base-300 bg-base-100 px-3 py-2 hover:border-primary transition-colors"
-                  @click="openMedicinePicker(idx)"
+                <Field
+                  label="ওষুধ (Medicine)"
+                  required
+                  :error="itemError(idx, 'medicine_name')"
                 >
-                  <template v-if="item.medicine_name">
-                    <div class="font-medium text-base-content">
-                      {{ item.medicine_name }}<span v-if="item.strength"> {{ item.strength }}</span>
-                    </div>
-                  </template>
-                  <template v-else>
-                    <span class="text-muted">ওষুধ নির্বাচন করুন…</span>
-                  </template>
-                </button>
-                <p v-if="form.errors[`items.${idx}.medicine_name`]" class="text-xs text-error mt-1">
-                  {{ form.errors[`items.${idx}.medicine_name`] }}
-                </p>
+                  <button
+                    type="button"
+                    :class="[
+                      'w-full text-left rounded-md border bg-base-100 px-3 py-2 transition-colors',
+                      itemError(idx, 'medicine_name')
+                        ? 'border-error ring-1 ring-error/30'
+                        : 'border-base-300 hover:border-primary',
+                    ]"
+                    @click="openMedicinePicker(idx)"
+                  >
+                    <template v-if="item.medicine_name">
+                      <div class="font-medium text-base-content">
+                        {{ item.medicine_name }}<span v-if="item.strength"> {{ item.strength }}</span>
+                      </div>
+                    </template>
+                    <template v-else>
+                      <span class="text-muted">ওষুধ নির্বাচন করুন…</span>
+                    </template>
+                  </button>
+                </Field>
               </div>
 
               <!-- কতবার — frequency -->
               <div class="min-w-[150px]">
-                <label class="text-xs font-medium text-base-content/70">কতবার (Frequency)</label>
-                <Select
-                  :model-value="item.frequency"
-                  :options="frequencySelectOptions"
-                  @update:model-value="(v) => onFrequencyChange(item, v)"
-                />
+                <Field
+                  label="কতবার (Frequency)"
+                  required
+                  :error="itemError(idx, 'frequency')"
+                >
+                  <Select
+                    :model-value="item.frequency"
+                    :options="frequencySelectOptions"
+                    :invalid="Boolean(itemError(idx, 'frequency'))"
+                    @update:model-value="(v) => onFrequencyChange(item, v)"
+                  />
+                </Field>
               </div>
 
               <!-- কতটুকু — dosage -->
               <div class="min-w-[140px]">
-                <label class="text-xs font-medium text-base-content/70">কতটুকু (Dosage)</label>
-                <Input
-                  v-model="item.dosage"
-                  placeholder="যেমন: ১ টি, ১০ মিলি"
-                />
+                <Field
+                  label="কতটুকু (Dosage)"
+                  required
+                  :error="itemError(idx, 'dosage')"
+                >
+                  <Input
+                    v-model="item.dosage"
+                    placeholder="যেমন: ১ টি, ১০ মিলি"
+                    :invalid="Boolean(itemError(idx, 'dosage'))"
+                  />
+                </Field>
               </div>
 
               <!-- মাত্রা — duration -->
               <div class="min-w-[120px]">
-                <label class="text-xs font-medium text-base-content/70">মাত্রা (Duration)</label>
-                <Input
-                  v-model="item.duration"
-                  placeholder="যেমন: ৫ দিন"
-                />
+                <Field
+                  label="মাত্রা (Duration)"
+                  :error="itemError(idx, 'duration')"
+                >
+                  <Input
+                    v-model="item.duration"
+                    placeholder="যেমন: ৫ দিন"
+                    :invalid="Boolean(itemError(idx, 'duration'))"
+                  />
+                </Field>
               </div>
 
               <!-- খাবারের সাথে সম্পর্ক — meal relation -->
               <div class="min-w-[160px]">
-                <label class="text-xs font-medium text-base-content/70">খাবারের সাথে (Meal relation)</label>
-                <Select
-                  :model-value="item.meal_relation"
-                  :options="mealSelectOptions"
-                  @update:model-value="(v) => onMealChange(item, v)"
-                />
-              </div>
-
-              <!-- পরিমাণ -->
-              <div class="w-20">
-                <label class="text-xs font-medium text-base-content/70">পরিমাণ (Qty)</label>
-                <Input v-model.number="item.quantity" type="number" min="1" />
+                <Field
+                  label="খাবারের সাথে (Meal relation)"
+                  required
+                  :error="itemError(idx, 'meal_relation')"
+                >
+                  <Select
+                    :model-value="item.meal_relation"
+                    :options="mealSelectOptions"
+                    :invalid="Boolean(itemError(idx, 'meal_relation'))"
+                    @update:model-value="(v) => onMealChange(item, v)"
+                  />
+                </Field>
               </div>
 
               <!-- Reorder + remove -->
@@ -279,15 +329,25 @@ function submit() {
 
             <!-- Optional Bangla instructions row -->
             <div class="mt-3">
-              <label class="text-xs font-medium text-base-content/70">
-                বিশেষ নির্দেশনা (Special instructions)
-              </label>
-              <Input
-                v-model="item.instructions"
-                placeholder="যেমন: ঘুমের আগে খাবেন, পানি দিয়ে গিলবেন"
-              />
+              <Field
+                label="বিশেষ নির্দেশনা (Special instructions)"
+                :error="itemError(idx, 'instructions')"
+              >
+                <Input
+                  v-model="item.instructions"
+                  placeholder="যেমন: ঘুমের আগে খাবেন, পানি দিয়ে গিলবেন"
+                  :invalid="Boolean(itemError(idx, 'instructions'))"
+                />
+              </Field>
             </div>
           </div>
+
+          <p
+            v-if="form.errors.items"
+            class="text-xs text-error"
+          >
+            {{ form.errors.items }}
+          </p>
 
           <Button variant="outline" icon="plus" type="button" @click="addRow">
             আর ও ওষুধ যোগ করুন
